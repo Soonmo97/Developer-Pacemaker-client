@@ -207,7 +207,9 @@ function LoginPage() {
     if (code) {
       console.log("Received code:", code); // 디버깅 메시지 추가
       axios
-        .get(`http://localhost:8080/api/kakao/kakaoLogin?accessToken=${code}`)
+        .get(
+          `${process.env.REACT_APP_API_SERVER}/api/kakao/kakaoLogin?accessToken=${code}`
+        )
         .then((response) => {
           console.log("Server response:", response); // 디버깅 메시지 추가
           if (response.data) {
@@ -235,14 +237,16 @@ function LoginPage() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/user/login",
+        `${process.env.REACT_APP_API_SERVER}/api/user/login`,
         {
           email: formData.inputEmail,
           pw: formData.inputPw,
         },
         { headers: { "Content-Type": "application/json" } }
       );
-      if (response.data) {
+      if (response.data.token) {
+        // 토큰이 존재할 때만 로컬 스토리지에 저장
+        localStorage.setItem("accessToken", response.data.token);
         setShowModal(true);
         console.log(response.data);
       } else {
