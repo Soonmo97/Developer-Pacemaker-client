@@ -1,12 +1,7 @@
 import React, { useState } from "react";
-// import { useDispatch } from "react-redux";
-// import { login } from "../../store/modules/login";
-// import RegisterForm from "./RegisterForm";
-// import { useNavigate } from "react-router-dom";
-// import axiosUtils from "../../utils/axiosUtils";
 import styled, { css } from "styled-components";
 import RegisterPage from "../components/user/RegisterPage";
-
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
 const responsiveWidth = css`
@@ -117,11 +112,20 @@ const Title = styled.h1`
 
 const CheckButton = styled.button`
   padding: 8px 10px;
-
   margin-left: 5px;
   cursor: pointer;
   background-color: #007bff;
   color: white;
+  border: none;
+  border-radius: 4px;
+`;
+
+const KakaoButton = styled.button`
+  padding: 8px 10px;
+  margin-left: 5px;
+  cursor: pointer;
+  background-color: #fee500;
+  color: black;
   border: none;
   border-radius: 4px;
 `;
@@ -135,6 +139,7 @@ const ButtonContainer = styled.div`
 `;
 
 function LoginPage() {
+  const navigate = useNavigate();
   const [showRegister, setShowRegister] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [formData, setFormData] = useState({
@@ -152,23 +157,20 @@ function LoginPage() {
       const response = await axios.post(
         "http://localhost:8080/api/user/login",
         {
-          email: formData.inputEmail, // formData에서 inputEmail을 가져와서 전송
-          pw: formData.inputPw, // 비밀번호는 그대로 사용
+          email: formData.inputEmail,
+          pw: formData.inputPw,
         },
         { headers: { "Content-Type": "application/json" } }
       );
       if (response.data) {
-        // 로그인 성공 후 처리
         setShowModal(true);
         console.log(response.data);
       } else {
-        // 로그인 실패 후 처리
         const errorMessage = response.data.message
           ? response.data.message.message
           : "로그인 실패";
         alert(errorMessage);
       }
-      // 로그인 성공 후 처리
     } catch (error) {
       console.error("Login error:", error);
       alert("로그인 오류가 발생했습니다. 자세한 내용은 콘솔을 확인해주세요.");
@@ -177,6 +179,39 @@ function LoginPage() {
 
   const handleSignup = () => {
     setShowRegister(true);
+  };
+
+  const handleKakaoLogin = () => {
+    window.Kakao.Auth.login(
+      {
+        success: function (authObj) {
+          axios
+            .get(
+              `http://localhost:8080/api/kakao/kakaoLogin?accessToken=${authObj.access_token}`
+            )
+            .then((response) => {
+              if (response.data) {
+                navigate("/");
+                setShowModal(true);
+                console.log(response.data);
+              } else {
+                alert("카카오 로그인 실패");
+              }
+            })
+            .catch((error) => {
+              console.error("Kakao login error:", error);
+              alert(
+                "카카오 로그인 오류가 발생했습니다. 자세한 내용은 콘솔을 확인해주세요."
+              );
+            });
+        },
+        fail: function (err) {
+          console.error("Kakao login failed:", err);
+          alert("카카오 로그인에 실패했습니다.");
+        },
+      },
+      [navigate]
+    );
   };
 
   const closeModalAndNavigate = () => {
@@ -233,6 +268,9 @@ function LoginPage() {
             <CheckButton type="button" onClick={handleSignup}>
               회원가입
             </CheckButton>
+            <KakaoButton type="button" onClick={handleKakaoLogin}>
+              카카오로 로그인
+            </KakaoButton>
           </ButtonContainer>
         </form>
         {showModal && (
