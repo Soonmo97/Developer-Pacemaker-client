@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
+
 import styled, { css, keyframes } from "styled-components";
+
 import RegisterPage from "../components/user/RegisterPage";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -208,7 +210,7 @@ function LoginPage() {
       console.log("Received code:", code); // 디버깅 메시지 추가
       axios
         .get(
-          `${process.env.REACT_APP_API_SERVER}/api/kakao/kakaoLogin?accessToken=${code}`
+          `${process.env.REACT_APP_API_SERVER}/api/kakao/kakaoLogin?code=${code}`
         )
         .then((response) => {
           console.log("Server response:", response); // 디버깅 메시지 추가
@@ -266,9 +268,10 @@ function LoginPage() {
   };
 
   const handleKakaoLogin = () => {
-    window.Kakao.Auth.authorize({
-      redirectUri: "http://localhost:3000/",
-    });
+
+    const kakaoId = process.env.REACT_APP_API_KAKAO_ID;
+    window.location.href = `https://kauth.kakao.com/oauth/authorize?client_id=${kakaoId}&redirect_uri=http://localhost:3000/&response_type=code`;
+
   };
 
   const closeModalAndNavigate = () => {
