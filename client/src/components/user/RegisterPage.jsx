@@ -458,7 +458,7 @@ function RegisterPage() {
     if (name === "nickname" || name === "email") {
       try {
         const response = await axios.get(
-          `http://localhost:8080/api/user/check-${name}?${name}=${value}`
+          `${process.env.REACT_APP_API_SERVER}/api/user/check-${name}?${name}=${value}`
         );
         const isDuplicate = response.data; // 서버에서 반환한 중복 여부 값 사용
 
@@ -499,6 +499,10 @@ function RegisterPage() {
     return <LoginPage />;
   }
 
+  if (isRegistered) {
+    return <LoginPage />;
+  }
+
   const handleBack = () => {
     setShowRegister(false);
   };
@@ -507,11 +511,13 @@ function RegisterPage() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/user",
+        `${process.env.REACT_APP_API_SERVER}/api/user`,
         formData
       );
-
-      if (response.data === true) {
+      console.log(response);
+      console.log("------");
+      console.log(response.data);
+      if (response.data.email) {
         alert("회원가입이 성공적으로 완료 되었습니다.");
         setIsRegistered(true);
       } else if (response.data.errors) {

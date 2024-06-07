@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
-import styled, { css } from "styled-components";
+
+import styled, { css, keyframes } from "styled-components";
+
 import RegisterPage from "../components/user/RegisterPage";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -140,7 +142,39 @@ const ButtonContainer = styled.div`
   margin-top: 20px;
 `;
 
+const Image = styled.img`
+  width: 50%;
+  height: auto;
+  clip-path: ${({ clipPath }) =>
+    clipPath}; /* clip-path 값을 props로부터 받도록 설정 */
+  transition: clip-path 2s ease-out; /* 2초 동안 clip-path에 변화가 일어나도록 설정 */
+`;
+
+const bounce = keyframes`
+  0% {
+    transform: translateY(0); // 초기 위치
+  }
+  50% {
+    transform: translateY(-10px); // 위로 조금 이동
+  }
+  100% {
+    transform: translateY(0); // 초기 위치로 돌아옴
+  }
+`;
+
+const ImageContainer = styled.div`
+  margin: 0 auto 20px;
+  width: 100%;
+  max-width: 500px; // 이미지의 최대 너비 설정
+  position: relative; // 부모로부터 상대적 위치 설정
+  animation: ${bounce} 1s infinite alternate; // bounce 애니메이션 적용
+  display: flex; /* 내부 요소들을 가로로 배치합니다. */
+  justify-content: center; /* 내부 요소들을 수평으로 가운데 정렬합니다. */
+  align-items: center; /* 내부 요소들을 수직으로 가운데 정렬합니다. */
+`;
+
 function LoginPage() {
+  const [clipPath, setClipPath] = useState("inset(62% 0 0 0)"); // 초기 clip-path 설정
   const navigate = useNavigate();
   const [showRegister, setShowRegister] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -150,11 +184,36 @@ function LoginPage() {
   });
 
   useEffect(() => {
+    const interval = setInterval(() => {
+      // 1초마다 클립 경로 변경
+      setClipPath((prevClipPath) => {
+        switch (prevClipPath) {
+          case "inset(62% 0 0 0)": // 현재 62% 보여줄 때
+            return "inset(48% 0 0 0)"; // 1초 후에 82% 보이도록 변경
+          case "inset(48% 0 0 0)": // 현재 82% 보여줄 때
+            return "inset(0% 0 0 0)"; // 3초 후에 100% 보이도록 변경
+          case "inset(0% 0 0 0)":
+            return "inset(62% 0 0 0)";
+          default:
+          // return "inset(62% 0 0 0)"; // 나머지 경우에는 다시 62%로 변경
+        }
+      });
+    }, 2000); // 1초 간격으로 클립 경로 변경
+
+    // 컴포넌트 언마운트 시 인터벌 클리어
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
     const code = new URL(window.location.href).searchParams.get("code");
     if (code) {
+      console.log("Received code:", code); // 디버깅 메시지 추가
       axios
-        .get(`http://localhost:8080/api/kakao/kakaoLogin?code=${code}`)
+        .get(
+          `${process.env.REACT_APP_API_SERVER}/api/kakao/kakaoLogin?code=${code}`
+        )
         .then((response) => {
+          console.log("Server response:", response); // 디버깅 메시지 추가
           if (response.data) {
             setShowModal(true);
             console.log(response.data);
@@ -180,14 +239,16 @@ function LoginPage() {
     e.preventDefault();
     try {
       const response = await axios.post(
-        "http://localhost:8080/api/user/login",
+        `${process.env.REACT_APP_API_SERVER}/api/user/login`,
         {
           email: formData.inputEmail,
           pw: formData.inputPw,
         },
         { headers: { "Content-Type": "application/json" } }
       );
-      if (response.data) {
+      if (response.data.token) {
+        // 토큰이 존재할 때만 로컬 스토리지에 저장
+        localStorage.setItem("accessToken", response.data.token);
         setShowModal(true);
         console.log(response.data);
       } else {
@@ -207,8 +268,10 @@ function LoginPage() {
   };
 
   const handleKakaoLogin = () => {
+
     const kakaoId = process.env.REACT_APP_API_KAKAO_ID;
     window.location.href = `https://kauth.kakao.com/oauth/authorize?client_id=${kakaoId}&redirect_uri=http://localhost:3000/&response_type=code`;
+
   };
 
   const closeModalAndNavigate = () => {
@@ -222,16 +285,13 @@ function LoginPage() {
   return (
     <MainContainer>
       <Container1>
-        <Title>로그인을 위한 절차</Title>
-        <SubTitle>로그인 주의사항</SubTitle>
-        <Text>
-          <div>로그인 시 다음 사항을 유의해 주세요:</div>
-          <ul>
-            <li>모든 입력 필드는 반드시 작성해야 합니다.</li>
-            <li>이메일 형식으로 로그인해주셔야 합니다.</li>
-            <li>처음 이용하시는 분은 아래 회원가입을 통해 진행해주세요.</li>
-          </ul>
-        </Text>
+        <ImageContainer>
+          <Image
+            src="/images/logo.png"
+            alt="Image"
+            clipPath={clipPath} // clip-path 속성에 현재 clipPath 상태 적용
+          />
+        </ImageContainer>
       </Container1>
       <Container2>
         <form onSubmit={handleSubmit}>
