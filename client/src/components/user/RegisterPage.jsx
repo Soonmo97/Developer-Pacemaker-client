@@ -591,7 +591,7 @@ function RegisterPage() {
           </PwContainer>
 
           <ButtonContainer>
-            <CheckButton type="submit">Sign Up</CheckButton>
+            <CheckButton type="submit">회원가입</CheckButton>
             <CheckButton type="button" onClick={handleBack}>
               돌아가기
             </CheckButton>
