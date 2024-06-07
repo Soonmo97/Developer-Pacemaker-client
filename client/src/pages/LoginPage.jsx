@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled, { css } from "styled-components";
 import RegisterPage from "../components/user/RegisterPage";
 import { useNavigate } from "react-router-dom";
@@ -31,13 +31,13 @@ const Container1 = styled.div`
   flex-direction: column;
   ${responsiveWidth}
 `;
+
 const Container2 = styled.div`
   margin: 0 auto 20px;
   padding: 20px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
-
   align-items: center;
   ${responsiveWidth}
 `;
@@ -65,6 +65,7 @@ const Text = styled.div`
     font-size: 1.2em;
   }
 `;
+
 const IdContainer = styled.div`
   display: flex;
   align-items: center;
@@ -102,6 +103,7 @@ const Inputpw = styled.input`
   padding: 8px;
   margin-left: 10px;
 `;
+
 const Title = styled.h1`
   text-align: center;
   padding-top: 10px;
@@ -147,6 +149,29 @@ function LoginPage() {
     inputPw: "",
   });
 
+  useEffect(() => {
+    const code = new URL(window.location.href).searchParams.get("code");
+    if (code) {
+      axios
+        .get(`http://localhost:8080/api/kakao/kakaoLogin?code=${code}`)
+        .then((response) => {
+          if (response.data) {
+            setShowModal(true);
+            console.log(response.data);
+            navigate("/");
+          } else {
+            alert("카카오 로그인 실패");
+          }
+        })
+        .catch((error) => {
+          console.error("Kakao login error:", error);
+          alert(
+            "카카오 로그인 오류가 발생했습니다. 자세한 내용은 콘솔을 확인해주세요."
+          );
+        });
+    }
+  }, [navigate]);
+
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
@@ -182,36 +207,8 @@ function LoginPage() {
   };
 
   const handleKakaoLogin = () => {
-    window.Kakao.Auth.login(
-      {
-        success: function (authObj) {
-          axios
-            .get(
-              `http://localhost:8080/api/kakao/kakaoLogin?accessToken=${authObj.access_token}`
-            )
-            .then((response) => {
-              if (response.data) {
-                navigate("/");
-                setShowModal(true);
-                console.log(response.data);
-              } else {
-                alert("카카오 로그인 실패");
-              }
-            })
-            .catch((error) => {
-              console.error("Kakao login error:", error);
-              alert(
-                "카카오 로그인 오류가 발생했습니다. 자세한 내용은 콘솔을 확인해주세요."
-              );
-            });
-        },
-        fail: function (err) {
-          console.error("Kakao login failed:", err);
-          alert("카카오 로그인에 실패했습니다.");
-        },
-      },
-      [navigate]
-    );
+    const kakaoId = process.env.REACT_APP_API_KAKAO_ID;
+    window.location.href = `https://kauth.kakao.com/oauth/authorize?client_id=${kakaoId}&redirect_uri=http://localhost:3000/&response_type=code`;
   };
 
   const closeModalAndNavigate = () => {
