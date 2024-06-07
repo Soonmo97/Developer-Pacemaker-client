@@ -1,0 +1,23 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  padding: 1vh;
+  background-color: #f0f0f0;
+  width: 100%;
+}
+
+.navbar-logo {
+  margin-left: 3vw;
+  font-weight: bold;
+}
+
+.navbar-menu {
+  margin-right: 5vw;
+  list-style: none;
+  display: flex;
+  gap: 2vw;
+}
+
+.navbar-menu li {
+  cursor: pointer;
+}
