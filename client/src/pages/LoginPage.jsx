@@ -273,6 +273,7 @@ function LoginPage() {
 
   const closeModalAndNavigate = () => {
     setShowModal(false);
+    navigate("/main");
   };
 
   if (showRegister) {
