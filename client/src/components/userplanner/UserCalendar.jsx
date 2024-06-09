@@ -154,22 +154,21 @@ const StyledToday = styled.div`
   transform: translateX(-50%);
 `;
 
-const StyledDot = styled.div`
-  background-color: ${(props) => props.theme.br_2};
-  border-radius: 50%;
-  width: 0.3rem;
-  height: 0.3rem;
-  position: absolute;
-  top: 60%;
-  left: 50%;
-  transform: translateX(-50%);
-`;
+// const StyledDot = styled.div`
+//   background-color: ${(props) => props.theme.br_2};
+//   border-radius: 50%;
+//   width: 0.3rem;
+//   height: 0.3rem;
+//   position: absolute;
+//   top: 60%;
+//   left: 50%;
+//   transform: translateX(-50%);
+// `;
 
 const UserCalendar = () => {
   const today = new Date();
   const [date, setDate] = useState(today);
   const [activeStartDate, setActiveStartDate] = useState(today);
-  const attendDay = ["2023-12-03", "2023-12-13"]; // 출석한 날짜 예시
 
   const handleDateChange = (newDate) => {
     setDate(newDate);
@@ -209,13 +208,6 @@ const UserCalendar = () => {
                 date.getDate() === today.getDate()
               ) {
                 html.push(<StyledToday key={"today"}>오늘</StyledToday>);
-              }
-              if (
-                attendDay.find((x) => x === moment(date).format("YYYY-MM-DD"))
-              ) {
-                html.push(
-                  <StyledDot key={moment(date).format("YYYY-MM-DD")} />
-                );
               }
               return <>{html}</>;
             }}

@@ -1,8 +1,7 @@
 .sidebar {
   background-color: #aba3a3;
-  padding: 1vh;
+  padding: 2vh;
   display: flex;
-  width: 100%;
   justify-content: center;
 }
 
@@ -10,13 +9,4 @@
   width: 60%;
   display: flex;
   justify-content: space-between;
-}
-
-.sidebar button {
-  font-weight: 800;
-  display: flex;
-  padding: 1vh 10vh;
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
 }
