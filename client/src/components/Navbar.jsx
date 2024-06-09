@@ -3,6 +3,22 @@ import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import "./main/Navbar.css";
 import "./main/Sidebar.css";
+import { Link } from "react-router-dom";
+import styled from "styled-components";
+
+const StyledButton = styled.button`
+  text-decoration: none;
+  border: none;
+  background: none;
+  cursor: pointer;
+  font-weight: 800;
+`;
+
+const StyledLink = styled(Link)`
+  font-weight: 800;
+  text-decoration: none;
+  color: black;
+`;
 
 const Logo = styled.div`
   background-image: url(${(props) => props.img});
@@ -31,6 +47,7 @@ const Navbar = () => {
       <nav className="navbar">
         <Logo img="/images/logo.png" />
         <ul className="navbar-menu">
+
           <li>홈</li>
           <li onClick={() => navigate("/mypage")} style={{ cursor: "pointer" }}>
             마이페이지
@@ -38,14 +55,23 @@ const Navbar = () => {
           <li onClick={handleLogout} style={{ cursor: "pointer" }}>
             로그아웃
           </li>
+
           <li>알림</li>
         </ul>
       </nav>
 
       <div className="sidebar">
         <div className="sideBtn">
-          <button>스터디 그룹</button>
-          <button>내 학습일지</button>
+          <StyledLink to="/main/studygroupboard">
+            <StyledButton>스터디 그룹 게시판</StyledButton>
+          </StyledLink>
+          <StyledLink to="/main/mystudygroup">
+            <StyledButton>내 스터디 그룹</StyledButton>
+          </StyledLink>
+          <StyledLink to="/main/myplanner">
+            <StyledButton>내 학습일지</StyledButton>
+          </StyledLink>
+          <StyledButton>내 정보</StyledButton>
         </div>
       </div>
     </>
