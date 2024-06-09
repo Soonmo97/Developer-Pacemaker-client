@@ -3,7 +3,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import "./Carousel.css";
-import UserCalendar from "./UserCalendar";
+import UserCalendar from "../userplanner/UserCalendar";
 import { ThemeProvider } from "styled-components";
 
 const theme = {
@@ -14,7 +14,6 @@ const theme = {
   primary_3: "#ffaa0c",
   yellow_2: "#f9e8c3",
   br_2: "#666666",
-  // 추가적인 테마 값들...
 };
 
 const NextArrow = (props) => {
