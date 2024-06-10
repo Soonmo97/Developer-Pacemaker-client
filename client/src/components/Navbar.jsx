@@ -4,7 +4,7 @@ import styled from "styled-components";
 import "./main/Navbar.css";
 import "./main/Sidebar.css";
 import { Link } from "react-router-dom";
-import styled from "styled-components";
+// import styled from "styled-components";
 
 const StyledButton = styled.button`
   text-decoration: none;
@@ -47,7 +47,6 @@ const Navbar = () => {
       <nav className="navbar">
         <Logo img="/images/logo.png" />
         <ul className="navbar-menu">
-
           <li>홈</li>
           <li onClick={() => navigate("/mypage")} style={{ cursor: "pointer" }}>
             마이페이지
