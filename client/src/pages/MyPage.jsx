@@ -15,12 +15,38 @@ const ProfileContainer = styled.div`
   width: 100%;
   max-width: 500px;
   padding: 20px;
+  height: 400px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   display: flex;
-  flex-direction: column;
   align-items: center;
+  justify-content: center;
   background-color: #f9f9f9;
+`;
+
+const Imgdiv = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 150px;
+  height: 150px;
+  margin-right: 20px;
+  background-color: #ccc;
+  border-radius: 50%;
+  overflow: hidden;
+
+  img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+`;
+
+const Infodiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  /* justify-content: center;
+  align-items: center; */
 `;
 
 const ProfileItem = styled.div`
@@ -44,6 +70,11 @@ const Button = styled.button`
   }
 `;
 
+const Buttondiv = styled.div`
+  display: flex;
+  gap: 10px;
+`;
+
 const Label = styled.label`
   @media (max-width: 768px) {
     font-size: 0.8em;
@@ -60,17 +91,6 @@ const Input = styled.input`
   font-size: 1em;
   border: 1px solid #ccc;
   border-radius: 5px;
-`;
-
-const CheckButton = styled.button`
-  padding: 7px 10px;
-  margin-top: 3px;
-  margin-left: 5px;
-  cursor: pointer;
-  background-color: #00154b;
-  color: white;
-  border: none;
-  border-radius: 4px;
 `;
 
 const MyPage = () => {
@@ -93,6 +113,7 @@ const MyPage = () => {
           }
         );
         setUser(response.data);
+        setNickname(response.data.nickname);
       } catch (err) {
         setError("Failed to fetch user profile");
         console.error(err);
@@ -105,37 +126,27 @@ const MyPage = () => {
   const handleNicknameChange = (e) => setNickname(e.target.value);
   const handlePasswordChange = (e) => setPassword(e.target.value);
 
-  const handleCheckNickname = () => {
-    setIsEditing(true);
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
       const token = localStorage.getItem("accessToken");
-      const updateData = {};
-      if (nickname !== "") {
-        // 빈 문자열인 경우에는 추가하지 않음
-        updateData.newNickname = nickname;
+
+      if (nickname) {
+        await axios.patch(
+          `${process.env.REACT_APP_API_SERVER}/api/user/nickname`,
+          { nickname },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
       }
-      if (password !== "") {
-        // 빈 문자열인 경우에는 추가하지 않음
-        updateData.newPw = password;
-      }
-      const response = await axios.patch(
-        `${process.env.REACT_APP_API_SERVER}/api/user/nickname`,
-        { newNickname: nickname },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
 
       if (password) {
         await axios.patch(
           `${process.env.REACT_APP_API_SERVER}/api/user/password`,
-          { newPw: password },
+          { pw: password },
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -156,12 +167,6 @@ const MyPage = () => {
 
       alert("Profile updated successfully");
       setIsEditing(false);
-      // 빈 값을 저장했을 경우, 원래 정보로 대체
-      setNickname(
-        updatedProfile.data.nickname
-          ? JSON.parse(updatedProfile.data.nickname).newNickname
-          : user.nickname
-      );
       setPassword("");
     } catch (err) {
       console.error(err);
@@ -176,6 +181,28 @@ const MyPage = () => {
   if (!user) {
     return <div>Loading...</div>;
   }
+
+  const handleDeleteAccount = async () => {
+    if (!window.confirm("정말로 회원탈퇴를 하시겠습니까?")) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("accessToken");
+      await axios.delete(`${process.env.REACT_APP_API_SERVER}/api/user`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+
+      localStorage.removeItem("accessToken");
+      alert("회원탈퇴가 성공적으로 처리되었습니다.");
+      window.location.href = "/"; // 탈퇴 후 로그인 페이지로 이동
+    } catch (err) {
+      console.error(err);
+      alert("회원탈퇴에 실패했습니다.");
+    }
+  };
 
   return (
     <>
@@ -216,15 +243,31 @@ const MyPage = () => {
               </Button>
             </form>
           ) : (
-            <>
-              <ProfileItem>
-                <strong>Email:</strong> {user.email}
-              </ProfileItem>
-              <ProfileItem>
-                <strong>Nickname:</strong> {user.nickname}
-              </ProfileItem>
-              <Button onClick={() => setIsEditing(true)}>수정하기</Button>
-            </>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "100%",
+              }}
+            >
+              <Imgdiv>
+                <img src={user.img || "/images/sesac.png"} alt="Profile" />
+              </Imgdiv>
+              <Infodiv>
+                <ProfileItem>
+                  <strong>이메일:</strong> {user.email}
+                </ProfileItem>
+                <ProfileItem>
+                  <strong>닉네임:</strong> {user.nickname}
+                </ProfileItem>
+                <Buttondiv>
+                  <Button onClick={() => setIsEditing(true)}>수정하기</Button>
+
+                  <Button onClick={handleDeleteAccount}>탈퇴하기</Button>
+                </Buttondiv>
+              </Infodiv>
+            </div>
           )}
         </ProfileContainer>
       </Container>
