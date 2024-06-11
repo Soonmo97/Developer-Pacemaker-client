@@ -123,7 +123,41 @@ const CheckButton = styled.button`
   border: none;
   border-radius: 4px;
 `;
+const SuccessModal = styled.div`
+  width: 400px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+`;
 
+const ModalHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+`;
+
+const SuccessMessageContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
+const CloseButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2em;
+  color: #666;
+`;
 const KakaoButton = styled.button`
   padding: 8px 10px;
   margin-left: 5px;
@@ -214,7 +248,8 @@ function LoginPage() {
         )
         .then((response) => {
           console.log("Server response:", response); // 디버깅 메시지 추가
-          if (response.data) {
+          if (response.data.token) {
+            localStorage.setItem("accessToken", response.data.token);
             setShowModal(true);
             console.log(response.data);
             navigate("/");
@@ -268,10 +303,8 @@ function LoginPage() {
   };
 
   const handleKakaoLogin = () => {
-
     const kakaoId = process.env.REACT_APP_API_KAKAO_ID;
     window.location.href = `https://kauth.kakao.com/oauth/authorize?client_id=${kakaoId}&redirect_uri=http://localhost:3000/&response_type=code`;
-
   };
 
   const closeModalAndNavigate = () => {
@@ -332,20 +365,16 @@ function LoginPage() {
           </ButtonContainer>
         </form>
         {showModal && (
-          <div
-            style={{
-              position: "fixed",
-              top: "50%",
-              left: "50%",
-              transform: "translate(-50%, -50%)",
-              backgroundColor: "white",
-              padding: "20px",
-              zIndex: 1000,
-            }}
-          >
-            <p>로그인 성공!</p>
-            <button onClick={closeModalAndNavigate}>확인</button>
-          </div>
+          <SuccessModal>
+            <ModalHeader>
+              <p></p>
+              <CloseButton onClick={() => setShowModal(false)}>×</CloseButton>
+            </ModalHeader>
+            <SuccessMessageContainer>
+              <p>로그인 성공!</p>
+              <button onClick={closeModalAndNavigate}>확인</button>
+            </SuccessMessageContainer>
+          </SuccessModal>
         )}
       </Container2>
     </MainContainer>
