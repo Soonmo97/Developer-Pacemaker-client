@@ -3,6 +3,7 @@ import axios from "axios";
 import styled from "styled-components";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import PasswordCheckModal from "../components/PasswordCheckModal";
 
 const Container = styled.div`
   display: flex;
@@ -97,6 +98,8 @@ const MyPage = () => {
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
+  const [isPasswordCheckModalOpen, setIsPasswordCheckModalOpen] =
+    useState(false);
   const [nickname, setNickname] = useState("");
   const [password, setPassword] = useState("");
 
@@ -174,14 +177,6 @@ const MyPage = () => {
     }
   };
 
-  if (error) {
-    return <div>{error}</div>;
-  }
-
-  if (!user) {
-    return <div>Loading...</div>;
-  }
-
   const handleDeleteAccount = async () => {
     if (!window.confirm("정말로 회원탈퇴를 하시겠습니까?")) {
       return;
@@ -203,6 +198,27 @@ const MyPage = () => {
       alert("회원탈퇴에 실패했습니다.");
     }
   };
+
+  const handleOpenPasswordCheckModal = () => {
+    setIsPasswordCheckModalOpen(true);
+  };
+
+  const handleClosePasswordCheckModal = () => {
+    setIsPasswordCheckModalOpen(false);
+  };
+
+  const handlePasswordCheckSuccess = () => {
+    setIsPasswordCheckModalOpen(false);
+    setIsEditing(true);
+  };
+
+  if (error) {
+    return <div>{error}</div>;
+  }
+
+  if (!user) {
+    return <div>Loading...</div>;
+  }
 
   return (
     <>
@@ -262,14 +278,20 @@ const MyPage = () => {
                   <strong>닉네임:</strong> {user.nickname}
                 </ProfileItem>
                 <Buttondiv>
-                  <Button onClick={() => setIsEditing(true)}>수정하기</Button>
-
+                  <Button onClick={handleOpenPasswordCheckModal}>
+                    수정하기
+                  </Button>
                   <Button onClick={handleDeleteAccount}>탈퇴하기</Button>
                 </Buttondiv>
               </Infodiv>
             </div>
           )}
         </ProfileContainer>
+        <PasswordCheckModal
+          isOpen={isPasswordCheckModalOpen}
+          onClose={handleClosePasswordCheckModal}
+          onSuccess={handlePasswordCheckSuccess}
+        />
       </Container>
       <Footer />
     </>
