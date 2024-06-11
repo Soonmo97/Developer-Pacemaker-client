@@ -1,15 +1,13 @@
 .carousel {
   padding: 5vw;
-  background-color: #eee;
+  /* background-color: #f9e8c3; */
   text-align: center;
-  margin-bottom: 10vh;
+  margin-bottom: 6vh;
 }
 
 .slick-list {
   margin-left: 8%;
 }
-
-
 
 .card {
   width: 10vw;

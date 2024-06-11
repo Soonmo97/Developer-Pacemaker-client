@@ -1,10 +1,9 @@
 .sidebar {
-  background-color: #aba3a3;
-
-  /* padding: 1vh; */
-
+  background-color: #cfe7fa;
   display: flex;
   justify-content: center;
+  width: 100%;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1), 0 -2px 5px rgba(0, 0, 0, 0.1);
 }
 
 .sideBtn {
@@ -12,3 +11,12 @@
   display: flex;
   justify-content: space-between;
 }
+
+/* .sidebar button {
+  font-weight: 800;
+  display: flex;
+  padding: 1vh 10vh;
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+} */

@@ -1,9 +1,9 @@
 import React from "react";
 import styled from "styled-components";
 
-import Carousel from "../components/main/Carousel";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import MyGroup from "../components/studygroup/MyGroup";
 
 const MainContainer = styled.div`
   display: flex;
@@ -15,16 +15,16 @@ const MainContainer = styled.div`
 const Content = styled.div`
   width: 70%;
   padding: 2vh;
-  margin-bottom: 7vh;
+  margin-bottom: 10vh;
 `;
 
-const MainPage = () => {
+const StudyGroup = () => {
   return (
     <>
       <Navbar />
       <MainContainer>
         <Content>
-          <Carousel />
+          <MyGroup />
         </Content>
       </MainContainer>
       <Footer />
@@ -32,4 +32,4 @@ const MainPage = () => {
   );
 };
 
-export default MainPage;
+export default StudyGroup;

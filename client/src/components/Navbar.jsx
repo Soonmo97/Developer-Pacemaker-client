@@ -1,10 +1,9 @@
-import React from "react";
-import { useNavigate } from "react-router-dom";
-import styled from "styled-components";
+import React, { useState } from "react";
 import "./main/Navbar.css";
 import "./main/Sidebar.css";
 import { Link } from "react-router-dom";
-// import styled from "styled-components";
+import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 
 const StyledButton = styled.button`
   text-decoration: none;
@@ -20,15 +19,30 @@ const StyledLink = styled(Link)`
   color: black;
 `;
 
+const Strong = styled.h3`
+  &:hover {
+    color: #1e90ff;
+  }
+
+  &.selected {
+    color: #1e90ff;
+  }
+`;
 const Logo = styled.div`
   background-image: url(${(props) => props.img});
   background-size: cover;
   background-position: center;
-  width: 50px;
-  height: 50px;
+  width: 3.5rem;
+  height: 3.5rem;
 `;
 
 const Navbar = () => {
+  const [selectedItem, setSelectedItem] = useState(null);
+
+  const handleClick = (itemName) => {
+    setSelectedItem(itemName);
+  };
+
   const navigate = useNavigate();
 
   const handleLogout = () => {
@@ -45,32 +59,80 @@ const Navbar = () => {
   return (
     <>
       <nav className="navbar">
-        <Logo img="/images/logo.png" />
+        <Link to="/main">
+          <div>
+            <Logo img="/images/logo.png" />
+          </div>
+        </Link>
         <ul className="navbar-menu">
-          <li>홈</li>
+          <StyledLink to="/main">
+            <li>홈</li>
+          </StyledLink>
           <li onClick={() => navigate("/mypage")} style={{ cursor: "pointer" }}>
             마이페이지
           </li>
           <li onClick={handleLogout} style={{ cursor: "pointer" }}>
             로그아웃
           </li>
-
           <li>알림</li>
         </ul>
       </nav>
-
-      <div className="sidebar">
-        <div className="sideBtn">
-          <StyledLink to="/main/studygroupboard">
-            <StyledButton>스터디 그룹 게시판</StyledButton>
-          </StyledLink>
-          <StyledLink to="/main/mystudygroup">
-            <StyledButton>내 스터디 그룹</StyledButton>
-          </StyledLink>
-          <StyledLink to="/main/myplanner">
-            <StyledButton>내 학습일지</StyledButton>
-          </StyledLink>
-          <StyledButton>내 정보</StyledButton>
+      <div style={{ display: "flex", justifyContent: "center" }}>
+        <div className="sidebar">
+          <div className="sideBtn">
+            <StyledLink
+              to="/main/studygroupboard"
+              onClick={() => handleClick("studygroupboard")}
+            >
+              <StyledButton>
+                <Strong
+                  className={
+                    selectedItem === "studygroupboard" ? "selected" : ""
+                  }
+                >
+                  스터디 그룹 게시판
+                </Strong>
+              </StyledButton>
+            </StyledLink>
+            <StyledLink
+              to="/main/mystudygroup"
+              onClick={() => handleClick("mystudygroup")}
+            >
+              <StyledButton>
+                <Strong
+                  className={selectedItem === "mystudygroup" ? "selected" : ""}
+                >
+                  내 스터디 그룹
+                </Strong>
+              </StyledButton>
+            </StyledLink>
+            <StyledLink
+              to="/main/myplanner"
+              onClick={() => handleClick("myplanner")}
+            >
+              <StyledButton>
+                <Strong
+                  className={selectedItem === "myplanner" ? "selected" : ""}
+                >
+                  내 학습일지
+                </Strong>
+              </StyledButton>
+            </StyledLink>
+            <StyledLink to="/main/myinfo">
+              <StyledButton onClick={() => handleClick("myinfo")}>
+                <Strong className={selectedItem === "myinfo" ? "selected" : ""}>
+                  내 정보
+                </Strong>
+              </StyledButton>
+            </StyledLink>
+            <StyledLink to="/main/Ai">
+              <StyledButton>
+                <Strong className={selectedItem === "myinfo" ? "selected" : ""}>
+                  AI 에게 질문하기
+                </Strong>
+              </StyledButton>
+            </StyledLink>
+          </div>
         </div>
       </div>
     </>

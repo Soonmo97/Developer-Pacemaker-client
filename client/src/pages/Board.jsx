@@ -18,7 +18,7 @@ const BoardHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-  background-color: #f5f5f5;
+  background-color: #d9e7f5;
   border-bottom: 1px solid #ccc;
 `;
 
@@ -31,7 +31,7 @@ const BoardTable = styled.table`
 const BoardTh = styled.th`
   border-bottom: 1px solid #ccc;
   padding: 0.5rem;
-  background-color: #f5f5f5;
+  background-color: #bcdbf9;
 `;
 
 const BoardTd = styled.td`

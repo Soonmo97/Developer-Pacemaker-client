@@ -24,6 +24,17 @@ const WriteButton = styled(Button)`
   }
 `;
 
+const TitleInput = styled.input`
+  width: 100%;
+  height: 50px;
+  padding: 10px;
+  font-size: 1.2rem;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  box-sizing: border-box;
+  margin-bottom: 1rem;
+`;
+
 const StudyPost = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
@@ -34,7 +45,7 @@ const StudyPost = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     const titleVal = title.trim();
-    const textCount = content.replace(/<[^>]*>?/gm, "").length;
+    const textCount = content.replace(/<[^>]*>?/gm, "").length; // HTML 태그 제거 후 글자수 계산
 
     if (titleVal === "") {
       alert("제목을 입력해주세요.");
@@ -75,7 +86,7 @@ const StudyPost = () => {
           <h1>팀원 모집 게시판</h1>
           <form onSubmit={handleSubmit}>
             <div>
-              <input
+              <TitleInput
                 type="text"
                 className="title"
                 name="title"
@@ -84,8 +95,6 @@ const StudyPost = () => {
                 value={title}
                 onChange={handleTitleChange}
               />
-              <br />
-              <br />
             </div>
             <div>
               <SunEditor

@@ -1,8 +1,9 @@
 .navbar {
   display: flex;
   justify-content: space-between;
-  /* padding: 1vh; */
-  background-color: #f0f0f0;
+  padding: 1vh;
+  background-color: #badcfc;
+  /* width: 100%; */
 }
 
 .navbar-logo {
