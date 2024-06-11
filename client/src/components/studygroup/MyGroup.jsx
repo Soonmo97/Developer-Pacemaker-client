@@ -1,11 +1,13 @@
-import React from "react";
+import React, { useState } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import "../Main/Carousel.css";
+import "../main/Carousel.css";
 import { Button } from "@mui/material";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
+import Modal from "react-modal";
+import CreateStudyGroup from "./CreateStudyGroup";
 
 const MakeButton = styled(Button)`
   && {
@@ -42,6 +44,8 @@ const PrevArrow = (props) => {
 };
 
 const MyGroup = () => {
+  const [modalIsOpen, setModalIsOpen] = useState(false);
+
   const settings = {
     dots: true,
     infinite: true,
@@ -56,8 +60,12 @@ const MyGroup = () => {
     <>
       <div className="carousel">
         <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <h1>내 스터디 그룹</h1>{" "}
-          <MakeButton variant="contained" color="primary">
+          <h1>내 스터디 그룹</h1>
+          <MakeButton
+            variant="contained"
+            color="primary"
+            onClick={() => setModalIsOpen(true)}
+          >
             스터디 그룹 만들기
           </MakeButton>
         </div>
@@ -67,7 +75,7 @@ const MyGroup = () => {
               <div className="card">
                 <div className="card-top">스터디{id}</div>
                 <div className="card-middle">
-                  <Link to={`/main/mystudygroup/info/${id}`}>
+                  <Link to={`info/${id}`}>
                     <button className="card-button">더보기</button>
                   </Link>
                 </div>
@@ -77,6 +85,25 @@ const MyGroup = () => {
           ))}
         </Slider>
       </div>
+      <Modal
+        isOpen={modalIsOpen}
+        onRequestClose={() => setModalIsOpen(false)}
+        style={{
+          content: {
+            top: "50%",
+            left: "50%",
+            right: "auto",
+            bottom: "auto",
+            marginRight: "-50%",
+            transform: "translate(-50%, -50%)",
+          },
+        }}
+      >
+        <div style={{ display: "flex", justifyContent: "flex-end" }}>
+          <Button onClick={() => setModalIsOpen(false)}>Close</Button>
+        </div>
+        <CreateStudyGroup />
+      </Modal>
     </>
   );
 };

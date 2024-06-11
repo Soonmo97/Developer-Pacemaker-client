@@ -1,35 +1,60 @@
 import React from "react";
 import styled from "styled-components";
 
-const StyledFooter = styled.footer`
-
-  width: 100%;
-  /* height: 15%; */
-  background-color: #f0f0f0;
-
-  text-align: center;
-  margin-bottom: 0;
+const FooterWrapper = styled.div`
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  position: fixed;
-  bottom: 0;
-  left: 0;
-  /* padding: 10px 0; 추가된 패딩 */
+  padding: 1rem 2rem;
+  background-color: #d7e8f8;
+  font-size: 1rem;
+  color: #333;
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
+`;
 
-  p {
-    margin: 2px 0; /* 위아래 간격을 줄임 */
-    font-size: 16px; /* 글씨 크기를 줄임 */
-  }
+const FooterContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  width: 80%;
+`;
+
+const LeftSection = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 2rem;
+`;
+
+const RightSection = styled.div`
+  text-align: right;
+`;
+
+const Title = styled.h1`
+  color: #1e90ff;
+  margin: 0;
+`;
+
+const Strong = styled.strong`
+  color: #1e90ff;
 `;
 
 const Footer = () => {
   return (
-    <StyledFooter>
-      <p>내 손을 JAVA</p>
-      <p>조장: 권순모 / 조원: 권오진 권태현 김화영 이형석</p>
-    </StyledFooter>
+    <FooterWrapper>
+      <FooterContainer>
+        <LeftSection>
+          <Title>내 손을 JAVA </Title>
+          <div> © 2024 SeSAC. All rights reserved.</div>
+        </LeftSection>
+        <RightSection>
+          <div style={{ display: "flex", justifyContent: "flex-start" }}>
+            <Strong>조장: </Strong> &nbsp;권순모
+          </div>
+          <div>
+            <Strong>조원:</Strong> 김화영 권오진 권태현 이형석
+          </div>
+        </RightSection>
+      </FooterContainer>
+    </FooterWrapper>
   );
 };
 

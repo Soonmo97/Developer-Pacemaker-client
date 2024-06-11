@@ -1,9 +1,10 @@
 import React from "react";
 import styled from "styled-components";
-
-import Carousel from "../components/main/Carousel";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import Header from "../components/studygroup/groupInfo/Header";
+
+import MemberStatus from "../components/studygroup/groupInfo/MemberStatus";
 
 const MainContainer = styled.div`
   display: flex;
@@ -15,16 +16,17 @@ const MainContainer = styled.div`
 const Content = styled.div`
   width: 70%;
   padding: 2vh;
-  margin-bottom: 7vh;
+  margin-bottom: 10vh;
 `;
 
-const MainPage = () => {
+const StudyGroupInfo = () => {
   return (
     <>
       <Navbar />
       <MainContainer>
         <Content>
-          <Carousel />
+          <Header />
+          <MemberStatus />
         </Content>
       </MainContainer>
       <Footer />
@@ -32,4 +34,4 @@ const MainPage = () => {
   );
 };
 
-export default MainPage;
+export default StudyGroupInfo;

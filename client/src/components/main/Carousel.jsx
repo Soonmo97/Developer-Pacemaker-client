@@ -5,10 +5,10 @@ import "slick-carousel/slick/slick-theme.css";
 import "./Carousel.css";
 import UserCalendar from "../userplanner/UserCalendar";
 import { ThemeProvider } from "styled-components";
+import { Link } from "react-router-dom";
+import { FcNext, FcPrevious } from "react-icons/fc"; // FcPrevious 아이콘 import
 
 const theme = {
-  // gray_1: "#0260f8",
-  red_1: "#FF0000",
   blue_1: "#0260f8",
   primary_2: "#fa9805",
   primary_3: "#ffaa0c",
@@ -16,27 +16,23 @@ const theme = {
   br_2: "#666666",
 };
 
-const NextArrow = (props) => {
+const PrevArrow = (props) => {
   const { className, style, onClick } = props;
   return (
-    <div
+    <FcPrevious
       className={className}
-      style={{
-        ...style,
-        display: "block",
-        backgroundColor: "black",
-      }}
+      style={{ ...style, display: "block" }}
       onClick={onClick}
     />
   );
 };
 
-const PrevArrow = (props) => {
+const NextArrow = (props) => {
   const { className, style, onClick } = props;
   return (
-    <div
+    <FcNext
       className={className}
-      style={{ ...style, display: "block", backgroundColor: "black" }}
+      style={{ ...style, display: "block" }}
       onClick={onClick}
     />
   );
@@ -55,50 +51,29 @@ const Carousel = () => {
 
   return (
     <>
-      <div className="carousel">
-        <h2>추천 스터디</h2>
-        <Slider {...settings}>
-          <div className="carousel-item">
-            <div className="card">
-              <div className="card-top">스터디1</div>
-              <div className="card-middle">
-                <button className="card-button">더보기</button>
+      <div>
+        <div className="carousel">
+          <h2>추천 스터디</h2>
+          <Slider {...settings}>
+            {[1, 2, 3, 4].map((id) => (
+              <div className="carousel-item" key={id}>
+                <div className="card">
+                  <div className="card-top">스터디{id}</div>
+                  <div className="card-middle">
+                    <Link to={`studygroupinfo/${id}`}>
+                      <button className="card-button">더보기</button>
+                    </Link>
+                  </div>
+                  <div className="card-bottom"></div>
+                </div>
               </div>
-              <div className="card-bottom"></div>
-            </div>
-          </div>
-          <div className="carousel-item">
-            <div className="card">
-              <div className="card-top">스터디2</div>
-              <div className="card-middle">
-                <button className="card-button">더보기</button>
-              </div>
-              <div className="card-bottom"></div>
-            </div>
-          </div>
-          <div className="carousel-item">
-            <div className="card">
-              <div className="card-top">스터디3</div>
-              <div className="card-middle">
-                <button className="card-button">더보기</button>
-              </div>
-              <div className="card-bottom"></div>
-            </div>
-          </div>
-          <div className="carousel-item">
-            <div className="card">
-              <div className="card-top">스터디4</div>
-              <div className="card-middle">
-                <button className="card-button">더보기</button>
-              </div>
-              <div className="card-bottom"></div>
-            </div>
-          </div>
-        </Slider>
+            ))}
+          </Slider>
+        </div>
+        <ThemeProvider theme={theme}>
+          <UserCalendar />
+        </ThemeProvider>
       </div>
-      <ThemeProvider theme={theme}>
-        <UserCalendar />
-      </ThemeProvider>
     </>
   );
 };
