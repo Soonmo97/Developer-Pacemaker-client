@@ -1,4 +1,4 @@
-// src/components/CreateStudyGroup.js
+import axios from "axios";
 import React, { useState } from "react";
 import styled from "styled-components";
 
@@ -74,14 +74,45 @@ const CreateStudyGroup = () => {
     setGroupGoal(e.target.value);
   };
 
-  const handleCheckDuplicate = () => {
-    alert("중복확인 기능을 구현하세요.");
+  const handleCheckDuplicate = async () => {
+    try {
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_SERVER}/api/check-duplicate`,
+        {
+          params: {
+            name: groupName,
+          },
+        }
+      );
+
+      // 서버에서의 응답을 처리
+      if (response.data.isDuplicate) {
+        alert("이미 존재하는 그룹 이름입니다.");
+      } else {
+        alert("사용 가능한 그룹 이름입니다.");
+      }
+    } catch (error) {
+      console.error("중복 확인 요청 실패:", error);
+      alert("중복 확인 요청에 실패했습니다.");
+    }
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    alert(`그룹 이름: ${groupName}, 팀 공동목표: ${groupGoal}`);
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_SERVER}/api/study-group`,
+        {
+          name: groupName,
+          max: 15,
+          useq: 0,
+        }
+      );
+      console.log("스터디 그룹 생성 성공:", response.data);
+    } catch (error) {
+      console.error("스터디 그룹 생성 실패:", error);
+    }
   };
 
   return (
