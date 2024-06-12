@@ -66,13 +66,13 @@ const PasswordCheckModal = ({ isOpen, onClose, onSuccess }) => {
     e.preventDefault();
     try {
       const token = localStorage.getItem("accessToken");
-      const response = await axios.get(
+      const response = await axios.post(
         `${process.env.REACT_APP_API_SERVER}/api/user/comparePw`,
+        { pw: password }, // 요청 본문에 비밀번호를 담아 보냄
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
-          params: { password },
         }
       );
 
@@ -84,9 +84,13 @@ const PasswordCheckModal = ({ isOpen, onClose, onSuccess }) => {
       }
     } catch (err) {
       console.error(err);
-      setError(
-        "비밀번호 확인 오류가 발생했습니다. 자세한 내용은 콘솔을 확인해주세요."
-      );
+      if (err.response && err.response.status === 401) {
+        setError("비밀번호가 일치하지 않습니다.");
+      } else {
+        setError(
+          "비밀번호 확인 오류가 발생했습니다. 자세한 내용은 콘솔을 확인해주세요."
+        );
+      }
     }
   };
 
