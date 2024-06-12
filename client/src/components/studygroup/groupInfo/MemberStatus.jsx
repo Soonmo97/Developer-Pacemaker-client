@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
 import Modal from "react-modal";
 import StudyGroupPlanner from "./StudyGroupPlanner";
-import CompletedTodoList from "./groupTodolist/CompletedTodoList";
 
 const theme = {
   red_1: "#FF0000",
@@ -49,7 +48,7 @@ const MemberDetailModal = styled(Modal)`
   padding: 1rem;
   background-color: white;
   border: 1px solid #ddd;
-  width: 45%;
+  width: 35%;
   height: 50%;
   margin: 5rem auto;
 `;
@@ -70,13 +69,11 @@ const DetailTitle = styled.h2`
 
 const DetailModalContainer = styled.div`
   display: flex;
-  margin-left: 5rem;
 `;
 
 const MemberStatus = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedMember, setSelectedMember] = useState(null);
-  const [completedTodos, setCompletedTodos] = useState([]);
 
   const openModal = (member) => {
     setSelectedMember(member);
@@ -127,14 +124,11 @@ const MemberStatus = () => {
         isOpen={isModalOpen}
         onRequestClose={closeModal}
         contentLabel="Member Detail Modal"
+        style={{ display: "flex", justifyContent: "center" }}
       >
         <CloseButton onClick={closeModal}>X</CloseButton>
+        <DetailTitle>{selectedMember}</DetailTitle>
         <DetailModalContainer>
-          <div>
-            <DetailTitle>{selectedMember}</DetailTitle>
-            <h3>TodoList</h3>
-            <CompletedTodoList completedTodos={completedTodos} />
-          </div>
           <ThemeProvider theme={theme}>
             <StudyGroupPlanner />
           </ThemeProvider>

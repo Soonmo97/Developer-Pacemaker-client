@@ -8,6 +8,7 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import Modal from "react-modal";
 import CreateStudyGroup from "./CreateStudyGroup";
+import { FcNext, FcPrevious } from "react-icons/fc";
 
 const MakeButton = styled(Button)`
   && {
@@ -17,32 +18,78 @@ const MakeButton = styled(Button)`
   }
 `;
 
-const NextArrow = (props) => {
-  const { className, style, onClick } = props;
-  return (
-    <div
-      className={className}
-      style={{
-        ...style,
-        display: "block",
-        backgroundColor: "black",
-      }}
-      onClick={onClick}
-    />
-  );
-};
+const SlickList = styled.div`
+  border: "1px solid black";
 
+  .slick-list {
+    margin-left: 5%;
+    padding: 1rem;
+    /* width: 100%; */
+  }
+`;
+
+const Card = styled.div`
+  width: 10vw;
+  height: 30vh;
+  border: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: #eee;
+  margin-top: 5vh;
+  margin-bottom: 5vh;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+`;
+
+const CardTop = styled.div`
+  height: 5vh;
+  background-color: #ddd;
+`;
+
+const CardBottom = styled.div`
+  height: 5vh;
+  background-color: #ddd;
+`;
+
+const CardMiddle = styled.div`
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const CardButton = styled.button`
+  padding: 1vh 1vw;
+  border: none;
+  background-color: #fff;
+  cursor: pointer;
+  text-align: center;
+`;
 const PrevArrow = (props) => {
   const { className, style, onClick } = props;
   return (
-    <div
+    <FcPrevious
       className={className}
-      style={{ ...style, display: "block", backgroundColor: "black" }}
+      style={{ ...style, display: "block" }}
       onClick={onClick}
     />
   );
 };
 
+const NextArrow = (props) => {
+  const { className, style, onClick } = props;
+  return (
+    <FcNext
+      className={className}
+      style={{ ...style, display: "block" }}
+      onClick={onClick}
+    />
+  );
+};
 const MyGroup = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
 
@@ -69,21 +116,38 @@ const MyGroup = () => {
             스터디 그룹 만들기
           </MakeButton>
         </div>
-        <Slider {...settings}>
-          {[1, 2, 3, 4].map((id) => (
-            <div className="carousel-item" key={id}>
-              <div className="card">
-                <div className="card-top">스터디{id}</div>
-                <div className="card-middle">
-                  <Link to={`info/${id}`}>
-                    <button className="card-button">더보기</button>
-                  </Link>
-                </div>
-                <div className="card-bottom"></div>
+        <SlickList>
+          <Slider {...settings} style={{ border: "1px solid black" }}>
+            {[1, 2, 3, 4].map((id) => (
+              <div className="carousel-item" key={id}>
+                <Card>
+                  <CardTop
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    스터디{id}
+                  </CardTop>
+                  <CardMiddle></CardMiddle>
+                  <CardBottom
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    {" "}
+                    <Link to={`info/${id}`}>
+                      <CardButton>더보기</CardButton>
+                    </Link>
+                  </CardBottom>
+                </Card>
               </div>
-            </div>
-          ))}
-        </Slider>
+            ))}
+          </Slider>
+        </SlickList>
       </div>
       <Modal
         isOpen={modalIsOpen}

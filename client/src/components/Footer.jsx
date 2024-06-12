@@ -45,13 +45,23 @@ const Footer = () => {
           <Title>내 손을 JAVA </Title>
           <div> © 2024 SeSAC. All rights reserved.</div>
         </LeftSection>
-        <RightSection>
-          <div style={{ display: "flex", justifyContent: "flex-start" }}>
-            <Strong>조장: </Strong> &nbsp;권순모
-          </div>
+        <RightSection style={{ display: "flex", gap: "3rem" }}>
           <div>
-            <Strong>조원:</Strong> 김화영 권오진 권태현 이형석
+            <div style={{ display: "flex", justifyContent: "flex-start" }}>
+              <Strong>조장: </Strong> &nbsp;권순모
+            </div>
+            <div>
+              <Strong>조원:</Strong> 김화영 권오진 권태현 이형석
+            </div>
           </div>
+          {/* <div>
+            <div style={{ display: "flex" }}>
+              <Strong>Front: </Strong> &nbsp; 권오진 권태현
+            </div>
+            <div>
+              <Strong>Back:</Strong> &nbsp; 김화영 권순모 이형석
+            </div>
+          </div> */}
         </RightSection>
       </FooterContainer>
     </FooterWrapper>

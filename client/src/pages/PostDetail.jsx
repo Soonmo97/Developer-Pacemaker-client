@@ -85,6 +85,9 @@ const PostDetail = () => {
           <ApplyBtn variant="contained" color="primary">
             신청하기
           </ApplyBtn>
+          <ApplyBtn variant="contained" color="secondary">
+            모집 마감
+          </ApplyBtn>
         </div>
       </PostContainer>
 

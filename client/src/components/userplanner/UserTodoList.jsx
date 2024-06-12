@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import CompletedTodoList from "./CompletedTodoList";
-import TodoList from "./TodoList";
+import UserCompletedTodoList from "./UserCompletedTodoList";
+import UserTodoListSet from "./UserTodoListSet";
 
 const TodoListContainer = styled.div`
   width: 100%;
@@ -24,7 +24,7 @@ const TodoButton = styled.button`
   cursor: pointer;
 `;
 
-const GroupTodoList = () => {
+const UserTodoList = () => {
   const [todos, setTodos] = useState([]);
   const [completedTodos, setCompletedTodos] = useState([]);
   const [inputValue, setInputValue] = useState("");
@@ -82,9 +82,7 @@ const GroupTodoList = () => {
   };
 
   return (
-    <TodoListContainer
-      style={{ display: "flex", justifyContent: "center", gap: "5rem" }}
-    >
+    <TodoListContainer>
       <div>
         <TodoInput
           type="text"
@@ -99,14 +97,13 @@ const GroupTodoList = () => {
         >
           {isEditing ? "수정" : "추가"}
         </TodoButton>
-
-        <TodoList
-          todos={todos}
-          handleCompleteTodo={handleCompleteTodo}
-          handleDeleteTodo={handleDeleteTodo}
-        />
       </div>
-      <CompletedTodoList
+      <UserTodoListSet
+        todos={todos}
+        handleCompleteTodo={handleCompleteTodo}
+        handleDeleteTodo={handleDeleteTodo}
+      />
+      <UserCompletedTodoList
         completedTodos={completedTodos}
         handleDeleteCompletedTodo={handleDeleteCompletedTodo}
       />
@@ -114,4 +111,4 @@ const GroupTodoList = () => {
   );
 };
 
-export default GroupTodoList;
+export default UserTodoList;
