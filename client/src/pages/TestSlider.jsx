@@ -1,101 +1,123 @@
-import React, { useState } from "react";
-import styled from "styled-components";
-import { BsArrowLeftCircleFill } from "react-icons/bs";
+import React, { useState, useEffect, useRef } from "react";
+import styled, { createGlobalStyle } from "styled-components";
 
-const StyledCarousel = styled.div`
+const GlobalStyle = createGlobalStyle`
+  body {
+    background: #ededed;
+    padding: 0 20px;
+    margin: 0;
+    font-family: 'Open Sans', Arial, sans-serif;
+  }
+
+  h1 {
+    text-align: center;
+    margin: 80px 0;
+  }
+`;
+
+const NavContainer = styled.nav`
   position: relative;
+`;
+
+const Ul = styled.ul`
   display: flex;
   justify-content: center;
-  align-items: center;
-  width: 600px;
-  height: 400px;
+  flex-wrap: wrap;
+  list-style-type: none;
+  padding: 0;
 `;
 
-const Slide = styled.img`
-  border-radius: 0.5rem;
-  box-shadow: 0px 0px 7px #666;
-  width: 100%;
-  height: 100%;
-  display: ${(props) => (props.isActive ? "block" : "none")};
+const Li = styled.li`
+  &:not(:last-child) {
+    margin-right: 20px;
+  }
 `;
 
-const Arrow = styled(BsArrowLeftCircleFill)`
-  position: absolute;
-  filter: drop-shadow(0px 0px 5px #555);
-  width: 2rem;
-  height: 2rem;
-  color: white;
-  cursor: pointer;
+const LinkItem = styled.a`
+  display: block;
+  font-size: 20px;
+  color: black;
+  text-decoration: none;
+  padding: 7px 15px;
+  opacity: ${(props) => (props.active ? "1" : "0.25")};
+  transition: all 0.35s ease-in-out;
+  position: relative;
 `;
 
-const LeftArrow = styled(Arrow)`
-  left: 1rem;
+const Target = styled.span`
+  display: block;
+  border-bottom: 4px solid transparent;
+  z-index: -1;
+  transition: all 0.35s ease-in-out;
+  position: relative; /* 상대적인 위치 */
 `;
 
-const RightArrow = styled(Arrow)`
-  right: 1rem;
-  transform: rotate(180deg); // 화살표를 180도로 회전
-`;
-
-const Indicators = styled.span`
-  display: flex;
-  position: absolute;
-  bottom: 1rem;
-`;
-
-const Indicator = styled.button`
-  background-color: ${(props) => (props.isActive ? "white" : "grey")};
-  height: 0.5rem;
-  width: 0.5rem;
-  border-radius: 100%;
-  border: none;
-  outline: none;
-  box-shadow: 0px 0px 5px #555;
-  margin: 0 0.2rem;
-  cursor: pointer;
-`;
+const colors = [
+  "deepskyblue",
+  "orange",
+  "firebrick",
+  "gold",
+  "magenta",
+  "black",
+  "darkblue",
+];
 
 const TestSlider = () => {
-  // 임시로 데이터 배열 생성
-  const data = [
-    { id: 1, title: "스터디1" },
-    { id: 2, title: "스터디2" },
-    { id: 3, title: "스터디3" },
-    { id: 4, title: "스터디4" },
-  ];
+  const [activeIndex, setActiveIndex] = useState(null);
+  const targetRef = useRef();
 
-  const [slide, setSlide] = useState(0);
+  const handleMouseEnter = (index, event) => {
+    setActiveIndex(index);
+    const { width, height, left, top } = event.target.getBoundingClientRect();
+    const color = colors[Math.floor(Math.random() * colors.length)];
 
-  const nextSlide = () => {
-    setSlide(slide === data.length - 1 ? 0 : slide + 1);
+    targetRef.current.style.width = `${width}px`;
+    targetRef.current.style.height = `4px`; // Target height to match the underline size
+    targetRef.current.style.left = `${left + window.pageXOffset}px`;
+    targetRef.current.style.top = `${top + window.pageYOffset + height}px`; // Positioning just below the text
+    targetRef.current.style.borderColor = color;
+    targetRef.current.style.transform = "none";
   };
 
-  const prevSlide = () => {
-    setSlide(slide === 0 ? data.length - 1 : slide - 1);
+  const handleResize = () => {
+    if (activeIndex !== null) {
+      const activeLink = document.querySelectorAll(".mynav a")[activeIndex];
+      const { width, height, left, top } = activeLink.getBoundingClientRect();
+      targetRef.current.style.width = `${width}px`;
+      targetRef.current.style.height = `4px`;
+      targetRef.current.style.left = `${left + window.pageXOffset}px`;
+      targetRef.current.style.top = `${top + window.pageYOffset + height}px`;
+    }
   };
+
+  useEffect(() => {
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [activeIndex]);
 
   return (
-    <StyledCarousel>
-      <LeftArrow onClick={prevSlide} />
-      {[1, 2, 3, 4].map((item, idx) => (
-        <Slide
-          src={item.src}
-          alt={item.alt}
-          key={idx}
-          isActive={slide === idx}
-        />
-      ))}
-      <RightArrow onClick={nextSlide} />
-      <Indicators>
-        {[1, 2, 3, 4].map((_, idx) => (
-          <Indicator
-            key={idx}
-            isActive={slide === idx}
-            onClick={() => setSlide(idx)}
-          />
-        ))}
-      </Indicators>
-    </StyledCarousel>
+    <>
+      <GlobalStyle />
+      <h1>Hover over the links</h1>
+      <NavContainer className="mynav">
+        <Ul>
+          {["Home", "About", "Company", "Work", "Clients", "Contact"].map(
+            (text, index) => (
+              <Li key={index}>
+                <LinkItem
+                  href="#"
+                  active={activeIndex === index}
+                  onMouseEnter={(e) => handleMouseEnter(index, e)}
+                >
+                  {text}
+                </LinkItem>
+              </Li>
+            )
+          )}
+        </Ul>
+        <Target ref={targetRef} className="target" />
+      </NavContainer>
+    </>
   );
 };
 

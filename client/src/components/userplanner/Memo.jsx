@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 
 const Wrapper = styled.div`
@@ -60,8 +60,13 @@ const Button = styled.button`
 
 const Memo = () => {
   const [note, setNote] = useState("");
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState(true); // 처음에 작성 모드로 시작
   const noteRef = useRef(null);
+
+  useEffect(() => {
+    // 컴포넌트가 처음 렌더링될 때 작성 모드로 변경
+    setIsEditing(true);
+  }, [isEditing]);
 
   const handleChange = (e) => {
     setNote(e.target.value);

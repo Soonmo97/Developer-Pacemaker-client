@@ -118,13 +118,6 @@ const Navbar = () => {
                 </Strong>
               </StyledButton>
             </StyledLink>
-            <StyledLink to="/main/myinfo">
-              <StyledButton onClick={() => handleClick("myinfo")}>
-                <Strong className={selectedItem === "myinfo" ? "selected" : ""}>
-                  내 정보
-                </Strong>
-              </StyledButton>
-            </StyledLink>
             <StyledLink to="/main/Ai">
               <StyledButton>
                 <Strong className={selectedItem === "myinfo" ? "selected" : ""}>

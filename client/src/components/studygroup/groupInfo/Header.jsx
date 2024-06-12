@@ -117,6 +117,15 @@ const RemoveButton = styled.button`
   cursor: pointer;
 `;
 
+const AuthorizeToBtn = styled.button`
+  background-color: #4caf50;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+`;
+
 const MemberDetailModal = styled(Modal)`
   display: flex;
   flex-direction: column;
@@ -141,7 +150,7 @@ const CloseSetButton = styled.button`
 
 const DetailTitle = styled.h1`
   margin-top: 0;
-  margin-bottom: 1rem;
+  margin-bottom: 2.5rem;
 `;
 
 const DetailContent = styled.div`
@@ -176,6 +185,53 @@ const ActionButton = styled.button`
   margin-left: 1rem;
   /* margin-right: 2rem; */
   cursor: pointer;
+`;
+
+const FormGroup = styled.div`
+  display: flex;
+  align-items: center;
+  margin-bottom: 1rem;
+`;
+
+const Label = styled.label`
+  width: 100px;
+  margin-right: 1rem;
+`;
+
+const Input = styled.input`
+  flex: 1;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+`;
+
+const CheckButton = styled.button`
+  margin-left: 1rem;
+  padding: 0.5rem 1rem;
+  border: none;
+  border-radius: 4px;
+  background-color: #64b5f6;
+  color: white;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #1695fc;
+  }
+`;
+
+const DropButton = styled.button`
+  width: 100%;
+  padding: 0.75rem;
+  border: none;
+  border-radius: 4px;
+  background-color: #f85044;
+  color: white;
+  cursor: pointer;
+  margin-top: 1rem;
+
+  &:hover {
+    background-color: #f92314;
+  }
 `;
 
 const GroupInfo = () => <InfoContainer>그룹원 0/15명</InfoContainer>;
@@ -229,19 +285,31 @@ const Header = () => {
             <SectionHeader>그룹원 관리</SectionHeader>
             <ListItem>
               <div>그룹원 닉네임</div>
-              <RemoveButton>강퇴</RemoveButton>
+              <div style={{ gap: "1rem" }}>
+                <AuthorizeToBtn>위임</AuthorizeToBtn>
+                <RemoveButton>강퇴</RemoveButton>
+              </div>
             </ListItem>
             <ListItem>
               <div>그룹원 닉네임</div>
-              <RemoveButton>강퇴</RemoveButton>
+              <div style={{ gap: "1rem" }}>
+                <AuthorizeToBtn>위임</AuthorizeToBtn>
+                <RemoveButton>강퇴</RemoveButton>
+              </div>
             </ListItem>
             <ListItem>
               <div>그룹원 닉네임</div>
-              <RemoveButton>강퇴</RemoveButton>
+              <div style={{ gap: "1rem" }}>
+                <AuthorizeToBtn>위임</AuthorizeToBtn>
+                <RemoveButton>강퇴</RemoveButton>
+              </div>
             </ListItem>
             <ListItem>
               <div>그룹원 닉네임</div>
-              <RemoveButton>강퇴</RemoveButton>
+              <div style={{ gap: "1rem" }}>
+                <AuthorizeToBtn>위임</AuthorizeToBtn>
+                <RemoveButton>강퇴</RemoveButton>
+              </div>
             </ListItem>
           </List>
         </Section>
@@ -266,8 +334,31 @@ const Header = () => {
             이메일 : sesac@trees.com
           </DetailContainer>
           <div>
-            <h3>TodoList</h3>
-            <GroupTodoList />
+            <br />
+            <form>
+              <FormGroup>
+                <Label>그룹 이름:</Label>
+                <Input
+                  type="text"
+                  // value={groupName}
+                  // onChange={handleGroupNameChange}
+                />
+                <CheckButton type="button">수정</CheckButton>
+              </FormGroup>
+              <div>
+                <br />
+              </div>
+              <FormGroup>
+                <Label>팀 공동목표:</Label>
+                <Input
+                  type="text"
+                  // value={groupGoal}
+                  // onChange={handleGroupGoalChange}
+                />
+                <CheckButton type="button">수정</CheckButton>
+              </FormGroup>
+            </form>
+            <DropButton type="submit">그룹 탈퇴</DropButton>
           </div>
         </DetailModalContainer>
       </MemberDetailModal>

@@ -224,9 +224,7 @@ const UserCalendar = () => {
       </CalendarBody>
       {modalOpen && (
         <UserCalendarModal onClose={handleModalClose}>
-          {/* 모달에 표시할 내용 */}
           <div>{moment(selectedDate).format("YYYY년 MM월 DD일")}</div>
-          {/* 상세 정보 표시 등 추가 내용 */}
         </UserCalendarModal>
       )}
     </div>

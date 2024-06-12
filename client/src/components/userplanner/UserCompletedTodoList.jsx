@@ -27,9 +27,12 @@ const TodoButton = styled.button`
   cursor: pointer;
 `;
 
-const CompletedTodoList = ({ completedTodos, handleDeleteCompletedTodo }) => (
+const UserCompletedTodoList = ({
+  completedTodos,
+  handleDeleteCompletedTodo,
+}) => (
   <div>
-    <div style={{ fontWeight: "bold", color: "#3700ff" }}>Completed</div>
+    <h3>Completed</h3>
     <TodoItemContainer>
       {completedTodos.map((todo, index) => (
         <TodoItem key={index}>
@@ -49,4 +52,4 @@ const CompletedTodoList = ({ completedTodos, handleDeleteCompletedTodo }) => (
   </div>
 );
 
-export default CompletedTodoList;
+export default UserCompletedTodoList;

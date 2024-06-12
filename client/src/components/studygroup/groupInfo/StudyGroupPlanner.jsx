@@ -3,6 +3,7 @@ import moment from "moment";
 import styled from "styled-components";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
+import StudyGroupPlannerModal from "./StudyGroupPlannerModal";
 
 const CalendarBody = styled.div`
   display: flex;
@@ -11,11 +12,13 @@ const CalendarBody = styled.div`
 `;
 const StyledCalendarWrapper = styled.div`
   font-weight: 800;
-  width: 75%;
+  width: 80%;
   height: auto;
   display: flex;
   justify-content: center;
   position: relative;
+  background-color: white;
+
   .react-calendar {
     width: 100%;
     border: none;
@@ -154,21 +157,21 @@ const StyledToday = styled.div`
   transform: translateX(-50%);
 `;
 
-// const StyledDot = styled.div`
-//   background-color: ${(props) => props.theme.br_2};
-//   border-radius: 50%;
-//   width: 0.3rem;
-//   height: 0.3rem;
-//   position: absolute;
-//   top: 60%;
-//   left: 50%;
-//   transform: translateX(-50%);
-// `;
-
-const StudyGroupPlanner = () => {
+const UserCalendar = () => {
   const today = new Date();
   const [date, setDate] = useState(today);
   const [activeStartDate, setActiveStartDate] = useState(today);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState(null);
+
+  const handleDateClick = (date) => {
+    setSelectedDate(date);
+    setModalOpen(true);
+  };
+
+  const handleModalClose = () => {
+    setModalOpen(false);
+  };
 
   const handleDateChange = (newDate) => {
     setDate(newDate);
@@ -182,10 +185,10 @@ const StudyGroupPlanner = () => {
 
   return (
     <div>
-      <div style={{ display: "flex", justifyContent: "center" }}></div>
       <CalendarBody>
         <StyledCalendarWrapper>
           <StyledCalendarComponent
+            onClickDay={handleDateClick}
             value={date}
             onChange={handleDateChange}
             formatDay={(locale, date) => moment(date).format("D")}
@@ -209,14 +212,20 @@ const StudyGroupPlanner = () => {
               ) {
                 html.push(<StyledToday key={"today"}>오늘</StyledToday>);
               }
+
               return <>{html}</>;
             }}
           />
           <StyledDate onClick={handleTodayClick}>오늘</StyledDate>
         </StyledCalendarWrapper>
       </CalendarBody>
+      {modalOpen && (
+        <StudyGroupPlannerModal onClose={handleModalClose}>
+          <div>{moment(selectedDate).format("YYYY년 MM월 DD일")}</div>
+        </StudyGroupPlannerModal>
+      )}
     </div>
   );
 };
 
-export default StudyGroupPlanner;
+export default UserCalendar;
