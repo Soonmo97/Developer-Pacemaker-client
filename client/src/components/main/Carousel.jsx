@@ -1,11 +1,14 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import "./Carousel.css";
 import UserCalendar from "../userplanner/UserCalendar";
-import styled, { ThemeProvider } from "styled-components";
+import { ThemeProvider } from "styled-components";
 import { Link } from "react-router-dom";
 import { FcNext, FcPrevious } from "react-icons/fc";
+import styled from "styled-components";
+import axios from "axios";
 
 const theme = {
   blue_1: "#0260f8",
@@ -14,12 +17,6 @@ const theme = {
   yellow_2: "#f9e8c3",
   br_2: "#666666",
 };
-
-const CarouselContainer = styled.div`
-  padding: 5vw;
-  text-align: center;
-  margin-bottom: 6vh;
-`;
 
 const SlickList = styled.div`
   border: "1px solid black";
@@ -40,7 +37,7 @@ const Card = styled.div`
   justify-content: space-between;
   background-color: #eee;
   margin-top: 5vh;
-  margin-bottom: 5vh;
+  margin-bottom: 2vh;
   transition: transform 0.3s ease;
 
   &:hover {
@@ -96,6 +93,24 @@ const NextArrow = (props) => {
 };
 
 const Carousel = () => {
+  const [studyGroups, setStudyGroups] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_SERVER}/api/study-group`
+        );
+        console.log(response.data);
+        setStudyGroups(response.data);
+      } catch (error) {
+        console.error("스터디 그룹 데이터를 불러오는데 실패했습니다:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   const settings = {
     dots: true,
     infinite: true,
@@ -104,19 +119,17 @@ const Carousel = () => {
     slidesToScroll: 1,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
-    autoplay: true,
-    autoplaySpeed: 3000,
   };
 
   return (
     <>
       <div>
-        <CarouselContainer>
+        <div className="carousel" style={{ marginBottom: "5rem" }}>
           <h2>추천 스터디</h2>
           <SlickList>
             <Slider {...settings} style={{ border: "1px solid black" }}>
-              {[1, 2, 3, 4].map((id) => (
-                <div className="carousel-item" key={id}>
+              {studyGroups.map((group) => (
+                <div className="carousel-item" key={group.sgSeq}>
                   <Card>
                     <CardTop
                       style={{
@@ -125,7 +138,7 @@ const Carousel = () => {
                         alignItems: "center",
                       }}
                     >
-                      스터디{id}
+                      {group.name}
                     </CardTop>
                     <CardMiddle></CardMiddle>
                     <CardBottom
@@ -135,7 +148,8 @@ const Carousel = () => {
                         alignItems: "center",
                       }}
                     >
-                      <Link to={`studygroupinfo/${id}`}>
+                      {" "}
+                      <Link to={`/main/studygroupinfo/${group.sgSeq}`}>
                         <CardButton>더보기</CardButton>
                       </Link>
                     </CardBottom>
@@ -144,7 +158,7 @@ const Carousel = () => {
               ))}
             </Slider>
           </SlickList>
-        </CarouselContainer>
+        </div>
         <ThemeProvider theme={theme}>
           <UserCalendar />
         </ThemeProvider>

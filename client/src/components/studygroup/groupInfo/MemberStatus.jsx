@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
 import Modal from "react-modal";
 import StudyGroupPlanner from "./StudyGroupPlanner";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
 const theme = {
   red_1: "#FF0000",
@@ -104,6 +106,68 @@ const MemberStatus = () => {
                 <ProfileImage />
               </MemberCell>
               <MemberCell onClick={() => openModal("Member 5")}>
+                <ProfileImage />
+              </MemberCell>
+            </MemberRow>
+          </thead>
+          <tbody>
+            <MemberRow>
+              <MemberCell>이름, 달성현황</MemberCell>
+              <MemberCell>이름, 달성현황</MemberCell>
+              <MemberCell>이름, 달성현황</MemberCell>
+              <MemberCell>이름, 달성현황</MemberCell>
+              <MemberCell>이름, 달성현황</MemberCell>
+            </MemberRow>
+          </tbody>
+        </MemberTable>
+        <br />
+        <MemberTable>
+          <thead>
+            <MemberRow>
+              <MemberCell onClick={() => openModal("Member 6")}>
+                <ProfileImage />
+              </MemberCell>
+              <MemberCell onClick={() => openModal("Member 7")}>
+                <ProfileImage />
+              </MemberCell>
+              <MemberCell onClick={() => openModal("Member 8")}>
+                <ProfileImage />
+              </MemberCell>
+              <MemberCell onClick={() => openModal("Member 9")}>
+                <ProfileImage />
+              </MemberCell>
+              <MemberCell onClick={() => openModal("Member 10")}>
+                <ProfileImage />
+              </MemberCell>
+            </MemberRow>
+          </thead>
+          <tbody>
+            <MemberRow>
+              <MemberCell>이름, 달성현황</MemberCell>
+              <MemberCell>이름, 달성현황</MemberCell>
+              <MemberCell>이름, 달성현황</MemberCell>
+              <MemberCell>이름, 달성현황</MemberCell>
+              <MemberCell>이름, 달성현황</MemberCell>
+            </MemberRow>
+          </tbody>
+        </MemberTable>
+        <br />
+        <MemberTable>
+          <thead>
+            <MemberRow>
+              <MemberCell onClick={() => openModal("Member 11")}>
+                <ProfileImage />
+              </MemberCell>
+              <MemberCell onClick={() => openModal("Member 12")}>
+                <ProfileImage />
+              </MemberCell>
+              <MemberCell onClick={() => openModal("Member 13")}>
+                <ProfileImage />
+              </MemberCell>
+              <MemberCell onClick={() => openModal("Member 14")}>
+                <ProfileImage />
+              </MemberCell>
+              <MemberCell onClick={() => openModal("Member 15")}>
                 <ProfileImage />
               </MemberCell>
             </MemberRow>

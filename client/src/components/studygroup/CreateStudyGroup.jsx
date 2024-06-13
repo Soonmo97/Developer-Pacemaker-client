@@ -1,17 +1,17 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 
 const FormContainer = styled.div`
-  background-color: #e0e0e0;
-  padding: 2rem;
+  background-color: #e5f2ff;
+  padding: 0 2rem 2rem 2rem;
   border-radius: 8px;
   width: 26rem;
-  margin: 2rem auto;
+  margin: auto;
 `;
 
 const FormTitle = styled.h2`
-  margin-bottom: 1.5rem;
+  margin-bottom: 3rem;
   text-align: center;
 `;
 
@@ -62,9 +62,14 @@ const SubmitButton = styled.button`
   }
 `;
 
-const CreateStudyGroup = () => {
+const CreateStudyGroup = ({ setModalIsOpen, modalIsOpen }) => {
   const [groupName, setGroupName] = useState("");
   const [groupGoal, setGroupGoal] = useState("");
+  const [isDuplicated, setIsDuplicated] = useState(false);
+  const [myStudyGroupId, setMyStudyGroupId] = useState([]);
+
+  const groupNameVal = groupName.trim();
+  const groupGoalVal = groupGoal.trim();
 
   const handleGroupNameChange = (e) => {
     setGroupName(e.target.value);
@@ -75,41 +80,73 @@ const CreateStudyGroup = () => {
   };
 
   const handleCheckDuplicate = async () => {
-    try {
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_SERVER}/api/check-duplicate`,
-        {
-          params: {
-            name: groupName,
-          },
-        }
-      );
+    if (groupNameVal === "") {
+      alert("그룹명을 입력해주세요.");
+    } else {
+      try {
+        const token = localStorage.getItem("accessToken");
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_SERVER}/api/study-group/check-name`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            params: {
+              name: groupName,
+            },
+          }
+        );
+        console.log(groupName);
+        console.log(response.data);
 
-      // 서버에서의 응답을 처리
-      if (response.data.isDuplicate) {
-        alert("이미 존재하는 그룹 이름입니다.");
-      } else {
-        alert("사용 가능한 그룹 이름입니다.");
+        if (response.data) {
+          alert("중복된 그룹 이름입니다.");
+        } else {
+          alert("사용 가능한 그룹 이름입니다.");
+          setIsDuplicated(true);
+        }
+      } catch (error) {
+        console.error("중복 확인 요청 실패:", error);
+        alert("중복 확인 요청에 실패했습니다.");
       }
-    } catch (error) {
-      console.error("중복 확인 요청 실패:", error);
-      alert("중복 확인 요청에 실패했습니다.");
     }
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    if (groupNameVal === "") {
+      alert("그룹명을 입력해주세요.");
+      return;
+    } else if (groupGoalVal === "") {
+      alert("팀 목표를 입력해주세요.");
+      return;
+    } else if (groupNameVal.length >= 20 || groupGoalVal.length >= 20) {
+      alert("입력 가능한 글자수를 초과하였습니다. (최대 20자)");
+      return;
+    } else if (!isDuplicated) {
+      alert("중복확인을 해주세요");
+      return;
+    }
     try {
+      const token = localStorage.getItem("accessToken");
       const response = await axios.post(
         `${process.env.REACT_APP_API_SERVER}/api/study-group`,
         {
           name: groupName,
-          max: 15,
-          useq: 0,
+          goal: groupGoal,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         }
       );
       console.log("스터디 그룹 생성 성공:", response.data);
+      alert("스터디 그룹이 생성되었습니다");
+      setModalIsOpen(false);
+      setMyStudyGroupId(response.data.sgSeq);
+      window.location.href = `main/mystudygroup/info/${response.data.sgSeq}`;
     } catch (error) {
       console.error("스터디 그룹 생성 실패:", error);
     }
