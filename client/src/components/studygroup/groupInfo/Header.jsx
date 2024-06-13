@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import Modal from "react-modal";
 import { useParams } from "react-router-dom";
-import GroupTodoList from "./groupTodolist/GroupTodoList";
+import axios from "axios";
 
 const InfoContainer = styled.div`
   padding: 1rem;
@@ -155,8 +155,8 @@ const DetailTitle = styled.h1`
 
 const DetailContent = styled.div`
   /* display: flex;
-  align-items: center; */
-  /* margin: 1rem 0; */
+  align-items: center;
+  margin: 1rem 0; */
 `;
 
 const DetailContainer = styled.div`
@@ -169,8 +169,8 @@ const DetailModalContainer = styled.div`
 `;
 
 const ProfilePhoto = styled.div`
-  width: 100px;
-  height: 100px;
+  width: 6rem;
+  height: 6em;
   border-radius: 50%;
   background-color: #ccc;
   margin-right: 1rem;
@@ -194,12 +194,12 @@ const FormGroup = styled.div`
 `;
 
 const Label = styled.label`
-  width: 100px;
-  margin-right: 1rem;
+  width: 5vw;
+  /* margin-right: 3rem; */
 `;
 
 const Input = styled.input`
-  flex: 1;
+  /* flex: 1; */
   padding: 0.5rem;
   border: 1px solid #ccc;
   border-radius: 4px;
@@ -234,14 +234,38 @@ const DropButton = styled.button`
   }
 `;
 
-const GroupInfo = () => <InfoContainer>그룹원 0/15명</InfoContainer>;
-
-const GroupGoals = () => <GoalsContainer>공동 목표</GoalsContainer>;
-
 const Header = () => {
-  const { id } = useParams();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSetModalOpen, setIsSetModalOpen] = useState(false);
+  const [studyGroups, setStudyGroups] = useState([]);
+  const [groupName, setGroupName] = useState("");
+  const [groupGoal, setGroupGoal] = useState("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_SERVER}/api/study-group`
+        );
+
+        setStudyGroups(response.data);
+      } catch (error) {
+        console.error("스터디 그룹 데이터를 불러오는데 실패했습니다:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const { sgSeq } = useParams();
+  const id = sgSeq - 1;
+
+  useEffect(() => {
+    if (studyGroups.length > 0) {
+      setGroupName(studyGroups[id]?.name || "");
+      setGroupGoal(studyGroups[id]?.goal || "");
+    }
+  }, [studyGroups, id]);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -249,10 +273,75 @@ const Header = () => {
   const openSetModal = () => setIsSetModalOpen(true);
   const closeSetModal = () => setIsSetModalOpen(false);
 
+  const handleGroupNameChange = (e) => setGroupName(e.target.value);
+  const handleGroupGoalChange = (e) => setGroupGoal(e.target.value);
+
+  const handleGroupNameUpdate = async () => {
+    try {
+      const token = localStorage.getItem("accessToken");
+
+      // 그룹 이름 중복 확인
+      const checkResponse = await axios.get(
+        `${process.env.REACT_APP_API_SERVER}/api/study-group/check-name`,
+        {
+          params: { name: groupName },
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (checkResponse.data) {
+        alert("이미 사용 중인 그룹 이름입니다. 다른 이름을 입력해주세요.");
+        return;
+      }
+
+      // 그룹 이름 수정
+      await axios.patch(
+        `${process.env.REACT_APP_API_SERVER}/api/study-group/name`,
+        {
+          name: groupName,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      alert("그룹 이름이 수정되었습니다.");
+      // setGroupName(updateGroupName.data);
+    } catch (error) {
+      console.error("그룹 이름 수정에 실패했습니다:", error);
+      alert("그룹 이름 수정에 실패했습니다.");
+    }
+  };
+
+  const handleGroupGoalUpdate = async () => {
+    const token = localStorage.getItem("accessToken");
+    try {
+      await axios.patch(
+        `${process.env.REACT_APP_API_SERVER}/api/study-group/goal`,
+        {
+          goal: groupGoal,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      alert("그룹 목표가 수정되었습니다.");
+      // setGroupGoal(updateGoal.data);
+    } catch (error) {
+      console.error("그룹 목표 수정에 실패했습니다:", error);
+    }
+  };
+
   return (
     <>
       <HeaderContainer>
-        <Title>스터디 그룹 {id}</Title>
+        <Title>{studyGroups.length > 0 && studyGroups[id]?.name}</Title>
         <SetBtns>
           <SettingsButton onClick={openModal}>신청하기</SettingsButton>
           <SettingsButton onClick={openModal}>관리</SettingsButton>
@@ -340,10 +429,12 @@ const Header = () => {
                 <Label>그룹 이름:</Label>
                 <Input
                   type="text"
-                  // value={groupName}
-                  // onChange={handleGroupNameChange}
+                  value={groupName}
+                  onChange={handleGroupNameChange}
                 />
-                <CheckButton type="button">수정</CheckButton>
+                <CheckButton type="button" onClick={handleGroupNameUpdate}>
+                  수정
+                </CheckButton>
               </FormGroup>
               <div>
                 <br />
@@ -352,18 +443,24 @@ const Header = () => {
                 <Label>팀 공동목표:</Label>
                 <Input
                   type="text"
-                  // value={groupGoal}
-                  // onChange={handleGroupGoalChange}
+                  value={groupGoal}
+                  onChange={handleGroupGoalChange}
                 />
-                <CheckButton type="button">수정</CheckButton>
+                <CheckButton type="button" onClick={handleGroupGoalUpdate}>
+                  수정
+                </CheckButton>
               </FormGroup>
             </form>
             <DropButton type="submit">그룹 탈퇴</DropButton>
           </div>
         </DetailModalContainer>
       </MemberDetailModal>
-      <GroupInfo />
-      <GroupGoals />
+      <InfoContainer>
+        그룹원 {studyGroups.length > 0 && studyGroups[id]?.current}/15명
+      </InfoContainer>
+      <GoalsContainer>
+        공동목표 : {studyGroups.length > 0 && studyGroups[id]?.goal}
+      </GoalsContainer>
     </>
   );
 };

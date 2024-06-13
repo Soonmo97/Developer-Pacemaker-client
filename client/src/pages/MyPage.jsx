@@ -100,8 +100,9 @@ const MyPage = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [isPasswordCheckModalOpen, setIsPasswordCheckModalOpen] =
     useState(false);
-  const [nickname, setNickname] = useState("");
+
   const [password, setPassword] = useState("");
+  const [nickname, setNickname] = useState("");
 
   useEffect(() => {
     const fetchUserProfile = async () => {

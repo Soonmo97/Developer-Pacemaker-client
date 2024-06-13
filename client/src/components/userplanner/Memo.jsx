@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 
@@ -51,10 +52,12 @@ const Button = styled.button`
   border-radius: 5px;
   font-size: 16px;
   cursor: pointer;
-  background-color: ${(props) => (props.save ? "#3598fc" : "#b0b0b0")};
   color: white;
+  background-color: ${(props) =>
+    props.className === "save" ? "#3598fc" : "#b0b0b0"};
   &:hover {
-    background-color: ${(props) => (props.save ? "#0080ff" : "#909090")};
+    background-color: ${(props) =>
+      props.className === "save" ? "#0080ff" : "#909090"};
   }
 `;
 
@@ -62,9 +65,55 @@ const Memo = () => {
   const [note, setNote] = useState("");
   const [isEditing, setIsEditing] = useState(true); // 처음에 작성 모드로 시작
   const noteRef = useRef(null);
+  const [rSeq, setRSeq] = useState(null); // rSeq 값을 관리하는 상태 추가
+
+  // POST
+  const postData = async () => {
+    const token = localStorage.getItem("accessToken");
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_SERVER}/api/report`,
+        { content: note, title: "" },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log("데이터가 성공적으로 전송되었습니다.", response.data);
+      setRSeq(response.data.rSeq); // rSeq 값을 저장
+    } catch (error) {
+      console.error("데이터를 전송하는 데 실패했습니다:", error);
+    }
+  };
+
+  // PATCH
+  const updateData = async () => {
+    if (rSeq === null) {
+      console.error("rSeq 값이 설정되지 않았습니다.");
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem("accessToken");
+      await axios.patch(
+        `${process.env.REACT_APP_API_SERVER}/api/report/${rSeq}`,
+        { content: note },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log("데이터가 성공적으로 업데이트되었습니다.");
+    } catch (error) {
+      console.error("데이터를 업데이트하는 데 실패했습니다:", error);
+    }
+  };
 
   useEffect(() => {
-    // 컴포넌트가 처음 렌더링될 때 작성 모드로 변경
     setIsEditing(true);
   }, [isEditing]);
 
@@ -74,11 +123,13 @@ const Memo = () => {
 
   const handleSave = () => {
     setIsEditing(false);
+    postData();
   };
 
   const handleEdit = () => {
     setIsEditing(true);
     noteRef.current.focus();
+    updateData();
   };
 
   return (
@@ -91,7 +142,7 @@ const Memo = () => {
         placeholder="내용을 입력하세요..."
       />
       <ButtonWrapper>
-        <Button save onClick={handleSave}>
+        <Button className="save" onClick={handleSave}>
           저장
         </Button>
         <Button onClick={handleEdit}>{note.trim() ? "수정" : "작성"}</Button>

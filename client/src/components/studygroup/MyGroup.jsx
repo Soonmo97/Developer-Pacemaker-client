@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -9,6 +9,7 @@ import { Link } from "react-router-dom";
 import Modal from "react-modal";
 import CreateStudyGroup from "./CreateStudyGroup";
 import { FcNext, FcPrevious } from "react-icons/fc";
+import axios from "axios";
 
 const MakeButton = styled(Button)`
   && {
@@ -92,6 +93,29 @@ const NextArrow = (props) => {
 };
 const MyGroup = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [mystudyGroups, setMyStudyGroups] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem("accessToken");
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_SERVER}/api/study-group/me`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log(response.data);
+        setMyStudyGroups(response.data);
+      } catch (error) {
+        console.error("스터디 그룹 데이터를 불러오는데 실패했습니다:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const settings = {
     dots: true,
@@ -118,8 +142,8 @@ const MyGroup = () => {
         </div>
         <SlickList>
           <Slider {...settings} style={{ border: "1px solid black" }}>
-            {[1, 2, 3, 4].map((id) => (
-              <div className="carousel-item" key={id}>
+            {mystudyGroups.map((group) => (
+              <div className="carousel-item" key={group.sgSeq}>
                 <Card>
                   <CardTop
                     style={{
@@ -128,7 +152,7 @@ const MyGroup = () => {
                       alignItems: "center",
                     }}
                   >
-                    스터디{id}
+                    {group.name}
                   </CardTop>
                   <CardMiddle></CardMiddle>
                   <CardBottom
@@ -139,7 +163,7 @@ const MyGroup = () => {
                     }}
                   >
                     {" "}
-                    <Link to={`info/${id}`}>
+                    <Link to={`/main/mystudygroup/${group.sgSeq}`}>
                       <CardButton>더보기</CardButton>
                     </Link>
                   </CardBottom>
@@ -160,13 +184,17 @@ const MyGroup = () => {
             bottom: "auto",
             marginRight: "-50%",
             transform: "translate(-50%, -50%)",
+            backgroundColor: "#e5f2ff",
           },
         }}
       >
         <div style={{ display: "flex", justifyContent: "flex-end" }}>
           <Button onClick={() => setModalIsOpen(false)}>Close</Button>
         </div>
-        <CreateStudyGroup />
+        <CreateStudyGroup
+          modalIsOpen={modalIsOpen}
+          setModalIsOpen={setModalIsOpen}
+        />
       </Modal>
     </>
   );
