@@ -10,11 +10,19 @@ const GptPageContainer = styled.div`
   display: flex;
   flex-direction: column;
   align-items: center;
+  min-height: 100vh;
 `;
-
+const ChatDiv = styled.div`
+  display: flex;
+  flex-direction: row;
+`;
+const AskDiv = styled.div`
+  display: flex;
+  flex-direction: row; /* 가로로 정렬 */
+`;
 const ChatContainer = styled.div`
   width: 100%;
-  max-width: 600px;
+  max-width: 1200px;
   border: 1px solid #ccc;
   border-radius: 10px;
   padding: 10px;
@@ -45,6 +53,7 @@ const MessageBubble = styled.div`
   border-radius: 20px;
   background-color: ${(props) => (props.isUser ? "#e1ffc7" : "#c7d7ff")};
   color: #000;
+  margin-bottom: 5px; /* 버튼과의 간격을 조정하기 위해 추가 */
 `;
 
 const ChatInput = styled.div`
@@ -73,9 +82,56 @@ const ChatInputButton = styled.button`
   }
 `;
 
+const SaveButton = styled.button`
+  padding: 5px 10px;
+  margin-left: 10px; /* 버튼과 말풍선 사이의 간격을 조정하기 위해 추가 */
+  border: none;
+  border-radius: 10px;
+  background-color: #007bff;
+  color: white;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #0056b3;
+  }
+`;
+
+const SavedAnswersContainer = styled.div`
+  width: 100%;
+  max-width: 600px; /* Adjust width as needed */
+  border: 1px solid #ccc;
+  border-radius: 10px;
+  padding: 10px;
+  background-color: #f0f0f0;
+  max-height: 550px;
+  overflow-y: auto;
+`;
+
+const SavedAnswer = styled.div`
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 10px;
+  background-color: #e1e1e1;
+`;
+
 const ErrorMessage = styled.p`
   color: red;
   margin-top: 20px;
+`;
+
+const DeleteButton = styled.button`
+  margin-left: 3%;
+  margin-top: 5px;
+  padding: 5px 10px;
+  border: none;
+  border-radius: 5px;
+  background-color: #ff6b6b;
+  color: white;
+  cursor: pointer;
+
+  &:hover {
+    background-color: #ff4f4f;
+  }
 `;
 
 const GptPage = () => {
@@ -83,9 +139,12 @@ const GptPage = () => {
   const [prompt, setPrompt] = useState("");
   const [answer, setAnswer] = useState("");
   const [error, setError] = useState(null);
+  const [savedAnswers, setSavedAnswers] = useState([]);
+  const [savedError, setSavedError] = useState(null);
 
   useEffect(() => {
     fetchGptList();
+    fetchSavedAnswers(); // 추가: 저장된 답변 불러오기
   }, []);
 
   const fetchGptList = async () => {
@@ -101,8 +160,30 @@ const GptPage = () => {
       );
       setGptList(response.data);
     } catch (error) {
-      console.error("Error fetching GPT list:", error);
+      console.error("GPT 목록을 불러오는 중 오류 발생:", error);
       setError("GPT 목록을 불러오는 중 오류가 발생했습니다.");
+    }
+  };
+
+  const fetchSavedAnswers = async () => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_SERVER}/api/gpt`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      console.log(response.data); //get 요청하는 부분에서 g_seq 보내줘야함(화영님)
+      setSavedAnswers(response.data);
+      setSavedError(null); // 성공적으로 데이터를 받았을 때 오류 상태 초기화
+    } catch (error) {
+      console.error("저장된 답변을 불러오는 중 오류 발생:", error);
+      setSavedAnswers([]); // 오류 발생 시 빈 배열로 초기화
+      setSavedError("저장된 답변을 불러오는 중 오류가 발생했습니다1.");
     }
   };
 
@@ -110,68 +191,150 @@ const GptPage = () => {
     setPrompt(e.target.value);
   };
 
+  const handleSave = async (question, answer) => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      await axios.post(
+        `${process.env.REACT_APP_API_SERVER}/api/gpt`,
+        { question, answer },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      ); //
+      // 저장이 성공하면 저장된 답변 목록을 다시 불러옵니다.
+      fetchSavedAnswers();
+    } catch (error) {
+      console.error("답변 저장 중 오류 발생:", error);
+      // 오류 처리
+      setSavedError("답변 저장 중 오류가 발생했습니다.");
+    }
+  };
+
   const handleAsk = async () => {
     try {
-      const response = await axios.get(
+      const response = await axios.post(
         `${process.env.REACT_APP_API_SERVER}/api/gpt/ask`,
+        { prompt },
         {
-          params: { prompt },
           headers: {
             Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
           },
         }
       );
-      setAnswer(response.data);
+      const answerData = response.data;
+
+      // Save both question and answer to backend
+      // await axios.post(
+      //   `${process.env.REACT_APP_API_SERVER}/api/gpt`,
+      //   { question: prompt, answer: answerData },
+      //   {
+      //     headers: {
+      //       Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+      //     },
+      //   }
+      // );
+
+      // Update frontend list
       setGptList((prevList) => [
         ...prevList,
-        { question: prompt, answer: response.data },
+        { question: prompt, answer: answerData },
       ]);
       setPrompt("");
     } catch (error) {
-      console.error("Error asking GPT:", error);
+      console.error("GPT에 질문하는 중 오류 발생:", error);
       setError("GPT에 질문하는 중 오류가 발생했습니다.");
     }
   };
+
+  const handleDelete = async (gSeq) => {
+    try {
+      const token = localStorage.getItem("accessToken");
+
+      console.log(token, gSeq);
+      await axios.patch(
+        `${process.env.REACT_APP_API_SERVER}/api/gpt/${gSeq}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
+          },
+        }
+      );
+      // 삭제 후에는 업데이트된 저장된 답변 목록을 다시 불러옵니다.
+      fetchSavedAnswers();
+    } catch (error) {
+      console.error("답변 삭제 중 오류 발생:", error);
+      // 삭제 실패 시 오류 처리
+      setSavedError("답변 삭제 중 오류가 발생했습니다.");
+    }
+  }; //delete mapping으로 변경해라
 
   return (
     <>
       <Navbar />
       <GptPageContainer>
         <h1>GPT 채팅</h1>
-        <ChatContainer>
-          <ChatBox>
-            {gptList.map((gpt, index) => (
-              <React.Fragment key={index}>
-                <ChatMessage isUser={true}>
-                  <MessageBubble isUser={true}>{gpt.question}</MessageBubble>
-                </ChatMessage>
-                <ChatMessage isUser={false}>
-                  <MessageBubble isUser={false}>{gpt.answer}</MessageBubble>
-                </ChatMessage>
-              </React.Fragment>
-            ))}
-            {answer && (
-              <React.Fragment>
-                <ChatMessage isUser={true}>
+        <ChatDiv>
+          <ChatContainer>
+            <ChatBox>
+              {gptList.map((gpt, index) => (
+                <React.Fragment key={index}>
+                  <ChatMessage isUser={true}>
+                    <MessageBubble isUser={true}>{gpt.question}</MessageBubble>
+                  </ChatMessage>
+                  <ChatMessage isUser={false}>
+                    <AskDiv>
+                      <MessageBubble isUser={false}>{gpt.answer}</MessageBubble>
+                      <SaveButton
+                        onClick={() => handleSave(gpt.question, gpt.answer)}
+                      >
+                        답변저장
+                      </SaveButton>
+                    </AskDiv>
+                  </ChatMessage>
+                </React.Fragment>
+              ))}
+
+              {answer && prompt === "" && (
+                <React.Fragment>
+                  {/* <ChatMessage isUser={true}>
                   <MessageBubble isUser={true}>{prompt}</MessageBubble>
-                </ChatMessage>
-                <ChatMessage isUser={false}>
+                </ChatMessage> */}
+                  {/* <ChatMessage isUser={false}>
                   <MessageBubble isUser={false}>{answer}</MessageBubble>
-                </ChatMessage>
-              </React.Fragment>
-            )}
-          </ChatBox>
-          <ChatInput>
-            <ChatInputField
-              type="text"
-              value={prompt}
-              onChange={handlePromptChange}
-              placeholder="질문을 입력하세요..."
-            />
-            <ChatInputButton onClick={handleAsk}>질문하기</ChatInputButton>
-          </ChatInput>
-        </ChatContainer>
-        {error && <ErrorMessage>{error}</ErrorMessage>}
+                </ChatMessage> */}
+                </React.Fragment>
+              )}
+            </ChatBox>
+            <ChatInput>
+              <ChatInputField
+                type="text"
+                value={prompt}
+                onChange={handlePromptChange}
+                placeholder="질문을 입력하세요..."
+              />
+              <ChatInputButton onClick={handleAsk}>질문하기</ChatInputButton>
+            </ChatInput>
+          </ChatContainer>
+          {error && <ErrorMessage>{error}</ErrorMessage>}
+
+          <SavedAnswersContainer>
+            <h2>저장된 답변</h2>
+            {savedAnswers.map((savedAnswer, index) => (
+              <SavedAnswer key={index}>
+                <strong>질문:</strong> {savedAnswer.question}
+                <br />
+                <strong>답변:</strong> {savedAnswer.answer}
+                <DeleteButton onClick={() => handleDelete(savedAnswer.gSeq)}>
+                  삭제
+                </DeleteButton>
+              </SavedAnswer>
+            ))}
+            {savedError && <ErrorMessage>{savedError}</ErrorMessage>}
+          </SavedAnswersContainer>
+        </ChatDiv>
       </GptPageContainer>
       <Footer />
     </>
