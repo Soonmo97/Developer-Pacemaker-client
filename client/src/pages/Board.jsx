@@ -11,6 +11,7 @@ const BoardContainer = styled.div`
   margin: 0 auto;
   margin-top: 2rem;
   margin-bottom: 5rem;
+  min-height: 65vh;
 `;
 
 const BoardHeader = styled.div`
@@ -69,7 +70,7 @@ const data = [
     title: "게시글 1",
     author: "작성자 1",
     date: "2024-06-01",
-    views: 100,
+    status: "모집중",
     content: "이것은 게시글 1의 내용입니다.",
   },
   {
@@ -77,7 +78,7 @@ const data = [
     title: "게시글 2",
     author: "작성자 2",
     date: "2024-06-02",
-    views: 200,
+    status: "모집마감",
     content: "이것은 게시글 2의 내용입니다.",
   },
 ];
@@ -113,7 +114,7 @@ const Board = () => {
               <BoardTh>제목</BoardTh>
               <BoardTh>글쓴이</BoardTh>
               <BoardTh>작성일</BoardTh>
-              <BoardTh>조회수</BoardTh>
+              <BoardTh>모집여부</BoardTh>
             </tr>
           </thead>
           <tbody>
@@ -127,7 +128,7 @@ const Board = () => {
                 </BoardTd>
                 <BoardTd>{item.author}</BoardTd>
                 <BoardTd>{item.date}</BoardTd>
-                <BoardTd>{item.views}</BoardTd>
+                <BoardTd>{item.status}</BoardTd>
               </tr>
             ))}
           </tbody>

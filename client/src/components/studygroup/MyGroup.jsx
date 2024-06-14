@@ -19,57 +19,59 @@ const MakeButton = styled(Button)`
   }
 `;
 
-const SlickList = styled.div`
-  border: "1px solid black";
-
-  .slick-list {
-    margin-left: 5%;
-    padding: 1rem;
-    /* width: 100%; */
-  }
-`;
-
-const Card = styled.div`
-  width: 10vw;
-  height: 30vh;
-  border: 1px solid #ddd;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  background-color: #eee;
-  margin-top: 5vh;
-  margin-bottom: 5vh;
-  transition: transform 0.3s ease;
-
-  &:hover {
-    transform: scale(1.05);
-  }
-`;
-
-const CardTop = styled.div`
-  height: 5vh;
-  background-color: #ddd;
-`;
-
-const CardBottom = styled.div`
-  height: 5vh;
-  background-color: #ddd;
-`;
-
-const CardMiddle = styled.div`
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
 const CardButton = styled.button`
   padding: 1vh 1vw;
   border: none;
   background-color: #fff;
   cursor: pointer;
   text-align: center;
+  transition: background-color 0.3s ease, color 0.3s ease;
+
+  &:hover {
+    background-color: #007bff;
+    color: #fff;
+  }
 `;
+
+const CarouselWrapper = styled.div`
+  width: 80%;
+  margin: 0 auto;
+  padding: 1rem 0;
+`;
+
+const SlideItem = styled.div`
+  background: white;
+  padding: 1rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+`;
+
+const SlideImage = styled.img`
+  width: 100%;
+  height: 13rem;
+  object-fit: cover;
+  border-radius: 10px 10px 0 0;
+`;
+
+const SlideContent = styled.div`
+  padding: 10px;
+`;
+
+const SlideTitle = styled.h3`
+  margin: 1rem 0;
+`;
+
+const SlideDescription = styled.p`
+  /* font-size: 14px; */
+  /* color: #666; */
+`;
+
 const PrevArrow = (props) => {
   const { className, style, onClick } = props;
   return (
@@ -91,9 +93,10 @@ const NextArrow = (props) => {
     />
   );
 };
+
 const MyGroup = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [mystudyGroups, setMyStudyGroups] = useState([]);
+  const [myStudyGroups, setMyStudyGroups] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -121,15 +124,45 @@ const MyGroup = () => {
     dots: true,
     infinite: true,
     speed: 500,
-    slidesToShow: 4,
-    slidesToScroll: 1,
+    slidesToShow: 5,
+    slidesToScroll: 2,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
+    responsive: [
+      {
+        breakpoint: 1200, // 1200px 이하
+        settings: {
+          slidesToShow: 4,
+          slidesToScroll: 2,
+        },
+      },
+      {
+        breakpoint: 992, // 992px 이하
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 1,
+        },
+      },
+      {
+        breakpoint: 768, // 768px 이하
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 1,
+        },
+      },
+      {
+        breakpoint: 480, // 480px 이하
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+        },
+      },
+    ],
   };
 
   return (
     <>
-      <div className="carousel">
+      <div className="carousel" style={{ minHeight: "64vh" }}>
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <h1>내 스터디 그룹</h1>
           <MakeButton
@@ -140,38 +173,26 @@ const MyGroup = () => {
             스터디 그룹 만들기
           </MakeButton>
         </div>
-        <SlickList>
-          <Slider {...settings} style={{ border: "1px solid black" }}>
-            {mystudyGroups.map((group) => (
-              <div className="carousel-item" key={group.sgSeq}>
-                <Card>
-                  <CardTop
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    {group.name}
-                  </CardTop>
-                  <CardMiddle></CardMiddle>
-                  <CardBottom
-                    style={{
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    {" "}
+        <CarouselWrapper>
+          <Slider {...settings}>
+            {myStudyGroups.map((group) => (
+              <SlideItem key={group.sgSeq}>
+                <SlideImage
+                  src="https://images.velog.io/images/kshired/post/d8a48a1f-4106-480f-8307-d20eae1f9486/image.png"
+                  alt=""
+                />
+                <SlideContent>
+                  <SlideTitle>{group.name}</SlideTitle>
+                  <SlideDescription>
                     <Link to={`/main/mystudygroup/${group.sgSeq}`}>
                       <CardButton>더보기</CardButton>
                     </Link>
-                  </CardBottom>
-                </Card>
-              </div>
+                  </SlideDescription>
+                </SlideContent>
+              </SlideItem>
             ))}
           </Slider>
-        </SlickList>
+        </CarouselWrapper>
       </div>
       <Modal
         isOpen={modalIsOpen}

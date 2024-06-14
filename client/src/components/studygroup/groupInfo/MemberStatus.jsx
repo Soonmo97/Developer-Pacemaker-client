@@ -2,8 +2,8 @@ import React, { useEffect, useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
 import Modal from "react-modal";
 import StudyGroupPlanner from "./StudyGroupPlanner";
-import { useParams } from "react-router-dom";
 import axios from "axios";
+import { useParams } from "react-router-dom";
 
 const theme = {
   red_1: "#FF0000",
@@ -17,6 +17,7 @@ const theme = {
 const StatusContainer = styled.div`
   padding: 1rem;
   text-align: center;
+  min-height: 40vh;
 `;
 
 const MemberTable = styled.table`
@@ -74,8 +75,27 @@ const DetailModalContainer = styled.div`
 `;
 
 const MemberStatus = () => {
+  const [members, setMembers] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedMember, setSelectedMember] = useState(null);
+
+  const { sgSeq } = useParams();
+
+  useEffect(() => {
+    const fetchMembers = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_SERVER}/api/group-members/${sgSeq}`
+        );
+        console.log(response.data);
+        setMembers(response.data.slice(0, 15)); // 최대 15명으로 제한
+      } catch (error) {
+        console.error("Failed to fetch members", error);
+      }
+    };
+
+    fetchMembers();
+  }, [sgSeq]);
 
   const openModal = (member) => {
     setSelectedMember(member);
@@ -87,100 +107,42 @@ const MemberStatus = () => {
     setIsModalOpen(false);
   };
 
+  const renderRows = () => {
+    const rows = [];
+    for (let i = 0; i < 3; i++) {
+      const rowMembers = members.slice(i * 5, i * 5 + 5);
+      rows.push(
+        <MemberRow key={i}>
+          {rowMembers.map((member) => (
+            <MemberCell key={member.useq} onClick={() => openModal(member)}>
+              <ProfileImage>{member.img}</ProfileImage>
+              {member.nickname}
+              <br />
+              달성현황: {member.score}개
+            </MemberCell>
+          ))}
+          {rowMembers.length < 5 &&
+            Array(5 - rowMembers.length)
+              .fill(null)
+              .map((_, index) => <MemberCell key={`empty-${index}`} />)}
+        </MemberRow>
+      );
+    }
+    return rows;
+  };
+
   return (
     <>
       <StatusContainer>
         <MemberTable>
           <thead>
             <MemberRow>
-              <MemberCell onClick={() => openModal("Member 1")}>
-                <ProfileImage />
-              </MemberCell>
-              <MemberCell onClick={() => openModal("Member 2")}>
-                <ProfileImage />
-              </MemberCell>
-              <MemberCell onClick={() => openModal("Member 3")}>
-                <ProfileImage />
-              </MemberCell>
-              <MemberCell onClick={() => openModal("Member 4")}>
-                <ProfileImage />
-              </MemberCell>
-              <MemberCell onClick={() => openModal("Member 5")}>
-                <ProfileImage />
+              <MemberCell colSpan={5} style={{ backgroundColor: "#faf8f8" }}>
+                그룹원
               </MemberCell>
             </MemberRow>
           </thead>
-          <tbody>
-            <MemberRow>
-              <MemberCell>이름, 달성현황</MemberCell>
-              <MemberCell>이름, 달성현황</MemberCell>
-              <MemberCell>이름, 달성현황</MemberCell>
-              <MemberCell>이름, 달성현황</MemberCell>
-              <MemberCell>이름, 달성현황</MemberCell>
-            </MemberRow>
-          </tbody>
-        </MemberTable>
-        <br />
-        <MemberTable>
-          <thead>
-            <MemberRow>
-              <MemberCell onClick={() => openModal("Member 6")}>
-                <ProfileImage />
-              </MemberCell>
-              <MemberCell onClick={() => openModal("Member 7")}>
-                <ProfileImage />
-              </MemberCell>
-              <MemberCell onClick={() => openModal("Member 8")}>
-                <ProfileImage />
-              </MemberCell>
-              <MemberCell onClick={() => openModal("Member 9")}>
-                <ProfileImage />
-              </MemberCell>
-              <MemberCell onClick={() => openModal("Member 10")}>
-                <ProfileImage />
-              </MemberCell>
-            </MemberRow>
-          </thead>
-          <tbody>
-            <MemberRow>
-              <MemberCell>이름, 달성현황</MemberCell>
-              <MemberCell>이름, 달성현황</MemberCell>
-              <MemberCell>이름, 달성현황</MemberCell>
-              <MemberCell>이름, 달성현황</MemberCell>
-              <MemberCell>이름, 달성현황</MemberCell>
-            </MemberRow>
-          </tbody>
-        </MemberTable>
-        <br />
-        <MemberTable>
-          <thead>
-            <MemberRow>
-              <MemberCell onClick={() => openModal("Member 11")}>
-                <ProfileImage />
-              </MemberCell>
-              <MemberCell onClick={() => openModal("Member 12")}>
-                <ProfileImage />
-              </MemberCell>
-              <MemberCell onClick={() => openModal("Member 13")}>
-                <ProfileImage />
-              </MemberCell>
-              <MemberCell onClick={() => openModal("Member 14")}>
-                <ProfileImage />
-              </MemberCell>
-              <MemberCell onClick={() => openModal("Member 15")}>
-                <ProfileImage />
-              </MemberCell>
-            </MemberRow>
-          </thead>
-          <tbody>
-            <MemberRow>
-              <MemberCell>이름, 달성현황</MemberCell>
-              <MemberCell>이름, 달성현황</MemberCell>
-              <MemberCell>이름, 달성현황</MemberCell>
-              <MemberCell>이름, 달성현황</MemberCell>
-              <MemberCell>이름, 달성현황</MemberCell>
-            </MemberRow>
-          </tbody>
+          <tbody>{renderRows()}</tbody>
         </MemberTable>
       </StatusContainer>
 
@@ -191,12 +153,16 @@ const MemberStatus = () => {
         style={{ display: "flex", justifyContent: "center" }}
       >
         <CloseButton onClick={closeModal}>X</CloseButton>
-        <DetailTitle>{selectedMember}</DetailTitle>
-        <DetailModalContainer>
-          <ThemeProvider theme={theme}>
-            <StudyGroupPlanner />
-          </ThemeProvider>
-        </DetailModalContainer>
+        {selectedMember && (
+          <>
+            <DetailTitle>{selectedMember.nickname}</DetailTitle>
+            <DetailModalContainer>
+              <ThemeProvider theme={theme}>
+                <StudyGroupPlanner />
+              </ThemeProvider>
+            </DetailModalContainer>
+          </>
+        )}
       </MemberDetailModal>
     </>
   );

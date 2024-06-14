@@ -258,7 +258,25 @@ const Header = () => {
       }
     };
 
+    const RecruitmentStatus = async () => {
+      try {
+        const token = localStorage.getItem("accessToken");
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_SERVER}/api/study-group/status/${sgSeq}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log("모집여부 데이터:", response.data);
+      } catch (error) {
+        console.error("모집 여부 데이터를 불러오는데 실패했습니다:", error);
+      }
+    };
+
     fetchData();
+    RecruitmentStatus();
   }, []);
 
   useEffect(() => {
@@ -280,7 +298,7 @@ const Header = () => {
         throw error;
       }
     };
-    checkUserMembership(); // 이제 함수 호출 시에 매개변수를 전달하지 않습니다.
+    checkUserMembership();
   }, [sgSeq]);
 
   useEffect(() => {
