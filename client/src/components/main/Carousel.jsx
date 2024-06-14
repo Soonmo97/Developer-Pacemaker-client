@@ -19,6 +19,7 @@ const theme = {
   br_2: "#666666",
 };
 
+
 const CardButton = styled.button`
   padding: 1vh 1vw;
   border: none;
@@ -66,6 +67,7 @@ const SlideContent = styled.div`
 const SlideTitle = styled.h3`
   margin: 1rem 0;
 `;
+
 
 const SlideDescription = styled.p`
   /* font-size: 14px; */
