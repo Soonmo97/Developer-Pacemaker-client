@@ -32,13 +32,18 @@ const App = () => {
           path="/main/mystudygroup/createStudyGroup"
           element={<CreateStudyGroup />}
         />
+        <Route path="/main/mystudygroup/:sgSeq" element={<StudyGroupInfo />} />
+
         <Route
-          path="/main/mystudygroup/info/:id"
+          path="/main/studygroupinfo/:sgSeq"
           element={<StudyGroupInfo />}
         />
 
+
         <Route path="/main/studygroupinfo/:id" element={<StudyGroupInfo />} />
         <Route path="/main/Ai" element={<GptPage />} />
+
+
         <Route path="/main/myplanner" element={<Myplanner />} />
         <Route path="/test" element={<TestSlider />} />
       </Routes>

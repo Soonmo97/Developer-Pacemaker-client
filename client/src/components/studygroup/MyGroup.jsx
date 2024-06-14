@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
@@ -8,6 +8,8 @@ import styled from "styled-components";
 import { Link } from "react-router-dom";
 import Modal from "react-modal";
 import CreateStudyGroup from "./CreateStudyGroup";
+import { FcNext, FcPrevious } from "react-icons/fc";
+import axios from "axios";
 
 const MakeButton = styled(Button)`
   && {
@@ -17,34 +19,103 @@ const MakeButton = styled(Button)`
   }
 `;
 
-const NextArrow = (props) => {
-  const { className, style, onClick } = props;
-  return (
-    <div
-      className={className}
-      style={{
-        ...style,
-        display: "block",
-        backgroundColor: "black",
-      }}
-      onClick={onClick}
-    />
-  );
-};
+const SlickList = styled.div`
+  border: "1px solid black";
 
+  .slick-list {
+    margin-left: 5%;
+    padding: 1rem;
+    /* width: 100%; */
+  }
+`;
+
+const Card = styled.div`
+  width: 10vw;
+  height: 30vh;
+  border: 1px solid #ddd;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  background-color: #eee;
+  margin-top: 5vh;
+  margin-bottom: 5vh;
+  transition: transform 0.3s ease;
+
+  &:hover {
+    transform: scale(1.05);
+  }
+`;
+
+const CardTop = styled.div`
+  height: 5vh;
+  background-color: #ddd;
+`;
+
+const CardBottom = styled.div`
+  height: 5vh;
+  background-color: #ddd;
+`;
+
+const CardMiddle = styled.div`
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const CardButton = styled.button`
+  padding: 1vh 1vw;
+  border: none;
+  background-color: #fff;
+  cursor: pointer;
+  text-align: center;
+`;
 const PrevArrow = (props) => {
   const { className, style, onClick } = props;
   return (
-    <div
+    <FcPrevious
       className={className}
-      style={{ ...style, display: "block", backgroundColor: "black" }}
+      style={{ ...style, display: "block" }}
       onClick={onClick}
     />
   );
 };
 
+const NextArrow = (props) => {
+  const { className, style, onClick } = props;
+  return (
+    <FcNext
+      className={className}
+      style={{ ...style, display: "block" }}
+      onClick={onClick}
+    />
+  );
+};
 const MyGroup = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
+  const [mystudyGroups, setMyStudyGroups] = useState([]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem("accessToken");
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_SERVER}/api/study-group/me`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log(response.data);
+        setMyStudyGroups(response.data);
+      } catch (error) {
+        console.error("스터디 그룹 데이터를 불러오는데 실패했습니다:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
 
   const settings = {
     dots: true,
@@ -69,21 +140,38 @@ const MyGroup = () => {
             스터디 그룹 만들기
           </MakeButton>
         </div>
-        <Slider {...settings}>
-          {[1, 2, 3, 4].map((id) => (
-            <div className="carousel-item" key={id}>
-              <div className="card">
-                <div className="card-top">스터디{id}</div>
-                <div className="card-middle">
-                  <Link to={`info/${id}`}>
-                    <button className="card-button">더보기</button>
-                  </Link>
-                </div>
-                <div className="card-bottom"></div>
+        <SlickList>
+          <Slider {...settings} style={{ border: "1px solid black" }}>
+            {mystudyGroups.map((group) => (
+              <div className="carousel-item" key={group.sgSeq}>
+                <Card>
+                  <CardTop
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    {group.name}
+                  </CardTop>
+                  <CardMiddle></CardMiddle>
+                  <CardBottom
+                    style={{
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    {" "}
+                    <Link to={`/main/mystudygroup/${group.sgSeq}`}>
+                      <CardButton>더보기</CardButton>
+                    </Link>
+                  </CardBottom>
+                </Card>
               </div>
-            </div>
-          ))}
-        </Slider>
+            ))}
+          </Slider>
+        </SlickList>
       </div>
       <Modal
         isOpen={modalIsOpen}
@@ -96,13 +184,17 @@ const MyGroup = () => {
             bottom: "auto",
             marginRight: "-50%",
             transform: "translate(-50%, -50%)",
+            backgroundColor: "#e5f2ff",
           },
         }}
       >
         <div style={{ display: "flex", justifyContent: "flex-end" }}>
           <Button onClick={() => setModalIsOpen(false)}>Close</Button>
         </div>
-        <CreateStudyGroup />
+        <CreateStudyGroup
+          modalIsOpen={modalIsOpen}
+          setModalIsOpen={setModalIsOpen}
+        />
       </Modal>
     </>
   );

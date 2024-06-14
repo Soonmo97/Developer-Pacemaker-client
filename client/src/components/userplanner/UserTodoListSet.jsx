@@ -1,4 +1,4 @@
-// CompletedTodoList.js
+// TodoList.js
 import React from "react";
 import styled from "styled-components";
 
@@ -27,26 +27,20 @@ const TodoButton = styled.button`
   cursor: pointer;
 `;
 
-const CompletedTodoList = ({ completedTodos, handleDeleteCompletedTodo }) => (
-  <div>
-    <div style={{ fontWeight: "bold", color: "#3700ff" }}>Completed</div>
-    <TodoItemContainer>
-      {completedTodos.map((todo, index) => (
-        <TodoItem key={index}>
-          <span>
-            <li>{todo}</li>
-          </span>
-          <TodoButton
-            onClick={() => {
-              handleDeleteCompletedTodo(index);
-            }}
-          >
-            삭제
+const UserTodoListSet = ({ todos, handleCompleteTodo, handleDeleteTodo }) => (
+  <TodoItemContainer>
+    {todos.map((todo, index) => (
+      <TodoItem key={index}>
+        <span>{todo}</span>
+        <div>
+          <TodoButton onClick={() => handleCompleteTodo(index)} $completed>
+            완료
           </TodoButton>
-        </TodoItem>
-      ))}
-    </TodoItemContainer>
-  </div>
+          <TodoButton onClick={() => handleDeleteTodo(index)}>삭제</TodoButton>
+        </div>
+      </TodoItem>
+    ))}
+  </TodoItemContainer>
 );
 
-export default CompletedTodoList;
+export default UserTodoListSet;

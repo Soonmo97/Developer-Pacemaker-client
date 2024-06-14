@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled, { ThemeProvider } from "styled-components";
 import Modal from "react-modal";
 import StudyGroupPlanner from "./StudyGroupPlanner";
-import CompletedTodoList from "./groupTodolist/CompletedTodoList";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
 const theme = {
   red_1: "#FF0000",
@@ -49,7 +50,7 @@ const MemberDetailModal = styled(Modal)`
   padding: 1rem;
   background-color: white;
   border: 1px solid #ddd;
-  width: 45%;
+  width: 35%;
   height: 50%;
   margin: 5rem auto;
 `;
@@ -70,13 +71,11 @@ const DetailTitle = styled.h2`
 
 const DetailModalContainer = styled.div`
   display: flex;
-  margin-left: 5rem;
 `;
 
 const MemberStatus = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedMember, setSelectedMember] = useState(null);
-  const [completedTodos, setCompletedTodos] = useState([]);
 
   const openModal = (member) => {
     setSelectedMember(member);
@@ -121,20 +120,79 @@ const MemberStatus = () => {
             </MemberRow>
           </tbody>
         </MemberTable>
+        <br />
+        <MemberTable>
+          <thead>
+            <MemberRow>
+              <MemberCell onClick={() => openModal("Member 6")}>
+                <ProfileImage />
+              </MemberCell>
+              <MemberCell onClick={() => openModal("Member 7")}>
+                <ProfileImage />
+              </MemberCell>
+              <MemberCell onClick={() => openModal("Member 8")}>
+                <ProfileImage />
+              </MemberCell>
+              <MemberCell onClick={() => openModal("Member 9")}>
+                <ProfileImage />
+              </MemberCell>
+              <MemberCell onClick={() => openModal("Member 10")}>
+                <ProfileImage />
+              </MemberCell>
+            </MemberRow>
+          </thead>
+          <tbody>
+            <MemberRow>
+              <MemberCell>이름, 달성현황</MemberCell>
+              <MemberCell>이름, 달성현황</MemberCell>
+              <MemberCell>이름, 달성현황</MemberCell>
+              <MemberCell>이름, 달성현황</MemberCell>
+              <MemberCell>이름, 달성현황</MemberCell>
+            </MemberRow>
+          </tbody>
+        </MemberTable>
+        <br />
+        <MemberTable>
+          <thead>
+            <MemberRow>
+              <MemberCell onClick={() => openModal("Member 11")}>
+                <ProfileImage />
+              </MemberCell>
+              <MemberCell onClick={() => openModal("Member 12")}>
+                <ProfileImage />
+              </MemberCell>
+              <MemberCell onClick={() => openModal("Member 13")}>
+                <ProfileImage />
+              </MemberCell>
+              <MemberCell onClick={() => openModal("Member 14")}>
+                <ProfileImage />
+              </MemberCell>
+              <MemberCell onClick={() => openModal("Member 15")}>
+                <ProfileImage />
+              </MemberCell>
+            </MemberRow>
+          </thead>
+          <tbody>
+            <MemberRow>
+              <MemberCell>이름, 달성현황</MemberCell>
+              <MemberCell>이름, 달성현황</MemberCell>
+              <MemberCell>이름, 달성현황</MemberCell>
+              <MemberCell>이름, 달성현황</MemberCell>
+              <MemberCell>이름, 달성현황</MemberCell>
+            </MemberRow>
+          </tbody>
+        </MemberTable>
       </StatusContainer>
 
       <MemberDetailModal
         isOpen={isModalOpen}
         onRequestClose={closeModal}
         contentLabel="Member Detail Modal"
+        style={{ display: "flex", justifyContent: "center" }}
       >
         <CloseButton onClick={closeModal}>X</CloseButton>
+        <DetailTitle>{selectedMember}</DetailTitle>
         <DetailModalContainer>
-          <div>
-            <DetailTitle>{selectedMember}</DetailTitle>
-            <h3>TodoList</h3>
-            <CompletedTodoList completedTodos={completedTodos} />
-          </div>
           <ThemeProvider theme={theme}>
             <StudyGroupPlanner />
           </ThemeProvider>

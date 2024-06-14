@@ -1,8 +1,5 @@
-import React from "react";
 import styled from "styled-components";
-
-import Memo from "./Memo";
-import UserTodoList from "./UserTodoList";
+import GroupTodoList from "./groupTodolist/GroupTodoList";
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -18,10 +15,10 @@ const ModalOverlay = styled.div`
 
 const ModalContent = styled.div`
   background-color: white;
-  padding: 3rem;
+  padding: 2rem;
   border-radius: 10px;
   height: 50%;
-  width: 45%;
+  width: 30%;
   display: flex;
   flex-direction: column;
 `;
@@ -47,6 +44,7 @@ const CloseButton = styled.button`
 const ModalBody = styled.div`
   display: flex;
   justify-content: space-between;
+  gap: 5rem;
 `;
 
 const TodoListSection = styled.div`
@@ -59,14 +57,7 @@ const SectionTitle = styled.h3`
   color: red;
 `;
 
-const StudyDiarySection = styled.div`
-  flex: 1;
-  padding: 10px;
-  display: flex;
-  flex-direction: column;
-`;
-
-const UserCalendarModal = ({ onClose, children }) => {
+const StudyGroupPlannerModal = ({ onClose, children }) => {
   return (
     <ModalOverlay>
       <ModalContent>
@@ -74,19 +65,21 @@ const UserCalendarModal = ({ onClose, children }) => {
           <ModalTitle>{children}</ModalTitle>
           <CloseButton onClick={onClose}>X</CloseButton>
         </ModalHeader>
-        <ModalBody>
-          <TodoListSection>
-            <SectionTitle>TodoList</SectionTitle>
-            <UserTodoList></UserTodoList>
-          </TodoListSection>
-          <StudyDiarySection>
-            <SectionTitle style={{ color: "#1e90ff" }}>학습일지</SectionTitle>
-            <Memo></Memo>
-          </StudyDiarySection>
-        </ModalBody>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <ModalBody style={{ width: "100%" }}>
+            <TodoListSection style={{ border: "1px solid black" }}>
+              <SectionTitle
+                style={{ display: "flex", justifyContent: "center" }}
+              >
+                TodoList
+              </SectionTitle>
+              <GroupTodoList></GroupTodoList>
+            </TodoListSection>
+          </ModalBody>
+        </div>
       </ModalContent>
     </ModalOverlay>
   );
 };
 
-export default UserCalendarModal;
+export default StudyGroupPlannerModal;
