@@ -22,7 +22,7 @@ const theme = {
 
 const Div = styled.div`
   /* background-color: yellow; */
-
+`;
 const SlickList = styled.div`
   border: "1px solid black";
 
