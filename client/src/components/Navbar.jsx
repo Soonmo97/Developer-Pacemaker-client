@@ -18,12 +18,29 @@ const StyledButton = styled.button`
   background: none;
   cursor: pointer;
   font-weight: 800;
+
+  @media (max-width: 600px) {
+    font-size: 2em; /* 이모티콘 크기를 키우기 위해 폰트 크기 조정 */
+  }
 `;
 
 const StyledLink = styled(Link)`
   font-weight: 800;
   text-decoration: none;
   color: black;
+`;
+const Icon = styled.span`
+  display: none; /* 기본적으로 숨기기 */
+
+  @media (max-width: 650px) {
+    display: inline; /* 작은 화면에서 이모티콘 보이기 */
+    font-size: 1.5em;
+  }
+
+  @media (max-width: 500px) {
+    display: inline; /* 작은 화면에서 이모티콘 보이기 */
+    font-size: 1em;
+  }
 `;
 
 const Strong = styled.h3`
@@ -33,6 +50,10 @@ const Strong = styled.h3`
 
   &.selected {
     color: #1e90ff;
+  }
+
+  @media (max-width: 650px) {
+    display: none; /* 작은 화면에서 텍스트 숨기기 */
   }
 `;
 const Logo = styled.div`
@@ -100,6 +121,7 @@ const Navbar = () => {
                 >
                   스터디 그룹 게시판
                 </Strong>
+                <Icon>📚</Icon>
               </StyledButton>
             </StyledLink>
             <StyledLink
@@ -112,6 +134,7 @@ const Navbar = () => {
                 >
                   내 스터디 그룹
                 </Strong>
+                <Icon>👥</Icon>
               </StyledButton>
             </StyledLink>
             <StyledLink
@@ -124,13 +147,15 @@ const Navbar = () => {
                 >
                   내 학습일지
                 </Strong>
+                <Icon>📝</Icon>
               </StyledButton>
             </StyledLink>
             <StyledLink to="/main/Ai">
               <StyledButton>
                 <Strong className={selectedItem === "myinfo" ? "selected" : ""}>
-                  AI 에게 질문하기
+                  AI에게 질문하기
                 </Strong>
+                <Icon>🤖</Icon>
               </StyledButton>
             </StyledLink>
           </div>

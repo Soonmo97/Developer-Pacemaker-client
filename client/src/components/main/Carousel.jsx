@@ -19,7 +19,6 @@ const theme = {
   br_2: "#666666",
 };
 
-
 const Div = styled.div`
   /* background-color: yellow; */
 `;
@@ -73,7 +72,6 @@ const CardButton = styled.button`
   background-color: #fff;
   cursor: pointer;
   text-align: center;
-
 `;
 
 const PrevArrow = (props) => {
@@ -130,7 +128,6 @@ const Carousel = () => {
   return (
     <>
       <div>
-
         <div className="carousel" style={{ marginBottom: "5rem" }}>
           <h2>추천 스터디</h2>
           <SlickList>
@@ -169,7 +166,6 @@ const Carousel = () => {
         <ThemeProvider theme={theme}>
           <UserCalendar />
         </ThemeProvider>
-
       </div>
     </>
   );
