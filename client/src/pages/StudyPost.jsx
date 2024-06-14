@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import SunEditor from "suneditor-react";
 import "suneditor/dist/css/suneditor.min.css";
 import lang from "suneditor/src/lang/ko";
@@ -24,57 +24,44 @@ const WriteButton = styled(Button)`
   }
 `;
 
-const TitleInput = styled.input`
-  width: 100%;
-  height: 50px;
-  padding: 10px;
-  font-size: 1.2rem;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  box-sizing: border-box;
-  margin-bottom: 1rem;
-`;
-
 const StudyPost = () => {
-  const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
 
-  const handleTitleChange = (e) => setTitle(e.target.value);
+  useEffect(() => {});
+
   const handleContentChange = (content) => setContent(content);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const titleVal = title.trim();
+
     const textCount = content.replace(/<[^>]*>?/gm, "").length; // HTML 태그 제거 후 글자수 계산
 
-    if (titleVal === "") {
+    if (textCount === 0) {
       alert("제목을 입력해주세요.");
-      return;
-    } else if (textCount === 0) {
-      alert("본문을 입력해주세요.");
       return;
     } else if (textCount > 1000) {
       alert("입력 가능한 글자수를 초과하였습니다. (최대 1000자)");
       return;
     }
 
-    const url = "/studygroupboard/writePost";
-    const data = { title, content };
-
+    const token = localStorage.getItem("accessToken");
     try {
-      const response = await axios.post(url, data, {
-        headers: {
-          "Content-Type": "application/json",
+      await axios.post(
+        `${process.env.REACT_APP_API_SERVER}/api/recruitmentBoard`,
+        {
+          content: content,
         },
-      });
-
-      if (response.status === 200) {
-        alert("성공적으로 작성되었습니다.");
-      } else {
-        alert("Error");
-      }
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      alert("글이 성공적으로 작성되었습니다.");
+      // 작성 완료 후 필요한 추가 작업 수행
     } catch (error) {
-      alert("Error : " + error.message);
+      console.error("글 작성에 실패했습니다:", error);
+      alert("글 작성에 실패했습니다.");
     }
   };
 
@@ -85,17 +72,6 @@ const StudyPost = () => {
         <div>
           <h1>팀원 모집 게시판</h1>
           <form onSubmit={handleSubmit}>
-            <div>
-              <TitleInput
-                type="text"
-                className="title"
-                name="title"
-                maxLength="32"
-                placeholder="제목을 입력해주세요"
-                value={title}
-                onChange={handleTitleChange}
-              />
-            </div>
             <div>
               <SunEditor
                 lang={lang}
@@ -127,7 +103,12 @@ const StudyPost = () => {
               />
             </div>
             <div>
-              <WriteButton variant="contained" color="primary" type="submit">
+              <WriteButton
+                variant="contained"
+                color="primary"
+                type="submit"
+                onClick={handleSubmit}
+              >
                 작성
               </WriteButton>
             </div>

@@ -160,7 +160,7 @@ const DetailContent = styled.div`
 `;
 
 const DetailContainer = styled.div`
-  margin-right: 5rem;
+  /* margin-right: 5rem; */
 `;
 
 const DetailModalContainer = styled.div`
@@ -188,9 +188,9 @@ const ActionButton = styled.button`
 `;
 
 const FormGroup = styled.div`
-  display: flex;
+  /* display: flex;
   align-items: center;
-  margin-bottom: 1rem;
+  margin-bottom: 1rem; */
 `;
 
 const Label = styled.label`
@@ -220,7 +220,7 @@ const CheckButton = styled.button`
 `;
 
 const DropButton = styled.button`
-  width: 100%;
+  width: 50%;
   padding: 0.75rem;
   border: none;
   border-radius: 4px;
@@ -240,6 +240,10 @@ const Header = () => {
   const [studyGroups, setStudyGroups] = useState([]);
   const [groupName, setGroupName] = useState("");
   const [groupGoal, setGroupGoal] = useState("");
+  const [whoAmI, setWhoAmI] = useState(false);
+
+  const { sgSeq } = useParams();
+  const id = sgSeq - 1;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -257,8 +261,27 @@ const Header = () => {
     fetchData();
   }, []);
 
-  const { sgSeq } = useParams();
-  const id = sgSeq - 1;
+  useEffect(() => {
+    const checkUserMembership = async () => {
+      const token = localStorage.getItem("accessToken");
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_SERVER}/api/study-group/check-uSeq-me/${sgSeq}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        setWhoAmI(response.data);
+      } catch (error) {
+        console.error("그룹장 확인에 실패했습니다:", error);
+        throw error;
+      }
+    };
+    checkUserMembership(); // 이제 함수 호출 시에 매개변수를 전달하지 않습니다.
+  }, [sgSeq]);
 
   useEffect(() => {
     if (studyGroups.length > 0) {
@@ -276,7 +299,9 @@ const Header = () => {
   const handleGroupNameChange = (e) => setGroupName(e.target.value);
   const handleGroupGoalChange = (e) => setGroupGoal(e.target.value);
 
-  const handleGroupNameUpdate = async () => {
+  const handleGroupNameUpdate = async (e) => {
+    e.preventDefault();
+
     try {
       const token = localStorage.getItem("accessToken");
 
@@ -301,6 +326,7 @@ const Header = () => {
         `${process.env.REACT_APP_API_SERVER}/api/study-group/name`,
         {
           name: groupName,
+          sgSeq: sgSeq,
         },
         {
           headers: {
@@ -310,6 +336,7 @@ const Header = () => {
       );
 
       alert("그룹 이름이 수정되었습니다.");
+      window.location.reload();
       // setGroupName(updateGroupName.data);
     } catch (error) {
       console.error("그룹 이름 수정에 실패했습니다:", error);
@@ -317,13 +344,16 @@ const Header = () => {
     }
   };
 
-  const handleGroupGoalUpdate = async () => {
+  const handleGroupGoalUpdate = async (e) => {
+    e.preventDefault();
+
     const token = localStorage.getItem("accessToken");
     try {
       await axios.patch(
         `${process.env.REACT_APP_API_SERVER}/api/study-group/goal`,
         {
           goal: groupGoal,
+          sgSeq: sgSeq,
         },
         {
           headers: {
@@ -332,7 +362,7 @@ const Header = () => {
         }
       );
       alert("그룹 목표가 수정되었습니다.");
-      // setGroupGoal(updateGoal.data);
+      window.location.reload();
     } catch (error) {
       console.error("그룹 목표 수정에 실패했습니다:", error);
     }
@@ -343,9 +373,14 @@ const Header = () => {
       <HeaderContainer>
         <Title>{studyGroups.length > 0 && studyGroups[id]?.name}</Title>
         <SetBtns>
-          <SettingsButton onClick={openModal}>신청하기</SettingsButton>
-          <SettingsButton onClick={openModal}>관리</SettingsButton>
-          <SettingsButton onClick={openSetModal}>설정</SettingsButton>
+          {whoAmI ? (
+            <>
+              <SettingsButton onClick={openModal}>관리</SettingsButton>
+              <SettingsButton onClick={openSetModal}>설정</SettingsButton>
+            </>
+          ) : (
+            <SettingsButton onClick={openSetModal}>설정</SettingsButton>
+          )}
         </SetBtns>
       </HeaderContainer>
 
@@ -421,37 +456,41 @@ const Header = () => {
             가입일 : 2021-01-01
             <br />
             이메일 : sesac@trees.com
+            <DropButton type="submit">그룹 탈퇴</DropButton>
           </DetailContainer>
           <div>
             <br />
-            <form>
-              <FormGroup>
-                <Label>그룹 이름:</Label>
-                <Input
-                  type="text"
-                  value={groupName}
-                  onChange={handleGroupNameChange}
-                />
-                <CheckButton type="button" onClick={handleGroupNameUpdate}>
-                  수정
-                </CheckButton>
-              </FormGroup>
-              <div>
-                <br />
-              </div>
-              <FormGroup>
-                <Label>팀 공동목표:</Label>
-                <Input
-                  type="text"
-                  value={groupGoal}
-                  onChange={handleGroupGoalChange}
-                />
-                <CheckButton type="button" onClick={handleGroupGoalUpdate}>
-                  수정
-                </CheckButton>
-              </FormGroup>
-            </form>
-            <DropButton type="submit">그룹 탈퇴</DropButton>
+            {whoAmI && (
+              <form>
+                <FormGroup>
+                  <Label>그룹 이름</Label>
+                  <br />
+                  <Input
+                    type="text"
+                    value={groupName}
+                    onChange={handleGroupNameChange}
+                  />
+                  <CheckButton type="submit" onClick={handleGroupNameUpdate}>
+                    수정
+                  </CheckButton>
+                </FormGroup>
+                <div>
+                  <br />
+                </div>
+                <FormGroup>
+                  <Label>팀 공동목표</Label>
+                  <br />
+                  <Input
+                    type="text"
+                    value={groupGoal}
+                    onChange={handleGroupGoalChange}
+                  />
+                  <CheckButton type="submit" onClick={handleGroupGoalUpdate}>
+                    수정
+                  </CheckButton>
+                </FormGroup>
+              </form>
+            )}
           </div>
         </DetailModalContainer>
       </MemberDetailModal>
