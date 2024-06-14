@@ -7,6 +7,7 @@ import UserCalendar from "../userplanner/UserCalendar";
 import { ThemeProvider } from "styled-components";
 import { Link } from "react-router-dom";
 import { FcNext, FcPrevious } from "react-icons/fc"; // FcPrevious 아이콘 import
+import styled from "styled-components";
 
 const theme = {
   blue_1: "#0260f8",
@@ -15,6 +16,10 @@ const theme = {
   yellow_2: "#f9e8c3",
   br_2: "#666666",
 };
+
+const Div = styled.div`
+  /* background-color: yellow; */
+`;
 
 const PrevArrow = (props) => {
   const { className, style, onClick } = props;
@@ -52,27 +57,31 @@ const Carousel = () => {
   return (
     <>
       <div>
-        <div className="carousel">
-          <h2>추천 스터디</h2>
-          <Slider {...settings}>
-            {[1, 2, 3, 4].map((id) => (
-              <div className="carousel-item" key={id}>
-                <div className="card">
-                  <div className="card-top">스터디{id}</div>
-                  <div className="card-middle">
-                    <Link to={`studygroupinfo/${id}`}>
-                      <button className="card-button">더보기</button>
-                    </Link>
+        <Div>
+          <div className="carousel">
+            <h2>추천 스터디</h2>
+            <Slider {...settings}>
+              {[1, 2, 3, 4].map((id) => (
+                <div className="carousel-item" key={id}>
+                  <div className="card">
+                    <div className="card-top">스터디{id}</div>
+                    <div className="card-middle">
+                      <Link to={`studygroupinfo/${id}`}>
+                        <button className="card-button">더보기</button>
+                      </Link>
+                    </div>
+                    <div className="card-bottom"></div>
                   </div>
-                  <div className="card-bottom"></div>
                 </div>
-              </div>
-            ))}
-          </Slider>
-        </div>
-        <ThemeProvider theme={theme}>
-          <UserCalendar />
-        </ThemeProvider>
+              ))}
+            </Slider>
+          </div>
+        </Div>
+        <Div>
+          <ThemeProvider theme={theme}>
+            <UserCalendar />
+          </ThemeProvider>
+        </Div>
       </div>
     </>
   );

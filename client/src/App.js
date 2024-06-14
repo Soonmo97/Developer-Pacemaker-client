@@ -12,6 +12,7 @@ import PostDetail from "./pages/PostDetail";
 import CreateStudyGroup from "./components/studygroup/CreateStudyGroup";
 import TestSlider from "./pages/TestSlider";
 import MyPage from "./pages/MyPage";
+import GptPage from "./pages/GptPage";
 
 // import MainSet from "./pages/MainSet";
 
@@ -37,7 +38,7 @@ const App = () => {
         />
 
         <Route path="/main/studygroupinfo/:id" element={<StudyGroupInfo />} />
-
+        <Route path="/main/Ai" element={<GptPage />} />
         <Route path="/main/myplanner" element={<Myplanner />} />
         <Route path="/test" element={<TestSlider />} />
       </Routes>

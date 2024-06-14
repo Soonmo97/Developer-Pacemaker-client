@@ -4,6 +4,13 @@ import "./main/Sidebar.css";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import {
+  FaHome,
+  FaUser,
+  FaSignOutAlt,
+  FaBell,
+  FaQuestion,
+} from "react-icons/fa";
 
 const StyledButton = styled.button`
   text-decoration: none;
@@ -66,15 +73,16 @@ const Navbar = () => {
         </Link>
         <ul className="navbar-menu">
           <StyledLink to="/main">
-            <li>홈</li>
+            <FaHome size={24} />
           </StyledLink>
           <li onClick={() => navigate("/mypage")} style={{ cursor: "pointer" }}>
-            마이페이지
+            <FaUser size={24} />
           </li>
+
+          <FaBell size={24} />
           <li onClick={handleLogout} style={{ cursor: "pointer" }}>
-            로그아웃
+            <FaSignOutAlt size={24} />
           </li>
-          <li>알림</li>
         </ul>
       </nav>
       <div style={{ display: "flex", justifyContent: "center" }}>
