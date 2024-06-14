@@ -6,6 +6,7 @@ import "./Carousel.css";
 import UserCalendar from "../userplanner/UserCalendar";
 import { ThemeProvider } from "styled-components";
 import { Link } from "react-router-dom";
+
 import { FcNext, FcPrevious } from "react-icons/fc";
 import styled from "styled-components";
 import axios from "axios";
@@ -17,6 +18,10 @@ const theme = {
   yellow_2: "#f9e8c3",
   br_2: "#666666",
 };
+
+
+const Div = styled.div`
+  /* background-color: yellow; */
 
 const SlickList = styled.div`
   border: "1px solid black";
@@ -68,6 +73,7 @@ const CardButton = styled.button`
   background-color: #fff;
   cursor: pointer;
   text-align: center;
+
 `;
 
 const PrevArrow = (props) => {
@@ -124,6 +130,7 @@ const Carousel = () => {
   return (
     <>
       <div>
+
         <div className="carousel" style={{ marginBottom: "5rem" }}>
           <h2>추천 스터디</h2>
           <SlickList>
@@ -162,6 +169,7 @@ const Carousel = () => {
         <ThemeProvider theme={theme}>
           <UserCalendar />
         </ThemeProvider>
+
       </div>
     </>
   );
