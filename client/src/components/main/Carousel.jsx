@@ -19,61 +19,57 @@ const theme = {
   br_2: "#666666",
 };
 
-
-const Div = styled.div`
-  /* background-color: yellow; */
-
-const SlickList = styled.div`
-  border: "1px solid black";
-
-  .slick-list {
-    margin-left: 5%;
-    padding: 1rem;
-    /* width: 100%; */
-  }
-`;
-
-const Card = styled.div`
-  width: 10vw;
-  height: 30vh;
-  border: 1px solid #ddd;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  background-color: #eee;
-  margin-top: 5vh;
-  margin-bottom: 2vh;
-  transition: transform 0.3s ease;
-
-  &:hover {
-    transform: scale(1.05);
-  }
-`;
-
-const CardTop = styled.div`
-  height: 5vh;
-  background-color: #ddd;
-`;
-
-const CardBottom = styled.div`
-  height: 5vh;
-  background-color: #ddd;
-`;
-
-const CardMiddle = styled.div`
-  flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-`;
-
 const CardButton = styled.button`
   padding: 1vh 1vw;
   border: none;
   background-color: #fff;
   cursor: pointer;
   text-align: center;
+  transition: background-color 0.3s ease, color 0.3s ease;
 
+  &:hover {
+    background-color: #007bff;
+    color: #fff;
+  }
+`;
+
+const CarouselWrapper = styled.div`
+  width: 80%;
+  margin: 0 auto;
+  padding: 1rem 0;
+`;
+
+const SlideItem = styled.div`
+  background: white;
+  padding: 1rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+
+  &:hover {
+    transform: scale(1.05);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+`;
+
+const SlideImage = styled.img`
+  width: 100%;
+  height: 13rem;
+  object-fit: cover;
+  border-radius: 10px 10px 0 0;
+`;
+
+const SlideContent = styled.div`
+  padding: 10px;
+`;
+
+const SlideTitle = styled.h3`
+  margin: 1rem 0;
+`;
+
+const SlideDescription = styled.p`
+  /* font-size: 14px; */
+  /* color: #666; */
 `;
 
 const PrevArrow = (props) => {
@@ -121,55 +117,71 @@ const Carousel = () => {
     dots: true,
     infinite: true,
     speed: 500,
-    slidesToShow: 4,
-    slidesToScroll: 1,
+    slidesToShow: 5,
+    slidesToScroll: 2,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
+    responsive: [
+      {
+        breakpoint: 1200, // 1200px 이하
+        settings: {
+          slidesToShow: 4,
+          slidesToScroll: 2,
+        },
+      },
+      {
+        breakpoint: 992, // 992px 이하
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 1,
+        },
+      },
+      {
+        breakpoint: 768, // 768px 이하
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 1,
+        },
+      },
+      {
+        breakpoint: 480, // 480px 이하
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+        },
+      },
+    ],
   };
 
   return (
     <>
       <div>
-
         <div className="carousel" style={{ marginBottom: "5rem" }}>
-          <h2>추천 스터디</h2>
-          <SlickList>
-            <Slider {...settings} style={{ border: "1px solid black" }}>
+          <h1>추천 스터디</h1>
+          <CarouselWrapper>
+            <Slider {...settings}>
               {studyGroups.map((group) => (
-                <div className="carousel-item" key={group.sgSeq}>
-                  <Card>
-                    <CardTop
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      {group.name}
-                    </CardTop>
-                    <CardMiddle></CardMiddle>
-                    <CardBottom
-                      style={{
-                        display: "flex",
-                        justifyContent: "center",
-                        alignItems: "center",
-                      }}
-                    >
-                      {" "}
-                      <Link to={`/main/studygroupinfo/${group.sgSeq}`}>
+                <SlideItem key={group.sgSeq}>
+                  <SlideImage
+                    src="https://www.korea.kr/newsWeb/resources/temp/images/000043/img_02.jpg"
+                    alt=""
+                  />
+                  <SlideContent>
+                    <SlideTitle>{group.name}</SlideTitle>
+                    <SlideDescription>
+                      <Link to={`/main/mystudygroup/${group.sgSeq}`}>
                         <CardButton>더보기</CardButton>
                       </Link>
-                    </CardBottom>
-                  </Card>
-                </div>
+                    </SlideDescription>
+                  </SlideContent>
+                </SlideItem>
               ))}
             </Slider>
-          </SlickList>
+          </CarouselWrapper>
         </div>
         <ThemeProvider theme={theme}>
           <UserCalendar />
         </ThemeProvider>
-
       </div>
     </>
   );

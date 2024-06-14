@@ -1,124 +1,134 @@
-import React, { useState, useEffect, useRef } from "react";
-import styled, { createGlobalStyle } from "styled-components";
+import React from "react";
+import Slider from "react-slick";
+import styled from "styled-components";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import { FcNext, FcPrevious } from "react-icons/fc";
 
-const GlobalStyle = createGlobalStyle`
-  body {
-    background: #ededed;
-    padding: 0 20px;
-    margin: 0;
-    font-family: 'Open Sans', Arial, sans-serif;
-  }
-
-  h1 {
-    text-align: center;
-    margin: 80px 0;
-  }
+const CarouselWrapper = styled.div`
+  width: 80%;
+  margin: 0 auto;
+  padding: 40px 0;
 `;
 
-const NavContainer = styled.nav`
-  position: relative;
+const SlideItem = styled.div`
+  background: white;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
 `;
 
-const Ul = styled.ul`
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  list-style-type: none;
-  padding: 0;
+const SlideImage = styled.img`
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  border-radius: 10px 10px 0 0;
 `;
 
-const Li = styled.li`
-  &:not(:last-child) {
-    margin-right: 20px;
-  }
+const SlideContent = styled.div`
+  padding: 10px;
 `;
 
-const LinkItem = styled.a`
-  display: block;
-  font-size: 20px;
-  color: black;
-  text-decoration: none;
-  padding: 7px 15px;
-  opacity: ${(props) => (props.active ? "1" : "0.25")};
-  transition: all 0.35s ease-in-out;
-  position: relative;
+const SlideTitle = styled.h3`
+  font-size: 18px;
+  margin: 10px 0;
 `;
 
-const Target = styled.span`
-  display: block;
-  border-bottom: 4px solid transparent;
-  z-index: -1;
-  transition: all 0.35s ease-in-out;
-  position: relative; /* 상대적인 위치 */
+const SlideDescription = styled.p`
+  font-size: 14px;
+  color: #666;
 `;
 
-const colors = [
-  "deepskyblue",
-  "orange",
-  "firebrick",
-  "gold",
-  "magenta",
-  "black",
-  "darkblue",
-];
-
-const TestSlider = () => {
-  const [activeIndex, setActiveIndex] = useState(null);
-  const targetRef = useRef();
-
-  const handleMouseEnter = (index, event) => {
-    setActiveIndex(index);
-    const { width, height, left, top } = event.target.getBoundingClientRect();
-    const color = colors[Math.floor(Math.random() * colors.length)];
-
-    targetRef.current.style.width = `${width}px`;
-    targetRef.current.style.height = `4px`; // Target height to match the underline size
-    targetRef.current.style.left = `${left + window.pageXOffset}px`;
-    targetRef.current.style.top = `${top + window.pageYOffset + height}px`; // Positioning just below the text
-    targetRef.current.style.borderColor = color;
-    targetRef.current.style.transform = "none";
-  };
-
-  const handleResize = () => {
-    if (activeIndex !== null) {
-      const activeLink = document.querySelectorAll(".mynav a")[activeIndex];
-      const { width, height, left, top } = activeLink.getBoundingClientRect();
-      targetRef.current.style.width = `${width}px`;
-      targetRef.current.style.height = `4px`;
-      targetRef.current.style.left = `${left + window.pageXOffset}px`;
-      targetRef.current.style.top = `${top + window.pageYOffset + height}px`;
-    }
-  };
-
-  useEffect(() => {
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, [activeIndex]);
-
+const PrevArrow = (props) => {
+  const { className, style, onClick } = props;
   return (
-    <>
-      <GlobalStyle />
-      <h1>Hover over the links</h1>
-      <NavContainer className="mynav">
-        <Ul>
-          {["Home", "About", "Company", "Work", "Clients", "Contact"].map(
-            (text, index) => (
-              <Li key={index}>
-                <LinkItem
-                  href="#"
-                  active={activeIndex === index}
-                  onMouseEnter={(e) => handleMouseEnter(index, e)}
-                >
-                  {text}
-                </LinkItem>
-              </Li>
-            )
-          )}
-        </Ul>
-        <Target ref={targetRef} className="target" />
-      </NavContainer>
-    </>
+    <FcPrevious
+      className={className}
+      style={{ ...style, display: "block" }}
+      onClick={onClick}
+    />
   );
 };
 
-export default TestSlider;
+const NextArrow = (props) => {
+  const { className, style, onClick } = props;
+  return (
+    <FcNext
+      className={className}
+      style={{ ...style, display: "block" }}
+      onClick={onClick}
+    />
+  );
+};
+const SliderComponent = () => {
+  const settings = {
+    dots: true,
+    infinite: true,
+    speed: 500,
+    slidesToShow: 3,
+    slidesToScroll: 1,
+    nextArrow: <NextArrow />,
+    prevArrow: <PrevArrow />,
+    responsive: [
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 1,
+        },
+      },
+      {
+        breakpoint: 600,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1,
+        },
+      },
+    ],
+  };
+
+  const slidesData = [
+    {
+      id: 1,
+      image: "path/to/image1.jpg",
+      title: "Slide 1 Title",
+      description: "Slide 1 Description",
+    },
+    {
+      id: 2,
+      image: "path/to/image2.jpg",
+      title: "Slide 2 Title",
+      description: "Slide 2 Description",
+    },
+    {
+      id: 3,
+      image: "path/to/image3.jpg",
+      title: "Slide 3 Title",
+      description: "Slide 3 Description",
+    },
+    {
+      id: 4,
+      image: "path/to/image4.jpg",
+      title: "Slide 4 Title",
+      description: "Slide 4 Description",
+    },
+  ];
+
+  return (
+    <CarouselWrapper>
+      <Slider {...settings}>
+        {slidesData.map((slide) => (
+          <SlideItem key={slide.id}>
+            <SlideImage src={slide.image} alt={slide.title} />
+            <SlideContent>
+              <SlideTitle>{slide.title}</SlideTitle>
+              <SlideDescription> 더보기</SlideDescription>
+            </SlideContent>
+          </SlideItem>
+        ))}
+      </Slider>
+    </CarouselWrapper>
+  );
+};
+
+export default SliderComponent;
