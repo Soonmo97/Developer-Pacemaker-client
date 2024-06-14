@@ -27,28 +27,47 @@ const LeftSection = styled.div`
   display: flex;
   align-items: center;
   gap: 2rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    gap: 1rem;
+  }
 `;
 
 const RightSection = styled.div`
   text-align: right;
+
+  @media (max-width: 768px) {
+    text-align: center;
+    margin-top: 1rem;
+  }
 `;
 
 const Title = styled.h1`
   color: #1e90ff;
   margin: 0;
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+  }
 `;
 
 const Strong = styled.strong`
   color: #1e90ff;
 `;
 
+const CDiv = styled.div`
+  @media (max-width: 650px) {
+    display: none;
+  }
+`;
 const Footer = () => {
   return (
     <FooterWrapper>
       <FooterContainer>
         <LeftSection>
           <Title>내 손을 JAVA </Title>
-          <div> © 2024 SeSAC. All rights reserved.</div>
+          <CDiv> © 2024 SeSAC. All rights reserved.</CDiv>
         </LeftSection>
         <RightSection style={{ display: "flex", gap: "3rem" }}>
           <div>

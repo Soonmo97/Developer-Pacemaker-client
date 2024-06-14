@@ -13,16 +13,18 @@ const GptPageContainer = styled.div`
   min-height: 100vh;
 `;
 const ChatDiv = styled.div`
+  width: 100%;
   display: flex;
   flex-direction: row;
+  justify-content: center;
 `;
 const AskDiv = styled.div`
   display: flex;
   flex-direction: row; /* 가로로 정렬 */
 `;
 const ChatContainer = styled.div`
-  width: 100%;
-  max-width: 1200px;
+  width: 472px;
+  max-width: 50%;
   border: 1px solid #ccc;
   border-radius: 10px;
   padding: 10px;
@@ -39,6 +41,7 @@ const ChatBox = styled.div`
   margin-bottom: 10px;
   max-height: 500px;
   overflow-y: auto;
+  background-color: rgb(235, 235, 235);
 `;
 
 const ChatMessage = styled.div`
@@ -97,8 +100,9 @@ const SaveButton = styled.button`
 `;
 
 const SavedAnswersContainer = styled.div`
-  width: 100%;
-  max-width: 600px; /* Adjust width as needed */
+  width: 438px;
+  min-height: 572px;
+  max-width: 50%; /* Adjust width as needed */
   border: 1px solid #ccc;
   border-radius: 10px;
   padding: 10px;
