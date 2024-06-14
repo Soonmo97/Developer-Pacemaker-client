@@ -67,6 +67,30 @@ const Memo = () => {
   const noteRef = useRef(null);
   const [rSeq, setRSeq] = useState(null); // rSeq 값을 관리하는 상태 추가
 
+  useEffect(() => {
+    const getData = async () => {
+      const token = localStorage.getItem("accessToken");
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_SERVER}/api/report`,
+
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        console.log("데이터를 성공적으로 받아왔습니다.", response.data);
+        // setRSeq(response.data.rSeq); // rSeq 값을 저장
+      } catch (error) {
+        console.error("데이터를 받아오는데 실패했습니다:", error);
+      }
+    };
+
+    getData();
+  }, []);
+
   // POST
   const postData = async () => {
     const token = localStorage.getItem("accessToken");
