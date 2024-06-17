@@ -176,15 +176,25 @@ const Memo = ({ selectedDate }) => {
         ref={noteRef}
         value={note}
         onChange={handleChange}
-        disabled={!isEditing}
-        placeholder="내용을 입력하세요..."
+        placeholder="학습 내용을 입력하세요."
+        readOnly={!isEditing} // isEditing이 false일 때 읽기 전용으로 설정
       />
       <ButtonWrapper>
+// <<<<<<< studygroup7-th
         {note.trim() ? (
           <Button onClick={handleEdit}>수정</Button>
         ) : (
           <Button className="save" onClick={handleSave}>
             작성
+// =======
+//         {isEditing ? (
+//           <Button className="save" onClick={handleSave}>
+//             저장
+//           </Button>
+//         ) : (
+//           <Button className="edit" onClick={handleEdit}>
+//             수정
+// >>>>>>> develop
           </Button>
         )}
       </ButtonWrapper>
