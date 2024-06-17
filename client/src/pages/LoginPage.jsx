@@ -5,6 +5,7 @@ import styled, { css, keyframes } from "styled-components";
 import RegisterPage from "../components/user/RegisterPage";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
+import EmailModal from "../components/user/EmailModal";
 
 const responsiveWidth = css`
   width: 100%;
@@ -136,6 +137,34 @@ const SuccessModal = styled.div`
   z-index: 1000;
 `;
 
+const ErrorModal = styled.div`
+  width: 400px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+`;
+
+const ErrorModalHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+`;
+
+const ErrorMessageContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
 const ModalHeader = styled.div`
   display: flex;
   justify-content: space-between;
@@ -212,6 +241,11 @@ function LoginPage() {
   const navigate = useNavigate();
   const [showRegister, setShowRegister] = useState(false);
   const [showModal, setShowModal] = useState(false);
+  const [showErrorModal, setShowErrorModal] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [showEmailModal, setShowEmailModal] = useState(false);
+  const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const [userEmail, setUserEmail] = useState("");
   const [formData, setFormData] = useState({
     inputEmail: "",
     inputPw: "",
@@ -282,24 +316,45 @@ function LoginPage() {
         { headers: { "Content-Type": "application/json" } }
       );
       if (response.data.token) {
-        // 토큰이 존재할 때만 로컬 스토리지에 저장
         localStorage.setItem("accessToken", response.data.token);
         setShowModal(true);
-        console.log(response.data);
+        navigate("/");
       } else {
         const errorMessage = response.data.message
           ? response.data.message.message
           : "로그인 실패";
-        alert(errorMessage);
+        setErrorMessage(errorMessage);
+        setShowErrorModal(true);
       }
     } catch (error) {
       console.error("Login error:", error);
-      alert("로그인 오류가 발생했습니다. 자세한 내용은 콘솔을 확인해주세요.");
+      setErrorMessage("로그인 오류가 발생했습니다.");
+      setShowErrorModal(true);
+    }
+  };
+
+  const handlePasswordReset = async (newPassword) => {
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_SERVER}/api/user/reset-password`,
+        {
+          email: userEmail,
+          pw: newPassword,
+        }
+      );
+      alert(response.data); // 비밀번호 재설정 성공 메시지 또는 처리
+      closeModal();
+    } catch (error) {
+      console.error("Error resetting password:", error);
+      alert("비밀번호 재설정 중 오류가 발생했습니다. 다시 시도해 주세요.");
     }
   };
 
   const handleSignup = () => {
     setShowRegister(true);
+  };
+  const handleForgetPassword = () => {
+    setShowEmailModal(true);
   };
 
   const handleKakaoLogin = () => {
@@ -310,6 +365,27 @@ function LoginPage() {
   const closeModalAndNavigate = () => {
     setShowModal(false);
     navigate("/main");
+  };
+
+  const handleEmailSubmit = (email) => {
+    setUserEmail(email);
+    setShowEmailModal(false);
+    setShowPasswordModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+    setShowErrorModal(false);
+    setShowEmailModal(false); // 이메일 모달 닫기
+    setShowPasswordModal(false); // 비밀번호 모달 닫기
+    setFormData({
+      inputEmail: "",
+      inputPw: "",
+    }); // 입력 필드 초기화
+  };
+
+  const closeErrorModal = () => {
+    setShowErrorModal(false);
   };
 
   if (showRegister) {
@@ -375,6 +451,31 @@ function LoginPage() {
               <button onClick={closeModalAndNavigate}>확인</button>
             </SuccessMessageContainer>
           </SuccessModal>
+        )}
+        {showErrorModal && (
+          <ErrorModal>
+            <ErrorModalHeader>
+              <p></p>
+              <CloseButton onClick={closeErrorModal}>×</CloseButton>
+            </ErrorModalHeader>
+            <ErrorMessageContainer>
+              <p>{errorMessage}</p>
+              <button onClick={closeErrorModal}>확인</button>
+            </ErrorMessageContainer>
+            <div>
+              <button onClick={handleForgetPassword}>
+                비밀번호를 잊으셨나요?
+              </button>
+              <button onClick={handleSignup}>첫방문이신가요?</button>
+
+              {showEmailModal && (
+                <EmailModal
+                  closeModal={closeModal}
+                  handleSubmit={handleEmailSubmit}
+                />
+              )}
+            </div>
+          </ErrorModal>
         )}
       </Container2>
     </MainContainer>
