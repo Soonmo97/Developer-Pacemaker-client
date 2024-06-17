@@ -180,21 +180,18 @@ const Memo = ({ selectedDate }) => {
         readOnly={!isEditing} // isEditing이 false일 때 읽기 전용으로 설정
       />
       <ButtonWrapper>
-// <<<<<<< studygroup7-th
         {note.trim() ? (
           <Button onClick={handleEdit}>수정</Button>
         ) : (
           <Button className="save" onClick={handleSave}>
             작성
-// =======
-//         {isEditing ? (
+            {/* {isEditing ? (
 //           <Button className="save" onClick={handleSave}>
 //             저장
 //           </Button>
 //         ) : (
 //           <Button className="edit" onClick={handleEdit}>
-//             수정
-// >>>>>>> develop
+//             수정 */}
           </Button>
         )}
       </ButtonWrapper>
