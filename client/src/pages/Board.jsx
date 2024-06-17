@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import SearchIcon from "@mui/icons-material/Search";
 import { TextField, Button } from "@mui/material";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { Link } from "react-router-dom";
+import axios from "axios";
 
 const BoardContainer = styled.div`
   width: 70%;
@@ -64,31 +65,44 @@ const WriteButton = styled(Button)`
   }
 `;
 
-const data = [
-  {
-    id: 1,
-    title: "게시글 1",
-    author: "작성자 1",
-    date: "2024-06-01",
-    status: "모집중",
-    content: "이것은 게시글 1의 내용입니다.",
-  },
-  {
-    id: 2,
-    title: "게시글 2",
-    author: "작성자 2",
-    date: "2024-06-02",
-    status: "모집마감",
-    content: "이것은 게시글 2의 내용입니다.",
-  },
-];
-
 const Board = () => {
   const [searchTerm, setSearchTerm] = useState("");
+  const [boardData, setBoardData] = useState([]);
 
-  const filteredData = data.filter((item) =>
-    item.title.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  useEffect(() => {
+    const fetchData = async () => {
+      const token = localStorage.getItem("accessToken");
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_SERVER}/api/recruitmentBoard`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log(response.data);
+        setBoardData(response.data);
+        console.log(boardData);
+      } catch (error) {
+        console.error("Failed to fetch board data:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const formatDate = (dateString) => {
+    // 문자열에서 밀리초 제외하고 날짜와 시간 부분 추출
+    const dateTimeParts = dateString.split(".");
+    const dateTime = dateTimeParts[0];
+
+    return dateTime;
+  };
+
+  // const filteredData = boardData.filter((item) =>
+  //   item.title.toLowerCase().includes(searchTerm.toLowerCase())
+  // );
 
   return (
     <>
@@ -118,17 +132,17 @@ const Board = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredData.map((item) => (
-              <tr key={item.id}>
-                <BoardTd>{item.id}</BoardTd>
+            {boardData.map((item) => (
+              <tr key={item.rbSeq}>
+                <BoardTd>{item.rbSeq}</BoardTd>
                 <BoardTd>
-                  <Link to={`/main/studygroupboard/post/${item.id}`}>
-                    {item.title}
+                  <Link to={`/main/studygroupboard/post/${item.rbSeq}`}>
+                    {item.name}
                   </Link>
                 </BoardTd>
+                <BoardTd>{item.name}</BoardTd>
+                <BoardTd>{formatDate(item.registered)}</BoardTd>
                 <BoardTd>{item.author}</BoardTd>
-                <BoardTd>{item.date}</BoardTd>
-                <BoardTd>{item.status}</BoardTd>
               </tr>
             ))}
           </tbody>

@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
+import moment from "moment";
 
 const Wrapper = styled.div`
   display: flex;
@@ -61,11 +62,11 @@ const Button = styled.button`
   }
 `;
 
-const Memo = () => {
+const Memo = ({ selectedDate }) => {
   const [note, setNote] = useState("");
-  const [isEditing, setIsEditing] = useState(true); // 처음에 작성 모드로 시작
+  const [isEditing, setIsEditing] = useState(false);
   const noteRef = useRef(null);
-  const [rSeq, setRSeq] = useState(null); // rSeq 값을 관리하는 상태 추가
+  const [rSeq, setRSeq] = useState(null);
 
   useEffect(() => {
     const getData = async () => {
@@ -73,7 +74,6 @@ const Memo = () => {
       try {
         const response = await axios.get(
           `${process.env.REACT_APP_API_SERVER}/api/report`,
-
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -82,14 +82,28 @@ const Memo = () => {
         );
 
         console.log("데이터를 성공적으로 받아왔습니다.", response.data);
-        // setRSeq(response.data.rSeq); // rSeq 값을 저장
+        if (selectedDate) {
+          const formattedSelectedDate =
+            moment(selectedDate).format("YYYY-MM-DD");
+          const filtered = response.data.filter((item) =>
+            item.registered.startsWith(formattedSelectedDate)
+          );
+          if (filtered.length > 0) {
+            setNote(filtered[0].content);
+            setRSeq(filtered[0].rSeq);
+            console.log("rSeq:", rSeq);
+          } else {
+            setNote("");
+            setRSeq(null);
+          }
+        }
       } catch (error) {
         console.error("데이터를 받아오는데 실패했습니다:", error);
       }
     };
 
     getData();
-  }, []);
+  }, [selectedDate, rSeq]);
 
   // POST
   const postData = async () => {
@@ -166,10 +180,13 @@ const Memo = () => {
         placeholder="내용을 입력하세요..."
       />
       <ButtonWrapper>
-        <Button className="save" onClick={handleSave}>
-          저장
-        </Button>
-        <Button onClick={handleEdit}>{note.trim() ? "수정" : "작성"}</Button>
+        {note.trim() ? (
+          <Button onClick={handleEdit}>수정</Button>
+        ) : (
+          <Button className="save" onClick={handleSave}>
+            작성
+          </Button>
+        )}
       </ButtonWrapper>
     </Wrapper>
   );

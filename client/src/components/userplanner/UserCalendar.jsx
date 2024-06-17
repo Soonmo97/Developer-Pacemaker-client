@@ -167,6 +167,7 @@ const UserCalendar = () => {
   const handleDateClick = (date) => {
     setSelectedDate(date);
     setModalOpen(true);
+    console.log(selectedDate);
   };
 
   const handleModalClose = () => {
@@ -223,9 +224,11 @@ const UserCalendar = () => {
         </StyledCalendarWrapper>
       </CalendarBody>
       {modalOpen && (
-        <UserCalendarModal onClose={handleModalClose}>
-          <div>{moment(selectedDate).format("YYYY년 MM월 DD일")}</div>
-        </UserCalendarModal>
+        <UserCalendarModal
+          onClose={handleModalClose}
+          titleDate={moment(selectedDate).format("YYYY년 MM월 DD일")}
+          selectedDate={selectedDate}
+        />
       )}
     </div>
   );

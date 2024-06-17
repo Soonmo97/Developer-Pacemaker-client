@@ -49,11 +49,30 @@ const TitleInput = styled.input`
 const StudyPost = () => {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
-  const [selectedGroup, setSelectedGroup] = useState("");
+  const [selectedGroupSeq, setSelectedGroupSeq] = useState(null);
+  const [groupList, setGroupList] = useState([]);
 
-  const groups = ["Group 1", "Group 2", "Group 3"]; // Example groups
+  useEffect(() => {
+    const fetchGroupList = async () => {
+      try {
+        const token = localStorage.getItem("accessToken");
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_SERVER}/api/recruitmentBoard/myStudyGroups`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log(response.data);
+        setGroupList(response.data);
+      } catch (error) {
+        console.error("Failed to fetch group list:", error);
+      }
+    };
 
-  useEffect(() => {});
+    fetchGroupList();
+  }, []);
 
   const handleTitleChange = (e) => setTitle(e.target.value);
   const handleContentChange = (content) => setContent(content);
@@ -62,9 +81,9 @@ const StudyPost = () => {
     e.preventDefault();
 
     const titleVal = title.trim();
-    const textCount = content.replace(/<[^>]*>?/gm, "").length; // HTML 태그 제거 후 글자수 계산
+    const textCount = content.replace(/<[^>]*>?/gm, "").length;
 
-    if (titleVal === 0) {
+    if (titleVal.length === 0) {
       alert("제목을 입력해주세요.");
       return;
     } else if (textCount === 0) {
@@ -75,12 +94,20 @@ const StudyPost = () => {
       return;
     }
 
+    if (!selectedGroupSeq) {
+      alert("그룹을 선택해주세요.");
+      return;
+    }
+    console.log(selectedGroupSeq);
+
     const token = localStorage.getItem("accessToken");
     try {
-      await axios.post(
+      const response = await axios.post(
         `${process.env.REACT_APP_API_SERVER}/api/recruitmentBoard`,
         {
+          name: title,
           content: content,
+          sgSeq: selectedGroupSeq,
         },
         {
           headers: {
@@ -88,8 +115,10 @@ const StudyPost = () => {
           },
         }
       );
+
+      console.log("글이 성공적으로 작성되었습니다.", response.data);
       alert("글이 성공적으로 작성되었습니다.");
-      // 작성 완료 후 필요한 추가 작업 수행
+      window.location.href = "/main/studygroupboard";
     } catch (error) {
       console.error("글 작성에 실패했습니다:", error);
       alert("글 작성에 실패했습니다.");
@@ -103,15 +132,17 @@ const StudyPost = () => {
         <div>
           <h1>팀원 모집 게시판</h1>
           <SelectBar
-            value={selectedGroup}
-            onChange={(e) => setSelectedGroup(e.target.value)}
+            value={selectedGroupSeq || ""}
+            onChange={(e) => {
+              setSelectedGroupSeq(e.target.value);
+            }}
           >
             <option value="" disabled>
               스터디 그룹을 선택하세요.
             </option>
-            {groups.map((group, index) => (
-              <option key={index} value={group}>
-                {group}
+            {groupList.map((group) => (
+              <option key={group.sgSeq} value={group.sgSeq}>
+                {group.name}
               </option>
             ))}
           </SelectBar>
@@ -134,7 +165,7 @@ const StudyPost = () => {
                   width: "100%",
                   height: "400px",
                   charCounter: true,
-                  placeholder: "내용",
+                  placeholder: "내용을 입력하세요...",
                   popupDisplay: "local",
                   buttonList: [
                     ["formatBlock", "fontSize"],
@@ -158,12 +189,7 @@ const StudyPost = () => {
               />
             </div>
             <div>
-              <WriteButton
-                variant="contained"
-                color="primary"
-                type="submit"
-                onClick={handleSubmit}
-              >
+              <WriteButton variant="contained" color="primary" type="submit">
                 작성
               </WriteButton>
             </div>

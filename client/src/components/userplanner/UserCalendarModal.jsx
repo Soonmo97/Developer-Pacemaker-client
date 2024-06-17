@@ -66,11 +66,12 @@ const StudyDiarySection = styled.div`
   flex-direction: column;
 `;
 
-const UserCalendarModal = ({ onClose, children }) => {
+const UserCalendarModal = ({ onClose, children, titleDate, selectedDate }) => {
   return (
     <ModalOverlay>
       <ModalContent>
         <ModalHeader>
+          <h2>{titleDate}</h2>
           <ModalTitle>{children}</ModalTitle>
           <CloseButton onClick={onClose}>X</CloseButton>
         </ModalHeader>
@@ -81,7 +82,7 @@ const UserCalendarModal = ({ onClose, children }) => {
           </TodoListSection>
           <StudyDiarySection>
             <SectionTitle style={{ color: "#1e90ff" }}>학습일지</SectionTitle>
-            <Memo></Memo>
+            <Memo selectedDate={selectedDate}></Memo>
           </StudyDiarySection>
         </ModalBody>
       </ModalContent>
