@@ -145,6 +145,7 @@ const GptPage = () => {
   const [error, setError] = useState(null);
   const [savedAnswers, setSavedAnswers] = useState([]);
   const [savedError, setSavedError] = useState(null);
+  const [clickedButtons, setClickedButtons] = useState([]);
 
   useEffect(() => {
     fetchGptList();
@@ -195,7 +196,7 @@ const GptPage = () => {
     setPrompt(e.target.value);
   };
 
-  const handleSave = async (question, answer) => {
+  const handleSave = async (question, answer, index) => {
     try {
       const token = localStorage.getItem("accessToken");
       await axios.post(
@@ -206,12 +207,15 @@ const GptPage = () => {
             Authorization: `Bearer ${token}`,
           },
         }
-      ); //
-      // 저장이 성공하면 저장된 답변 목록을 다시 불러옵니다.
+      );
+
+      // Update the clickedButtons state to include the index of the clicked button
+      setClickedButtons((prevClicked) => [...prevClicked, index]);
+
+      // Fetch saved answers again to update the list
       fetchSavedAnswers();
     } catch (error) {
       console.error("답변 저장 중 오류 발생:", error);
-      // 오류 처리
       setSavedError("답변 저장 중 오류가 발생했습니다.");
     }
   };
@@ -252,13 +256,13 @@ const GptPage = () => {
     }
   };
 
-  const handleDelete = async (gSeq) => {
+  const handleDelete = async (gseq) => {
     try {
       const token = localStorage.getItem("accessToken");
 
-      console.log(token, gSeq);
+      console.log(token, gseq);
       await axios.patch(
-        `${process.env.REACT_APP_API_SERVER}/api/gpt/${gSeq}`,
+        `${process.env.REACT_APP_API_SERVER}/api/gpt/${gseq}`,
         {},
         {
           headers: {
@@ -291,11 +295,15 @@ const GptPage = () => {
                   <ChatMessage isUser={false}>
                     <AskDiv>
                       <MessageBubble isUser={false}>{gpt.answer}</MessageBubble>
-                      <SaveButton
-                        onClick={() => handleSave(gpt.question, gpt.answer)}
-                      >
-                        답변저장
-                      </SaveButton>
+                      {!clickedButtons.includes(index) && (
+                        <SaveButton
+                          onClick={() =>
+                            handleSave(gpt.question, gpt.answer, index)
+                          }
+                        >
+                          답변저장
+                        </SaveButton>
+                      )}
                     </AskDiv>
                   </ChatMessage>
                 </React.Fragment>
@@ -331,7 +339,7 @@ const GptPage = () => {
                 <strong>질문:</strong> {savedAnswer.question}
                 <br />
                 <strong>답변:</strong> {savedAnswer.answer}
-                <DeleteButton onClick={() => handleDelete(savedAnswer.gSeq)}>
+                <DeleteButton onClick={() => handleDelete(savedAnswer.gseq)}>
                   삭제
                 </DeleteButton>
               </SavedAnswer>
