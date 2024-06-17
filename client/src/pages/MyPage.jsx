@@ -116,6 +116,7 @@ const MyPage = () => {
             },
           }
         );
+        console.log(response.data);
         setUser(response.data);
         setNickname(response.data.nickname);
       } catch (err) {

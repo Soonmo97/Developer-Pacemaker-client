@@ -146,7 +146,7 @@ const CreateStudyGroup = ({ setModalIsOpen, modalIsOpen }) => {
       alert("스터디 그룹이 생성되었습니다");
       setModalIsOpen(false);
       setMyStudyGroupId(response.data.sgSeq);
-      window.location.href = `main/mystudygroup/info/${response.data.sgSeq}`;
+      window.location.href = `/main/mystudygroup/${response.data.sgSeq}`;
     } catch (error) {
       console.error("스터디 그룹 생성 실패:", error);
     }

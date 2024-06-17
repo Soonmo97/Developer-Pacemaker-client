@@ -72,6 +72,7 @@ const UserCalendar = () => {
   const handleDateClick = (date) => {
     setSelectedDate(date);
     setModalOpen(true);
+    console.log(selectedDate);
   };
 
   const handleModalClose = () => {
@@ -135,7 +136,13 @@ const UserCalendar = () => {
       </CalendarBody>
       <button onClick={() => setModalOpen(true)}>플래너 글쓰기</button>
       {modalOpen && (
-        <PlannerModal onClose={handleModalClose} onSave={handlePlannerSave} />
+
+        <UserCalendarModal
+          onClose={handleModalClose}
+          titleDate={moment(selectedDate).format("YYYY년 MM월 DD일")}
+          selectedDate={selectedDate}
+        />
+
       )}
     </div>
   );
