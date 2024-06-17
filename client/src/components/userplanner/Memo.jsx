@@ -73,7 +73,6 @@ const Memo = () => {
       try {
         const response = await axios.get(
           `${process.env.REACT_APP_API_SERVER}/api/report`,
-
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -162,14 +161,19 @@ const Memo = () => {
         ref={noteRef}
         value={note}
         onChange={handleChange}
-        disabled={!isEditing}
-        placeholder="내용을 입력하세요..."
+        placeholder="학습 내용을 입력하세요."
+        readOnly={!isEditing} // isEditing이 false일 때 읽기 전용으로 설정
       />
       <ButtonWrapper>
-        <Button className="save" onClick={handleSave}>
-          저장
-        </Button>
-        <Button onClick={handleEdit}>{note.trim() ? "수정" : "작성"}</Button>
+        {isEditing ? (
+          <Button className="save" onClick={handleSave}>
+            저장
+          </Button>
+        ) : (
+          <Button className="edit" onClick={handleEdit}>
+            수정
+          </Button>
+        )}
       </ButtonWrapper>
     </Wrapper>
   );

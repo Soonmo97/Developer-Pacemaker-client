@@ -1,8 +1,12 @@
 import React, { useState, useEffect } from "react";
 import styled from "styled-components";
+import axios from "axios";
 import UserCompletedTodoList from "./UserCompletedTodoList";
 import UserTodoListSet from "./UserTodoListSet";
 
+const API_URL = "http://localhost:8080/api/todo"; // 백엔드 API 주소로 변경
+
+// 스타일 컴포넌트
 const TodoListContainer = styled.div`
   width: 100%;
 `;
@@ -24,7 +28,70 @@ const TodoButton = styled.button`
   cursor: pointer;
 `;
 
-const UserTodoList = () => {
+// API 함수
+const getTodos = async (uSeq, pSeq) => {
+  try {
+    const response = await axios.get(
+      `${process.env.REACT_APP_API_SERVER}/api/todo/${pSeq}`,
+      {
+        headers: { Authorization: `Bearer ${uSeq}` },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Failed to fetch todos:", error);
+    throw error;
+  }
+};
+
+const addTodo = async (uSeq, pSeq, todo) => {
+  try {
+    const response = await axios.post(
+      `${process.env.REACT_APP_API_SERVER}/api/todo/${pSeq}`,
+      todo,
+      {
+        headers: { Authorization: `Bearer ${uSeq}` },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Failed to add todo:", error);
+    throw error;
+  }
+};
+
+const updateTodo = async (uSeq, tSeq, todo) => {
+  try {
+    const response = await axios.patch(
+      `${process.env.REACT_APP_API_SERVER}/api/todo/${tSeq}`,
+      todo,
+      {
+        headers: { Authorization: `Bearer ${uSeq}` },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Failed to update todo:", error);
+    throw error;
+  }
+};
+
+const deleteTodo = async (uSeq, tSeq) => {
+  try {
+    const response = await axios.delete(
+      `${process.env.REACT_APP_API_SERVER}/api/todo/${tSeq}`,
+      {
+        headers: { Authorization: `Bearer ${uSeq}` },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Failed to delete todo:", error);
+    throw error;
+  }
+};
+
+const UserTodoList = ({ uSeq, pSeq }) => {
   const [todos, setTodos] = useState([]);
   const [completedTodos, setCompletedTodos] = useState([]);
   const [inputValue, setInputValue] = useState("");
@@ -32,33 +99,45 @@ const UserTodoList = () => {
   const [editIndex, setEditIndex] = useState(null);
 
   useEffect(() => {
-    const storedTodos = localStorage.getItem("todos");
-    const storedCompletedTodos = localStorage.getItem("completedTodos");
-    if (storedTodos) setTodos(JSON.parse(storedTodos));
-    if (storedCompletedTodos)
-      setCompletedTodos(JSON.parse(storedCompletedTodos));
-  }, []);
+    const fetchTodos = async () => {
+      try {
+        console.log("Fetching todos...");
+        const todos = await getTodos(uSeq, pSeq);
+        console.log("Fetched todos:", todos);
+        setTodos(todos);
+      } catch (error) {
+        console.error("Failed to fetch todos:", error);
+      }
+    };
 
-  useEffect(() => {
-    localStorage.setItem("todos", JSON.stringify(todos));
-    localStorage.setItem("completedTodos", JSON.stringify(completedTodos));
-  }, [todos, completedTodos]);
+    fetchTodos();
+  }, [uSeq, pSeq]);
 
-  const handleAddTodo = () => {
+  const handleAddTodo = async () => {
     if (inputValue.trim() === "") return;
 
-    if (isEditing) {
-      const updatedTodos = todos.map((todo, index) =>
-        index === editIndex ? inputValue : todo
-      );
-      setTodos(updatedTodos);
-      setIsEditing(false);
-      setEditIndex(null);
-    } else {
-      setTodos([...todos, inputValue]);
-    }
+    const newTodo = { content: inputValue };
 
-    setInputValue("");
+    try {
+      if (isEditing) {
+        const updatedTodo = await updateTodo(
+          uSeq,
+          todos[editIndex].tSeq,
+          newTodo
+        );
+        setTodos(
+          todos.map((todo, index) => (index === editIndex ? updatedTodo : todo))
+        );
+        setIsEditing(false);
+        setEditIndex(null);
+      } else {
+        const addedTodo = await addTodo(uSeq, pSeq, newTodo);
+        setTodos([...todos, addedTodo]);
+      }
+      setInputValue("");
+    } catch (error) {
+      console.error("Failed to add/update todo:", error);
+    }
   };
 
   const handleKeyPress = (e) => {
@@ -67,14 +146,24 @@ const UserTodoList = () => {
     }
   };
 
-  const handleCompleteTodo = (index) => {
+  const handleCompleteTodo = async (index) => {
     const todo = todos[index];
-    setTodos(todos.filter((_, idx) => idx !== index));
-    setCompletedTodos([...completedTodos, todo]);
+    try {
+      await deleteTodo(uSeq, todo.tSeq);
+      setTodos(todos.filter((_, idx) => idx !== index));
+      setCompletedTodos([...completedTodos, todo]);
+    } catch (error) {
+      console.error("Failed to complete todo:", error);
+    }
   };
 
-  const handleDeleteTodo = (index) => {
-    setTodos(todos.filter((_, idx) => idx !== index));
+  const handleDeleteTodo = async (index) => {
+    try {
+      await deleteTodo(uSeq, todos[index].tSeq);
+      setTodos(todos.filter((_, idx) => idx !== index));
+    } catch (error) {
+      console.error("Failed to delete todo:", error);
+    }
   };
 
   const handleDeleteCompletedTodo = (index) => {
