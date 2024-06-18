@@ -40,6 +40,7 @@ const RightSection = styled.div`
   @media (max-width: 768px) {
     text-align: center;
     margin-top: 1rem;
+    font-size: 10px;
   }
 `;
 
@@ -48,6 +49,7 @@ const Title = styled.h1`
   margin: 0;
 
   @media (max-width: 768px) {
+    margin-top: 15%;
     font-size: 1rem;
   }
 `;

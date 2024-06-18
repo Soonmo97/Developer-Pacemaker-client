@@ -14,7 +14,7 @@ const Container = styled.div`
 
 const ProfileContainer = styled.div`
   width: 100%;
-  max-width: 500px;
+  max-width: 600px;
   padding: 20px;
   height: 400px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -43,6 +43,15 @@ const Imgdiv = styled.div`
   }
 `;
 
+const NameDiv = styled.div`
+  display: flex;
+  align-items: center; /* 수직 정렬 */
+  margin-bottom: 10px; /* 간격 조정 */
+`;
+
+const FirstDiv = styled.div`
+  width: 70px;
+`;
 const Infodiv = styled.div`
   display: flex;
   flex-direction: column;
@@ -65,6 +74,7 @@ const Button = styled.button`
   border: none;
   border-radius: 5px;
   cursor: pointer;
+  margin-right: 2%;
 
   &:hover {
     background-color: #0056b3;
@@ -230,30 +240,35 @@ const MyPage = () => {
         <ProfileContainer>
           {isEditing ? (
             <form onSubmit={handleSubmit}>
-              <div>
-                <Label>Email:</Label>
-                <Input type="text" value={user.email} disabled />
-              </div>
-              <div>
-                <Label>
-                  닉네임:
-                  <Input
-                    type="text"
-                    value={nickname}
-                    onChange={handleNicknameChange}
-                  />
-                </Label>
-              </div>
-              <div>
-                <Label>
-                  비밀번호:
-                  <Input
-                    type="password"
-                    value={password}
-                    onChange={handlePasswordChange}
-                  />
-                </Label>
-              </div>
+              <NameDiv>
+                <FirstDiv>
+                  <Label>이메일:</Label>
+                </FirstDiv>
+                <div>
+                  {" "}
+                  <Input type="text" value={user.email} disabled />
+                </div>
+              </NameDiv>
+              <NameDiv>
+                <FirstDiv>
+                  <Label>닉네임: </Label>
+                </FirstDiv>
+                <Input
+                  type="text"
+                  value={nickname}
+                  onChange={handleNicknameChange}
+                />
+              </NameDiv>
+              <NameDiv>
+                <FirstDiv>
+                  <Label>비밀번호: </Label>
+                </FirstDiv>
+                <Input
+                  type="password"
+                  value={password}
+                  onChange={handlePasswordChange}
+                />
+              </NameDiv>
 
               <Button type="submit">Save Changes</Button>
               <Button type="button" onClick={() => setIsEditing(false)}>
