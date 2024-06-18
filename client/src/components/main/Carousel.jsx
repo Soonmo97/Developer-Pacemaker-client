@@ -19,7 +19,6 @@ const theme = {
   br_2: "#666666",
 };
 
-
 const CardButton = styled.button`
   padding: 1vh 1vw;
   border: none;
@@ -68,7 +67,6 @@ const SlideTitle = styled.h3`
   margin: 1rem 0;
 `;
 
-
 const SlideDescription = styled.p`
   /* font-size: 14px; */
   /* color: #666; */
@@ -96,6 +94,12 @@ const NextArrow = (props) => {
   );
 };
 
+const SliderWrapper = styled(Slider)`
+  .slick-track {
+    margin-bottom: 2rem;
+  }
+`;
+
 const Carousel = () => {
   const [studyGroups, setStudyGroups] = useState([]);
 
@@ -117,10 +121,10 @@ const Carousel = () => {
 
   const settings = {
     dots: true,
-    infinite: true,
+    infinite: false,
     speed: 500,
     slidesToShow: 5,
-    slidesToScroll: 2,
+    slidesToScroll: 1,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
     responsive: [
@@ -161,7 +165,7 @@ const Carousel = () => {
         <div className="carousel" style={{ marginBottom: "5rem" }}>
           <h1>추천 스터디</h1>
           <CarouselWrapper>
-            <Slider {...settings}>
+            <SliderWrapper {...settings}>
               {studyGroups.map((group) => (
                 <SlideItem key={group.sgSeq}>
                   <SlideImage
@@ -178,7 +182,7 @@ const Carousel = () => {
                   </SlideContent>
                 </SlideItem>
               ))}
-            </Slider>
+            </SliderWrapper>
           </CarouselWrapper>
         </div>
         <ThemeProvider theme={theme}>

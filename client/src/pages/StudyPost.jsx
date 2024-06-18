@@ -75,13 +75,16 @@ const StudyPost = () => {
   }, []);
 
   const handleTitleChange = (e) => setTitle(e.target.value);
-  const handleContentChange = (content) => setContent(content);
+  const handleContentChange = (content) => {
+    const textContent = content.replace(/<[^>]*>?/gm, ""); // HTML 태그 제거
+    setContent(textContent);
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     const titleVal = title.trim();
-    const textCount = content.replace(/<[^>]*>?/gm, "").length;
+    const textCount = content.length;
 
     if (titleVal.length === 0) {
       alert("제목을 입력해주세요.");
@@ -183,6 +186,7 @@ const StudyPost = () => {
                     ["undo", "redo"],
                   ],
                   plugins: plugins,
+                  cleanHTMLRules: "no_tag",
                 }}
                 defaultValue={content}
                 onChange={handleContentChange}

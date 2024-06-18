@@ -68,6 +68,7 @@ const WriteButton = styled(Button)`
 const Board = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [boardData, setBoardData] = useState([]);
+  const [filteredData, setFilteredData] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -81,9 +82,9 @@ const Board = () => {
             },
           }
         );
-        console.log(response.data);
+
         setBoardData(response.data);
-        console.log(boardData);
+        setFilteredData(response.data); // 초기 데이터 설정
       } catch (error) {
         console.error("Failed to fetch board data:", error);
       }
@@ -91,6 +92,8 @@ const Board = () => {
 
     fetchData();
   }, []);
+
+  console.log("boardData", boardData);
 
   const formatDate = (dateString) => {
     // 문자열에서 밀리초 제외하고 날짜와 시간 부분 추출
@@ -100,9 +103,12 @@ const Board = () => {
     return dateTime;
   };
 
-  // const filteredData = boardData.filter((item) =>
-  //   item.title.toLowerCase().includes(searchTerm.toLowerCase())
-  // );
+  useEffect(() => {
+    const filtered = boardData.filter((item) =>
+      item.name.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    setFilteredData(filtered);
+  }, [searchTerm, boardData]);
 
   return (
     <>
@@ -132,7 +138,7 @@ const Board = () => {
             </tr>
           </thead>
           <tbody>
-            {boardData.map((item) => (
+            {filteredData.map((item) => (
               <tr key={item.rbSeq}>
                 <BoardTd>{item.rbSeq}</BoardTd>
                 <BoardTd>
@@ -140,9 +146,9 @@ const Board = () => {
                     {item.name}
                   </Link>
                 </BoardTd>
-                <BoardTd>{item.name}</BoardTd>
+                <BoardTd>{item.nickname}</BoardTd>
                 <BoardTd>{formatDate(item.registered)}</BoardTd>
-                <BoardTd>{item.author}</BoardTd>
+                <BoardTd>{item.status}</BoardTd>
               </tr>
             ))}
           </tbody>

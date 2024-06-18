@@ -219,7 +219,6 @@ const UserCalendar = () => {
           <StyledDate onClick={handleTodayClick}>오늘</StyledDate>
         </StyledCalendarWrapper>
       </CalendarBody>
-      <button onClick={() => setModalOpen(true)}>플래너 글쓰기</button>
       {modalOpen && (
         <UserCalendarModal
           onClose={handleModalClose}

@@ -25,7 +25,10 @@ const App = () => {
         <Route path="/mypage" element={<MyPage />} />
 
         <Route path="/main/studygroupboard" element={<Board />} />
-        <Route path="/main/studygroupboard/post/:id" element={<PostDetail />} />
+        <Route
+          path="/main/studygroupboard/post/:rbSeq"
+          element={<PostDetail />}
+        />
         <Route path="/main/studygroupboard/writePost" element={<StudyPost />} />
         <Route path="/main/mystudygroup" element={<StudyGroup />} />
         <Route
@@ -39,10 +42,8 @@ const App = () => {
           element={<StudyGroupInfo />}
         />
 
-
         <Route path="/main/studygroupinfo/:id" element={<StudyGroupInfo />} />
         <Route path="/main/Ai" element={<GptPage />} />
-
 
         <Route path="/main/myplanner" element={<Myplanner />} />
         <Route path="/test" element={<TestSlider />} />
