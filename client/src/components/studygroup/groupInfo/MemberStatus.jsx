@@ -87,7 +87,7 @@ const MemberStatus = () => {
         const response = await axios.get(
           `${process.env.REACT_APP_API_SERVER}/api/group-members/${sgSeq}`
         );
-        console.log(response.data);
+        console.log("members", response.data);
         setMembers(response.data.slice(0, 15)); // 최대 15명으로 제한
       } catch (error) {
         console.error("Failed to fetch members", error);

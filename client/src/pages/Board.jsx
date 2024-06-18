@@ -4,7 +4,7 @@ import SearchIcon from "@mui/icons-material/Search";
 import { TextField, Button } from "@mui/material";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 
 const BoardContainer = styled.div`
@@ -66,9 +66,11 @@ const WriteButton = styled(Button)`
 `;
 
 const Board = () => {
+  const { rbSeq } = useParams();
   const [searchTerm, setSearchTerm] = useState("");
   const [boardData, setBoardData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
+  const [sgSeq, setSgSeq] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -84,7 +86,7 @@ const Board = () => {
         );
 
         setBoardData(response.data);
-        setFilteredData(response.data); // 초기 데이터 설정
+        setFilteredData(response.data);
       } catch (error) {
         console.error("Failed to fetch board data:", error);
       }
