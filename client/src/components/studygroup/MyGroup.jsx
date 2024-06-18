@@ -34,7 +34,7 @@ const CardButton = styled.button`
 `;
 
 const CarouselWrapper = styled.div`
-  width: 80%;
+  width: 65%;
   margin: 0 auto;
   padding: 1rem 0;
 `;
@@ -54,17 +54,18 @@ const SlideItem = styled.div`
 
 const SlideImage = styled.img`
   width: 100%;
-  height: 13rem;
+  height: 15vh;
   object-fit: cover;
   border-radius: 10px 10px 0 0;
 `;
 
 const SlideContent = styled.div`
   padding: 10px;
+  height: 5vh;
 `;
 
 const SlideTitle = styled.h3`
-  margin: 1rem 0;
+  margin: -0.5rem 0;
 `;
 
 const SlideDescription = styled.p`
@@ -94,9 +95,16 @@ const NextArrow = (props) => {
   );
 };
 
+const SliderWrapper = styled(Slider)`
+  .slick-track {
+    margin-bottom: 2rem;
+  }
+`;
+
 const MyGroup = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [myStudyGroups, setMyStudyGroups] = useState([]);
+  const [groupList, setGroupList] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -110,6 +118,26 @@ const MyGroup = () => {
             },
           }
         );
+
+        const fetchGroupList = async () => {
+          try {
+            const token = localStorage.getItem("accessToken");
+            const response = await axios.get(
+              `${process.env.REACT_APP_API_SERVER}/api/recruitmentBoard/myStudyGroups`,
+              {
+                headers: {
+                  Authorization: `Bearer ${token}`,
+                },
+              }
+            );
+            console.log(response.data);
+            setGroupList(response.data);
+          } catch (error) {
+            console.error("Failed to fetch group list:", error);
+          }
+        };
+
+        fetchGroupList();
         console.log(response.data);
         setMyStudyGroups(response.data);
       } catch (error) {
@@ -120,12 +148,16 @@ const MyGroup = () => {
     fetchData();
   }, []);
 
+  const difference = myStudyGroups.filter(
+    (item2) => !groupList.some((item1) => item1.sgSeq === item2.sgSeq)
+  );
+
   const settings = {
     dots: true,
-    infinite: true,
+    infinite: false,
     speed: 500,
     slidesToShow: 5,
-    slidesToScroll: 2,
+    slidesToScroll: 1,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
     responsive: [
@@ -162,7 +194,7 @@ const MyGroup = () => {
 
   return (
     <>
-      <div className="carousel" style={{ minHeight: "64vh" }}>
+      <div className="carousel">
         <div style={{ display: "flex", justifyContent: "space-between" }}>
           <h1>내 스터디 그룹</h1>
           <MakeButton
@@ -173,9 +205,11 @@ const MyGroup = () => {
             스터디 그룹 만들기
           </MakeButton>
         </div>
+
         <CarouselWrapper>
-          <Slider {...settings}>
-            {myStudyGroups.map((group) => (
+          <h2>내가 그룹장인 그룹</h2>
+          <SliderWrapper {...settings}>
+            {groupList.map((group) => (
               <SlideItem key={group.sgSeq}>
                 <SlideImage
                   src="https://images.velog.io/images/kshired/post/d8a48a1f-4106-480f-8307-d20eae1f9486/image.png"
@@ -191,7 +225,31 @@ const MyGroup = () => {
                 </SlideContent>
               </SlideItem>
             ))}
-          </Slider>
+          </SliderWrapper>
+        </CarouselWrapper>
+      </div>
+      <br />
+      <div className="carousel" style={{ minHeight: "64vh" }}>
+        <CarouselWrapper>
+          <h2>내가 그룹원인 그룹</h2>
+          <SliderWrapper {...settings}>
+            {difference.map((group) => (
+              <SlideItem key={group.sgSeq}>
+                <SlideImage
+                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRFli9XwcQWaJjbLRAYfPfctxO1j8_INSuyihTE7AatXGWmdaHpMT_DrvkfKB5lIlVlfFg&usqp=CAU"
+                  alt=""
+                />
+                <SlideContent>
+                  <SlideTitle>{group.name}</SlideTitle>
+                  <SlideDescription>
+                    <Link to={`/main/mystudygroup/${group.sgSeq}`}>
+                      <CardButton>더보기</CardButton>
+                    </Link>
+                  </SlideDescription>
+                </SlideContent>
+              </SlideItem>
+            ))}
+          </SliderWrapper>
         </CarouselWrapper>
       </div>
       <Modal

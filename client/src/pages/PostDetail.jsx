@@ -1,10 +1,10 @@
-// src/components/PostDetail.js
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import styled from "styled-components";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import { Button } from "@mui/material";
+import axios from "axios";
 
 const PostContainer = styled.div`
   width: 30%;
@@ -37,30 +37,50 @@ const ApplyBtn = styled(Button)`
   }
 `;
 
-const data = [
-  {
-    id: 1,
-    title: "게시글 1",
-    author: "작성자 1",
-    date: "2024-06-01",
-    views: 100,
-    content: "게시글1 내용",
-  },
-  {
-    id: 2,
-    title: "게시글 2",
-    author: "작성자 2",
-    date: "2024-06-02",
-    views: 200,
-    content: "게시글2 내용",
-  },
-];
-
 const PostDetail = () => {
-  const { id } = useParams();
-  const post = data.find((item) => item.id.toString() === id);
+  const { rbSeq } = useParams();
+  const [boardData, setBoardData] = useState(null); // 초기 값을 null로 설정
 
-  if (!post) {
+  useEffect(() => {
+    const fetchGroupList = async () => {
+      try {
+        const token = localStorage.getItem("accessToken");
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_SERVER}/api/recruitmentBoard`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log("response.data:", response.data);
+        const filteredData = response.data.filter(
+          (item) => item.rbSeq.toString() === rbSeq
+        );
+        console.log(">>", filteredData);
+        if (filteredData.length > 0) {
+          setBoardData(filteredData[0]);
+        } else {
+          setBoardData(null); // 데이터가 없으면 null로 설정
+        }
+      } catch (error) {
+        console.error("Failed to fetch group list:", error);
+      }
+    };
+
+    fetchGroupList();
+  }, [rbSeq]); // rbSeq가 변경될 때마다 useEffect 재실행
+
+  console.log("boardData:", boardData);
+
+  const formatDate = (dateString) => {
+    const dateTimeParts = dateString.split(".");
+    const dateTime = dateTimeParts[0];
+
+    return dateTime;
+  };
+
+  if (!boardData) {
     return (
       <>
         <Navbar />
@@ -76,11 +96,15 @@ const PostDetail = () => {
     <>
       <Navbar />
       <PostContainer>
-        <PostTitle>{post.title}</PostTitle>
+        <PostTitle>{boardData.name}</PostTitle>
         <PostMeta>
-          작성자: {post.author} | 작성일: {post.date} | 조회수: {post.views}
+          그룹명 : <strong>{boardData.studyGroup.name}</strong>
         </PostMeta>
-        <PostContent>{post.content}</PostContent>
+        <PostMeta>
+          작성자: <strong>{boardData.nickname}</strong> | 작성일:{" "}
+          <strong>{formatDate(boardData.registered)} </strong>| 모집여부: {}
+        </PostMeta>
+        <PostContent>{boardData.content}</PostContent>
         <div style={{ display: "flex", justifyContent: "center" }}>
           <ApplyBtn variant="contained" color="primary">
             신청하기

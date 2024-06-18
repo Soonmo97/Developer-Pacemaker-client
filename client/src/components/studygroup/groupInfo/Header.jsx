@@ -241,9 +241,7 @@ const Header = () => {
   const [groupName, setGroupName] = useState("");
   const [groupGoal, setGroupGoal] = useState("");
   const [whoAmI, setWhoAmI] = useState(false);
-
   const { sgSeq } = useParams();
-  const id = sgSeq - 1;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -252,7 +250,15 @@ const Header = () => {
           `${process.env.REACT_APP_API_SERVER}/api/study-group`
         );
 
-        setStudyGroups(response.data);
+        console.log(">>:", response.data);
+        const filteredData = response.data.filter(
+          (item) => item.sgSeq.toString() === sgSeq
+        );
+        if (filteredData.length > 0) {
+          setStudyGroups(filteredData[0]);
+        } else {
+          setStudyGroups(null); // 데이터가 없으면 null로 설정
+        }
       } catch (error) {
         console.error("스터디 그룹 데이터를 불러오는데 실패했습니다:", error);
       }
@@ -301,12 +307,12 @@ const Header = () => {
     checkUserMembership();
   }, [sgSeq]);
 
-  useEffect(() => {
-    if (studyGroups.length > 0) {
-      setGroupName(studyGroups[id]?.name || "");
-      setGroupGoal(studyGroups[id]?.goal || "");
-    }
-  }, [studyGroups, id]);
+  // useEffect(() => {
+  //   if (studyGroups.length > 0) {
+  //     setGroupName(studyGroups[id]?.name || "");
+  //     setGroupGoal(studyGroups[id]?.goal || "");
+  //   }
+  // }, [studyGroups, id]);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -389,7 +395,7 @@ const Header = () => {
   return (
     <>
       <HeaderContainer>
-        <Title>{studyGroups.length > 0 && studyGroups[id]?.name}</Title>
+        <Title>{studyGroups.name}</Title>
         <SetBtns>
           {whoAmI ? (
             <>
@@ -512,12 +518,8 @@ const Header = () => {
           </div>
         </DetailModalContainer>
       </MemberDetailModal>
-      <InfoContainer>
-        그룹원 {studyGroups.length > 0 && studyGroups[id]?.current}/15명
-      </InfoContainer>
-      <GoalsContainer>
-        공동목표 : {studyGroups.length > 0 && studyGroups[id]?.goal}
-      </GoalsContainer>
+      <InfoContainer>그룹원 {studyGroups.current}/15명</InfoContainer>
+      <GoalsContainer>공동목표 : {studyGroups.goal}</GoalsContainer>
     </>
   );
 };
