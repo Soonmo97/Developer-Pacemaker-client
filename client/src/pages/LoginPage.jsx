@@ -123,26 +123,37 @@ const CheckButton = styled.button`
   color: white;
   border: none;
   border-radius: 4px;
+
+  @media (max-width: 768px) {
+    font-size: 0.6em; /* 768px 이하에서 작은 텍스트 크기로 설정 */
+    padding: 6px 8px; /* 작은 화면에서 버튼 패딩 조정 */
+  }
 `;
 const SuccessModal = styled.div`
-  width: 400px;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  width: 80%;
+  max-width: 400px;
+  margin: 0 auto; /* 가운데 정렬을 위해 margin auto 추가 */
   background-color: white;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
   z-index: 1000;
+
+  @media (max-width: 768px) {
+    width: 90%; /* Adjusted width for smaller screens */
+    max-width: 300px; /* Adjusted max-width for smaller screens */
+  }
+
+  @media (min-width: 1024px) {
+    width: 50%; /* Adjusted width for larger screens */
+    max-width: 500px; /* Adjusted max-width for larger screens */
+  }
 `;
 
 const ErrorModal = styled.div`
-  width: 400px;
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
+  width: 80%;
+  max-width: 400px;
+  margin: 0 auto; /* 가운데 정렬을 위해 margin auto 추가 */
   background-color: white;
   padding: 20px;
   border-radius: 10px;
@@ -195,6 +206,11 @@ const KakaoButton = styled.button`
   color: black;
   border: none;
   border-radius: 4px;
+
+  @media (max-width: 768px) {
+    font-size: 0.6em; /* 768px 이하에서 작은 텍스트 크기로 설정 */
+    padding: 6px 8px; /* 작은 화면에서 버튼 패딩 조정 */
+  }
 `;
 
 const ButtonContainer = styled.div`
@@ -222,6 +238,21 @@ const bounce = keyframes`
   }
   100% {
     transform: translateY(0); // 초기 위치로 돌아옴
+  }
+`;
+
+const TextButton = styled.button`
+  background: none;
+  border: none;
+  color: black;
+  cursor: pointer;
+  padding: 0;
+  font-size: 12px;
+  text-decoration: none;
+  margin-right: 2%;
+
+  &:hover {
+    text-decoration: none;
   }
 `;
 
@@ -448,7 +479,7 @@ function LoginPage() {
             </ModalHeader>
             <SuccessMessageContainer>
               <p>로그인 성공!</p>
-              <button onClick={closeModalAndNavigate}>확인</button>
+              <CheckButton onClick={closeModalAndNavigate}>확인</CheckButton>
             </SuccessMessageContainer>
           </SuccessModal>
         )}
@@ -460,13 +491,13 @@ function LoginPage() {
             </ErrorModalHeader>
             <ErrorMessageContainer>
               <p>{errorMessage}</p>
-              <button onClick={closeErrorModal}>확인</button>
+              <CheckButton onClick={closeErrorModal}>확인</CheckButton>
             </ErrorMessageContainer>
             <div>
-              <button onClick={handleForgetPassword}>
+              <TextButton onClick={handleForgetPassword}>
                 비밀번호를 잊으셨나요?
-              </button>
-              <button onClick={handleSignup}>첫방문이신가요?</button>
+              </TextButton>
+              <TextButton onClick={handleSignup}>첫방문이신가요?</TextButton>
 
               {showEmailModal && (
                 <EmailModal

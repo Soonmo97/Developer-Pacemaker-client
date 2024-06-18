@@ -12,16 +12,24 @@ const GptPageContainer = styled.div`
   align-items: center;
   min-height: 100vh;
 `;
+
 const ChatDiv = styled.div`
   width: 100%;
   display: flex;
   flex-direction: row;
   justify-content: center;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+  }
 `;
+
 const AskDiv = styled.div`
   display: flex;
-  flex-direction: row; /* 가로로 정렬 */
+  flex-direction: row;
 `;
+
 const ChatContainer = styled.div`
   width: 472px;
   max-width: 50%;
@@ -31,6 +39,10 @@ const ChatContainer = styled.div`
   background-color: #f9f9f9;
   display: flex;
   flex-direction: column;
+
+  @media (max-width: 768px) {
+    max-width: 100%;
+  }
 `;
 
 const ChatBox = styled.div`
@@ -56,7 +68,7 @@ const MessageBubble = styled.div`
   border-radius: 20px;
   background-color: ${(props) => (props.isUser ? "#e1ffc7" : "#c7d7ff")};
   color: #000;
-  margin-bottom: 5px; /* 버튼과의 간격을 조정하기 위해 추가 */
+  margin-bottom: 5px;
 `;
 
 const ChatInput = styled.div`
@@ -87,7 +99,7 @@ const ChatInputButton = styled.button`
 
 const SaveButton = styled.button`
   padding: 5px 10px;
-  margin-left: 10px; /* 버튼과 말풍선 사이의 간격을 조정하기 위해 추가 */
+  margin-left: 10px;
   border: none;
   border-radius: 10px;
   background-color: #007bff;
@@ -102,13 +114,17 @@ const SaveButton = styled.button`
 const SavedAnswersContainer = styled.div`
   width: 438px;
   min-height: 572px;
-  max-width: 50%; /* Adjust width as needed */
+  max-width: 50%;
   border: 1px solid #ccc;
   border-radius: 10px;
   padding: 10px;
   background-color: #f0f0f0;
   max-height: 550px;
   overflow-y: auto;
+
+  @media (max-width: 768px) {
+    max-width: 100%;
+  }
 `;
 
 const SavedAnswer = styled.div`
@@ -137,7 +153,6 @@ const DeleteButton = styled.button`
     background-color: #ff4f4f;
   }
 `;
-
 const GptPage = () => {
   const [gptList, setGptList] = useState([]);
   const [prompt, setPrompt] = useState("");
