@@ -242,6 +242,8 @@ const Header = () => {
   const [groupGoal, setGroupGoal] = useState("");
   const [whoAmI, setWhoAmI] = useState(false);
   const { sgSeq } = useParams();
+  const [joinData, setJoinData] = useState();
+  const [members, setMembers] = useState();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -307,14 +309,73 @@ const Header = () => {
     checkUserMembership();
   }, [sgSeq]);
 
-  // useEffect(() => {
-  //   if (studyGroups.length > 0) {
-  //     setGroupName(studyGroups[id]?.name || "");
-  //     setGroupGoal(studyGroups[id]?.goal || "");
-  //   }
-  // }, [studyGroups, id]);
+  useEffect(() => {
+    const joinData = async () => {
+      const token = localStorage.getItem("accessToken");
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_SERVER}/api/join/${sgSeq}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
 
-  const openModal = () => setIsModalOpen(true);
+        console.log(response.data);
+      } catch (error) {
+        console.error("가입신청 데이터를 받아오지 못했습니다.:", error);
+        throw error;
+      }
+    };
+    joinData();
+  }, [sgSeq]);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+    const joinData = async () => {
+      const token = localStorage.getItem("accessToken");
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_SERVER}/api/join/${sgSeq}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+
+        console.log("신청 데이터 :", response.data);
+        setJoinData(response.data);
+      } catch (error) {
+        console.error("가입신청 데이터를 받아오지 못했습니다.:", error);
+        throw error;
+      }
+    };
+    const fetchMembers = async () => {
+      try {
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_SERVER}/api/group-members/${sgSeq}`
+        );
+        console.log("members", response.data);
+        setMembers(response.data);
+      } catch (error) {
+        console.error("Failed to fetch members", error);
+      }
+    };
+
+    fetchMembers();
+    joinData();
+  };
+
+  // const AcceptMembers = async () => {
+  //   try {
+  //     const response = await axios.post(
+  //       `${process.env.REACT_APP_API_SERVER}/api/join/accept/${jSeq}`
+  //     )
+  //   }
+  // }
+
   const closeModal = () => setIsModalOpen(false);
 
   const openSetModal = () => setIsSetModalOpen(true);
@@ -417,27 +478,29 @@ const Header = () => {
         <h1>스터디그룹 관리</h1>
         <Section>
           <List>
-            <SectionHeader>신청 현황 2</SectionHeader>
-            <ListItem>
-              <div>닉네임</div>
-              <div>스터디 그룹 신청합니다!</div>
-              <InviteButton>수락</InviteButton>
-            </ListItem>
-            <ListItem>
-              <div>닉네임</div>
-              <div>스터디 그룹 신청합니다!</div>
-              <InviteButton>수락</InviteButton>
-            </ListItem>
+            <SectionHeader>신청현황 {joinData?.length}</SectionHeader>
+            {joinData?.map((item, index) => (
+              <ListItem key={index}>
+                <div>
+                  <strong>{item.nickname}</strong>님
+                </div>
+                <div>스터디 그룹 신청합니다!</div>
+                <InviteButton>수락</InviteButton>
+              </ListItem>
+            ))}
           </List>
           <List>
-            <SectionHeader>그룹원 관리</SectionHeader>
-            <ListItem>
-              <div>그룹원 닉네임</div>
-              <div style={{ gap: "1rem" }}>
-                <AuthorizeToBtn>위임</AuthorizeToBtn>
-                <RemoveButton>강퇴</RemoveButton>
-              </div>
-            </ListItem>
+            {/* <SectionHeader>그룹원 관리</SectionHeader>
+            {members?.map((item, index) => (
+              <ListItem key={index}>
+                <div>그룹원 닉네임</div>
+                <div style={{ gap: "1rem" }}>
+                  <AuthorizeToBtn>위임</AuthorizeToBtn>
+                  <RemoveButton>강퇴</RemoveButton>
+                </div>
+              </ListItem>
+            ))} */}
+
             <ListItem>
               <div>그룹원 닉네임</div>
               <div style={{ gap: "1rem" }}>

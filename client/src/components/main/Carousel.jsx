@@ -105,9 +105,15 @@ const Carousel = () => {
 
   useEffect(() => {
     const fetchData = async () => {
+      const token = localStorage.getItem("accessToken");
       try {
         const response = await axios.get(
-          `${process.env.REACT_APP_API_SERVER}/api/study-group`
+          `${process.env.REACT_APP_API_SERVER}/api/study-group/openAll`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
         );
         console.log(response.data);
         setStudyGroups(response.data);

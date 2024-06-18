@@ -107,7 +107,7 @@ const MyGroup = () => {
   const [groupList, setGroupList] = useState([]);
 
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchGroupList = async () => {
       try {
         const token = localStorage.getItem("accessToken");
         const response = await axios.get(
@@ -118,24 +118,24 @@ const MyGroup = () => {
             },
           }
         );
+        console.log(response.data);
+        setGroupList(response.data);
+      } catch (error) {
+        console.error("Failed to fetch group list:", error);
+      }
+    };
 
-        const fetchGroupList = async () => {
-          try {
-            const token = localStorage.getItem("accessToken");
-            const response = await axios.get(
-              `${process.env.REACT_APP_API_SERVER}/api/recruitmentBoard/myStudyGroups`,
-              {
-                headers: {
-                  Authorization: `Bearer ${token}`,
-                },
-              }
-            );
-            console.log(response.data);
-            setGroupList(response.data);
-          } catch (error) {
-            console.error("Failed to fetch group list:", error);
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem("accessToken");
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_SERVER}/api/study-group/leader-groups`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
           }
-        };
+        );
 
         fetchGroupList();
         console.log(response.data);
@@ -209,7 +209,7 @@ const MyGroup = () => {
         <CarouselWrapper>
           <h2>내가 그룹장인 그룹</h2>
           <SliderWrapper {...settings}>
-            {groupList.map((group) => (
+            {myStudyGroups.map((group) => (
               <SlideItem key={group.sgSeq}>
                 <SlideImage
                   src="https://images.velog.io/images/kshired/post/d8a48a1f-4106-480f-8307-d20eae1f9486/image.png"
