@@ -56,17 +56,17 @@ const ListItem = styled.li`
 
 const ApplyBtn = styled(Button)`
   && {
-    height: 3rem;
+    height: 2.5rem;
     border-radius: 15px;
-    width: 7rem;
+    width: 5rem;
   }
 `;
 
 const DeleteBtn = styled(Button)`
   && {
-    height: 3rem;
+    height: 2.5rem;
     border-radius: 15px;
-    width: 7rem;
+    width: 5rem;
     &:hover {
       background-color: #ff0202;
     }
@@ -210,28 +210,6 @@ const PostDetail = () => {
 
   const handleEdit = async () => {
     navigate(`/main/studygroupboard/edit/${rbSeq}`);
-
-    // try {
-    //   const token = localStorage.getItem("accessToken");
-    //   await axios.patch(
-    //     `${process.env.REACT_APP_API_SERVER}/api/recruitmentBoard/${rbSeq}`,
-    //     {
-    //       sgSeq: sgSeq,
-    //       content: boardData.content,
-    //       name: boardData.name,
-    //     },
-    //     {
-    //       headers: {
-    //         Authorization: `Bearer ${token}`,
-    //       },
-    //     }
-    //   );
-    //   alert("수정완료!");
-    //   navigate("/main/studygroupboard");
-    // } catch (error) {
-    //   console.error("수정에 실패했습니다:", error);
-    //   alert("수정에 실패했습니다.");
-    // }
   };
 
   const handleDelete = async () => {

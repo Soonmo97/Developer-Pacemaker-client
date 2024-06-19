@@ -249,7 +249,7 @@ const StudyPost = () => {
                   plugins: plugins,
                   cleanHTMLRules: "no_tag",
                 }}
-                defaultValue={content}
+                setContents={content}
                 onChange={handleContentChange}
               />
             </div>
