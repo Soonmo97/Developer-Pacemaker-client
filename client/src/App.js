@@ -13,6 +13,8 @@ import CreateStudyGroup from "./components/studygroup/CreateStudyGroup";
 import TestSlider from "./pages/TestSlider";
 import MyPage from "./pages/MyPage";
 import GptPage from "./pages/GptPage";
+import TestPost from "./test/TestPost";
+import StudyForm from "./test/StudyForm";
 
 // import MainSet from "./pages/MainSet";
 
@@ -25,11 +27,13 @@ const App = () => {
         <Route path="/mypage" element={<MyPage />} />
 
         <Route path="/main/studygroupboard" element={<Board />} />
+        <Route path="/main/studygroupboard/:rbSeq" element={<PostDetail />} />
+        <Route path="/main/studygroupboard/write" element={<StudyPost />} />
         <Route
-          path="/main/studygroupboard/post/:rbSeq"
-          element={<PostDetail />}
+          path="/main/studygroupboard/edit/:rbSeq"
+          element={<StudyPost />}
         />
-        <Route path="/main/studygroupboard/writePost" element={<StudyPost />} />
+
         <Route path="/main/mystudygroup" element={<StudyGroup />} />
         <Route
           path="/main/mystudygroup/createStudyGroup"
@@ -47,6 +51,8 @@ const App = () => {
 
         <Route path="/main/myplanner" element={<Myplanner />} />
         <Route path="/test" element={<TestSlider />} />
+        <Route path="/test1" element={<TestPost />} />
+        <Route path="/test2" element={<StudyForm />} />
       </Routes>
     </>
   );

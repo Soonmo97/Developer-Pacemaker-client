@@ -242,8 +242,36 @@ const Header = () => {
   const [groupGoal, setGroupGoal] = useState("");
   const [whoAmI, setWhoAmI] = useState(false);
   const { sgSeq } = useParams();
-  const [joinData, setJoinData] = useState();
-  const [members, setMembers] = useState();
+  const [joinData, setJoinData] = useState([]);
+  const [members, setMembers] = useState([]);
+  const [jSeq, setJSeq] = useState();
+  const [uSeq, setUSeq] = useState(null);
+  const [isGroupMember, setIsGroupMember] = useState(false);
+  const [nickname, setNickname] = useState("");
+
+  useEffect(() => {
+    const fetchUserProfile = async () => {
+      try {
+        const token = localStorage.getItem("accessToken");
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_SERVER}/api/user`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        console.log(response.data.nickname);
+        setNickname(response.data.nickname);
+      } catch (err) {
+        console.error(err);
+      }
+    };
+
+    fetchUserProfile();
+  }, []);
+
+  console.log("nickname :", nickname);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -259,7 +287,7 @@ const Header = () => {
         if (filteredData.length > 0) {
           setStudyGroups(filteredData[0]);
         } else {
-          setStudyGroups(null); // 데이터가 없으면 null로 설정
+          setStudyGroups(null);
         }
       } catch (error) {
         console.error("스터디 그룹 데이터를 불러오는데 실패했습니다:", error);
@@ -285,7 +313,7 @@ const Header = () => {
 
     fetchData();
     RecruitmentStatus();
-  }, []);
+  }, [sgSeq]);
 
   useEffect(() => {
     const checkUserMembership = async () => {
@@ -331,8 +359,7 @@ const Header = () => {
     joinData();
   }, [sgSeq]);
 
-  const openModal = () => {
-    setIsModalOpen(true);
+  useEffect(() => {
     const joinData = async () => {
       const token = localStorage.getItem("accessToken");
       try {
@@ -347,34 +374,76 @@ const Header = () => {
 
         console.log("신청 데이터 :", response.data);
         setJoinData(response.data);
+        if (response.data) {
+          const foundItem = response.data.find(
+            (item) => item.nickname === "asdf"
+          );
+          const jseqValue = foundItem?.joinRequest.jseq;
+          const uSeqValue = foundItem?.joinRequest.useq;
+          setJSeq(jseqValue);
+          setUSeq(uSeqValue);
+          console.log("jSeq:", jSeq);
+        }
       } catch (error) {
         console.error("가입신청 데이터를 받아오지 못했습니다.:", error);
         throw error;
       }
     };
-    const fetchMembers = async () => {
-      try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_API_SERVER}/api/group-members/${sgSeq}`
-        );
-        console.log("members", response.data);
-        setMembers(response.data);
-      } catch (error) {
-        console.error("Failed to fetch members", error);
-      }
-    };
-
-    fetchMembers();
     joinData();
+  }, [jSeq]);
+
+  useEffect(() => {
+    if (isModalOpen) {
+      const fetchMembers = async () => {
+        try {
+          const response = await axios.get(
+            `${process.env.REACT_APP_API_SERVER}/api/group-members/${sgSeq}`
+          );
+          console.log("members", response.data);
+          setMembers(response.data);
+        } catch (error) {
+          console.error("Failed to fetch members", error);
+        }
+      };
+
+      fetchMembers();
+    }
+  }, [isModalOpen, sgSeq]);
+
+  useEffect(() => {
+    if (members.find((member) => member.nickname === nickname)) {
+      setIsGroupMember(true);
+    }
+  }, [members, nickname]);
+
+  console.log(`post 데이터: seSeq는 ${sgSeq}, useq는 ${uSeq}`);
+
+  const openModal = () => {
+    setIsModalOpen(true);
   };
 
-  // const AcceptMembers = async () => {
-  //   try {
-  //     const response = await axios.post(
-  //       `${process.env.REACT_APP_API_SERVER}/api/join/accept/${jSeq}`
-  //     )
-  //   }
-  // }
+  const handleAccept = async () => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_SERVER}/api/join/accept/${jSeq}`,
+        {
+          sgSeq: sgSeq,
+          uSeq: uSeq,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("수락성공!", response.data);
+      alert("수락완료!");
+      window.location.reload();
+    } catch (error) {
+      console.error("Failed to fetch members", error);
+    }
+  };
 
   const closeModal = () => setIsModalOpen(false);
 
@@ -453,6 +522,31 @@ const Header = () => {
     }
   };
 
+  const handleJoin = async (e) => {
+    e.preventDefault();
+    const token = localStorage.getItem("accessToken");
+    try {
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_SERVER}/api/join`,
+        {
+          sgSeq: sgSeq,
+          useq: uSeq,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(response.data);
+      console.log("신청완료!");
+      alert("신청완료");
+    } catch (error) {
+      console.error("신청하기에 실패했습니다:", error);
+      alert("신청하기에 실패했습니다.");
+    }
+  };
+
   return (
     <>
       <HeaderContainer>
@@ -463,8 +557,10 @@ const Header = () => {
               <SettingsButton onClick={openModal}>관리</SettingsButton>
               <SettingsButton onClick={openSetModal}>설정</SettingsButton>
             </>
-          ) : (
+          ) : isGroupMember ? (
             <SettingsButton onClick={openSetModal}>설정</SettingsButton>
+          ) : (
+            <SettingsButton onClick={handleJoin}>신청하기</SettingsButton>
           )}
         </SetBtns>
       </HeaderContainer>
@@ -479,19 +575,20 @@ const Header = () => {
         <Section>
           <List>
             <SectionHeader>신청현황 {joinData?.length}</SectionHeader>
-            {joinData?.map((item, index) => (
-              <ListItem key={index}>
-                <div>
-                  <strong>{item.nickname}</strong>님
-                </div>
-                <div>스터디 그룹 신청합니다!</div>
-                <InviteButton>수락</InviteButton>
-              </ListItem>
-            ))}
+            {joinData &&
+              joinData?.map((item, index) => (
+                <ListItem key={index}>
+                  <div>
+                    <strong>{item.nickname}</strong>님
+                  </div>
+                  <div>스터디 그룹 신청합니다!</div>
+                  <InviteButton onClick={handleAccept}>수락</InviteButton>
+                </ListItem>
+              ))}
           </List>
           <List>
-            {/* <SectionHeader>그룹원 관리</SectionHeader>
-            {members?.map((item, index) => (
+            <SectionHeader>그룹원 관리</SectionHeader>
+            {/* {members?.map((item, index) => (
               <ListItem key={index}>
                 <div>그룹원 닉네임</div>
                 <div style={{ gap: "1rem" }}>

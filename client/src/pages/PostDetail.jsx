@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useParams, useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
@@ -7,46 +7,66 @@ import { Button } from "@mui/material";
 import axios from "axios";
 
 const PostContainer = styled.div`
-  width: 33%;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 1.5rem;
+  background-color: #f9f9f9;
+  margin-bottom: 1rem;
   margin: 2rem auto;
-  min-height: 70vh;
 `;
 
-const PostTitle = styled.h2`
-  margin-bottom: 1rem;
+const Title = styled.h1`
+  font-size: 1.7rem;
+  margin: 0;
+  display: flex;
+  align-items: center;
 `;
 
-const PostMeta = styled.div`
-  margin-bottom: 1rem;
+const Icon = styled.span`
+  font-size: 1.5rem;
+  margin-right: 1rem;
+`;
+
+const MetaData = styled.div`
   color: #777;
+  font-size: 0.95rem;
+  margin-top: 10px;
 `;
 
-const PostContent = styled.div`
-  line-height: 1.6;
-  min-height: 20rem;
-  border: 1px solid black;
+const Content = styled.div`
+  margin-top: 1rem;
+`;
+
+const Section = styled.div`
+  margin-bottom: 1rem;
+`;
+
+const SectionTitle = styled.h2`
+  font-size: 1.2rem;
+  margin: 0 0 1rem;
+`;
+
+const List = styled.ul`
+  padding-left: 1.3rem;
+`;
+
+const ListItem = styled.li`
+  margin-bottom: 1rem;
 `;
 
 const ApplyBtn = styled(Button)`
   && {
-    height: 4rem;
+    height: 3rem;
     border-radius: 15px;
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    width: 15rem;
-    font-size: large;
+    width: 7rem;
   }
 `;
 
 const DeleteBtn = styled(Button)`
   && {
-    height: 4rem;
+    height: 3rem;
     border-radius: 15px;
-    margin-top: 1rem;
-    margin-bottom: 1rem;
-    width: 15rem;
-    font-size: large;
-
+    width: 7rem;
     &:hover {
       background-color: #ff0202;
     }
@@ -60,6 +80,7 @@ const PostDetail = () => {
   const [sgSeq, setSgSeq] = useState(null);
   const [join, setJoin] = useState(null);
   const [useq, setUseq] = useState(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -180,9 +201,55 @@ const PostDetail = () => {
       );
       console.log(response.data);
       console.log("신청완료!");
+      alert("신청완료");
     } catch (error) {
       console.error("신청하기에 실패했습니다:", error);
       alert("신청하기에 실패했습니다.");
+    }
+  };
+
+  const handleEdit = async () => {
+    navigate(`/main/studygroupboard/edit/${rbSeq}`);
+
+    // try {
+    //   const token = localStorage.getItem("accessToken");
+    //   await axios.patch(
+    //     `${process.env.REACT_APP_API_SERVER}/api/recruitmentBoard/${rbSeq}`,
+    //     {
+    //       sgSeq: sgSeq,
+    //       content: boardData.content,
+    //       name: boardData.name,
+    //     },
+    //     {
+    //       headers: {
+    //         Authorization: `Bearer ${token}`,
+    //       },
+    //     }
+    //   );
+    //   alert("수정완료!");
+    //   navigate("/main/studygroupboard");
+    // } catch (error) {
+    //   console.error("수정에 실패했습니다:", error);
+    //   alert("수정에 실패했습니다.");
+    // }
+  };
+
+  const handleDelete = async () => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      await axios.delete(
+        `${process.env.REACT_APP_API_SERVER}/api/recruitmentBoard/${rbSeq}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      alert("삭제완료!");
+      navigate("/main/studygroupboard");
+    } catch (error) {
+      console.error("삭제에 실패했습니다:", error);
+      alert("삭제에 실패했습니다.");
     }
   };
 
@@ -201,36 +268,61 @@ const PostDetail = () => {
   return (
     <>
       <Navbar />
-      <PostContainer>
-        <PostTitle>{boardData.name}</PostTitle>
-        <PostMeta>
-          그룹명 : <strong>{boardData.studyGroup.name}</strong>
-        </PostMeta>
-        <PostMeta>
-          작성자: <strong>{boardData.nickname}</strong> | 작성일:{" "}
-          <strong>{formatDate(boardData.registered)} </strong>| 모집여부:{" "}
-          <strong style={{ color: join ? "#007bff" : "#dc3545" }}>
-            {join ? "모집중" : "모집마감"}
-          </strong>
-        </PostMeta>
-        <PostContent>{boardData.content}</PostContent>
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          {writer ? (
-            <div style={{ display: "flex", gap: "1rem" }}>
-              <ApplyBtn variant="contained" color="secondary">
-                수정
-              </ApplyBtn>
-              <DeleteBtn style={{ backgroundColor: "#fb4d26", color: "white" }}>
-                삭제
-              </DeleteBtn>
+      <div
+        style={{ display: "flex", justifyContent: "center", minHeight: "77vh" }}
+      >
+        <PostContainer style={{ width: "35%", minHeight: "30vh" }}>
+          <Title>
+            <Icon>📅</Icon>
+            {boardData.name}
+          </Title>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            <MetaData>
+              {boardData.nickname} · 작성일 {formatDate(boardData.registered)} ·{" "}
+              <strong style={{ color: join ? "#007bff" : "#dc3545" }}>
+                {join ? "모집중" : "모집마감"}
+              </strong>{" "}
+            </MetaData>
+            <div style={{ display: "flex", justifyContent: "center" }}>
+              {writer ? (
+                <div style={{ display: "flex", gap: "1rem" }}>
+                  <ApplyBtn
+                    variant="contained"
+                    color="secondary"
+                    onClick={handleEdit}
+                  >
+                    수정
+                  </ApplyBtn>
+                  <DeleteBtn
+                    style={{ backgroundColor: "#fb4d26", color: "white" }}
+                    onClick={handleDelete}
+                  >
+                    삭제
+                  </DeleteBtn>
+                </div>
+              ) : (
+                <ApplyBtn
+                  variant="contained"
+                  color="primary"
+                  onClick={handleJoin}
+                >
+                  신청하기
+                </ApplyBtn>
+              )}
             </div>
-          ) : (
-            <ApplyBtn variant="contained" color="primary" onClick={handleJoin}>
-              신청하기
-            </ApplyBtn>
-          )}
-        </div>
-      </PostContainer>
+          </div>
+          <br />
+          <div style={{ borderBottom: "1px solid #ccc" }}></div>
+          <Content>
+            <Section>
+              <SectionTitle> 그룹명 : {boardData.studyGroup.name}</SectionTitle>
+              <List>
+                <ListItem>{boardData.content}</ListItem>
+              </List>
+            </Section>
+          </Content>
+        </PostContainer>
+      </div>
       <Footer />
     </>
   );
