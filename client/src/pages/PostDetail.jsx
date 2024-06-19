@@ -58,7 +58,8 @@ const ApplyBtn = styled(Button)`
   && {
     height: 2.5rem;
     border-radius: 15px;
-    width: 5rem;
+    width: 6rem;
+    font-weight: bold;
   }
 `;
 
@@ -257,9 +258,9 @@ const PostDetail = () => {
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             <MetaData>
               {boardData.nickname} · 작성일 {formatDate(boardData.registered)} ·{" "}
-              <strong style={{ color: join ? "#007bff" : "#dc3545" }}>
+              {/* <strong style={{ color: join ? "#007bff" : "#dc3545" }}>
                 {join ? "모집중" : "모집마감"}
-              </strong>{" "}
+              </strong>{" "} */}
             </MetaData>
             <div style={{ display: "flex", justifyContent: "center" }}>
               {writer ? (
