@@ -1,4 +1,5 @@
 // TodoList.js
+import { useState, useRef, useEffect } from "react";
 import React from "react";
 import styled from "styled-components";
 
@@ -27,20 +28,28 @@ const TodoButton = styled.button`
   cursor: pointer;
 `;
 
-const UserTodoListSet = ({ todos, handleCompleteTodo, handleDeleteTodo }) => (
-  <TodoItemContainer>
-    {todos.map((todo, index) => (
-      <TodoItem key={index}>
-        <span>{todo}</span>
-        <div>
-          <TodoButton onClick={() => handleCompleteTodo(index)} $completed>
-            완료
-          </TodoButton>
-          <TodoButton onClick={() => handleDeleteTodo(index)}>삭제</TodoButton>
-        </div>
-      </TodoItem>
-    ))}
-  </TodoItemContainer>
-);
+const UserTodoListSet = ({ todos, handleCompleteTodo, handleDeleteTodo }) => {
+  useEffect(() => {
+    console.log("UserTodoListSet=======", todos);
+  }, []);
+
+  return (
+    <TodoItemContainer>
+      {todos.map((todo, index) => (
+        <TodoItem key={index}>
+          <span>{todo}</span>
+          <div>
+            <TodoButton onClick={() => handleCompleteTodo(index)} $completed>
+              완료
+            </TodoButton>
+            <TodoButton onClick={() => handleDeleteTodo(index)}>
+              삭제
+            </TodoButton>
+          </div>
+        </TodoItem>
+      ))}
+    </TodoItemContainer>
+  );
+};
 
 export default UserTodoListSet;

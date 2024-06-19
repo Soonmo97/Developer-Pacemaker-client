@@ -1,4 +1,4 @@
-// CompletedTodoList.js
+// UnCompletedTodoList.js
 import React from "react";
 import styled from "styled-components";
 
@@ -27,11 +27,11 @@ const TodoButton = styled.button`
   cursor: pointer;
 `;
 
-const UserCompletedTodoList = ({ completedTodos, handleDeleteTodo }) => (
+const UserUncompletedTodoList = ({ UncompletedTodos, handleDeleteTodo }) => (
   <div>
-    <h3>Completed</h3>
+    <h3>Uncompleted</h3>
     <TodoItemContainer>
-      {completedTodos.map((todo) => (
+      {UncompletedTodos.map((todo) => (
         <TodoItem key={todo.tseq}>
           <span>
             <li>{todo.content}</li>
@@ -49,4 +49,4 @@ const UserCompletedTodoList = ({ completedTodos, handleDeleteTodo }) => (
   </div>
 );
 
-export default UserCompletedTodoList;
+export default UserUncompletedTodoList;

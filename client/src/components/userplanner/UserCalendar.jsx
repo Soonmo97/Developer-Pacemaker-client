@@ -1,3 +1,4 @@
+import axios from "axios";
 import React, { useState } from "react";
 import moment from "moment";
 import styled from "styled-components";
@@ -163,8 +164,27 @@ const UserCalendar = () => {
   const [activeStartDate, setActiveStartDate] = useState(today);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
+  const [response, setResponse] = useState(null);
 
-  const handleDateClick = (date) => {
+  const handleDateClick = async (date) => {
+    const formattedDate = moment(date).format("YYYY-MM-DD");
+    console.log("============date", formattedDate);
+
+    try {
+      const token = localStorage.getItem("accessToken");
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_SERVER}/api/planner?date=${formattedDate}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("======response========", response.data);
+      setResponse(response.data);
+    } catch (error) {
+      console.error("Failed to fetch data:", error);
+    }
     setSelectedDate(date);
     setModalOpen(true);
   };
@@ -224,6 +244,7 @@ const UserCalendar = () => {
           onClose={handleModalClose}
           titleDate={moment(selectedDate).format("YYYY년 MM월 DD일")}
           selectedDate={selectedDate}
+          response={response}
         />
       )}
     </div>

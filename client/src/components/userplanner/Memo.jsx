@@ -62,82 +62,28 @@ const Button = styled.button`
   }
 `;
 
-const Memo = ({ selectedDate }) => {
-  const [note, setNote] = useState("");
-  const [isEditing, setIsEditing] = useState(false);
+const Memo = ({ selectedDate, memo, pSeq, onMemoChange, onSubmit }) => {
+  const [note, setNote] = useState(memo);
   const noteRef = useRef(null);
-  const [rSeq, setRSeq] = useState(null);
+  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
-    const getData = async () => {
-      const token = localStorage.getItem("accessToken");
-      try {
-        const response = await axios.get(
-          `${process.env.REACT_APP_API_SERVER}/api/report`,
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
+    setNote(memo);
+  }, [memo]);
 
-        console.log("데이터를 성공적으로 받아왔습니다.", response.data);
-        if (selectedDate) {
-          const formattedSelectedDate =
-            moment(selectedDate).format("YYYY-MM-DD");
-          const filtered = response.data.filter((item) =>
-            item.registered.startsWith(formattedSelectedDate)
-          );
-          if (filtered.length > 0) {
-            setNote(filtered[0].content);
-            setRSeq(filtered[0].rSeq);
-            console.log("rSeq:", rSeq);
-          } else {
-            setNote("");
-            setRSeq(null);
-          }
-        }
-      } catch (error) {
-        console.error("데이터를 받아오는데 실패했습니다:", error);
-      }
-    };
+  const formattedDate = moment(selectedDate).format("YYYY-MM-DD");
 
-    getData();
-  }, [selectedDate, rSeq]);
-
-  // POST
-  const postData = async () => {
-    const token = localStorage.getItem("accessToken");
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_SERVER}/api/report`,
-        { content: note, title: "" },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      console.log("데이터가 성공적으로 전송되었습니다.", response.data);
-      setRSeq(response.data.rSeq); // rSeq 값을 저장
-    } catch (error) {
-      console.error("데이터를 전송하는 데 실패했습니다:", error);
-    }
-  };
-
-  // PATCH
   const updateData = async () => {
-    if (rSeq === null) {
-      console.error("rSeq 값이 설정되지 않았습니다.");
+    if (pSeq === null) {
+      console.error("pSeq 값이 설정되지 않았습니다.");
       return;
     }
 
     try {
       const token = localStorage.getItem("accessToken");
       await axios.patch(
-        `${process.env.REACT_APP_API_SERVER}/api/report/${rSeq}`,
-        { content: note },
+        `${process.env.REACT_APP_API_SERVER}/api/planner/patch/${pSeq}`,
+        { memo: note },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -146,28 +92,31 @@ const Memo = ({ selectedDate }) => {
       );
 
       console.log("데이터가 성공적으로 업데이트되었습니다.");
+      alert("데이터가 성공적으로 업데이트되었습니다.");
     } catch (error) {
       console.error("데이터를 업데이트하는 데 실패했습니다:", error);
+      alert("데이터를 업데이트하는 데 실패했습니다.");
     }
   };
 
-  useEffect(() => {
-    setIsEditing(true);
-  }, [isEditing]);
-
   const handleChange = (e) => {
-    setNote(e.target.value);
-  };
-
-  const handleSave = () => {
-    setIsEditing(false);
-    postData();
+    if (e && e.target) {
+      const { value } = e.target;
+      setNote(value);
+      onMemoChange(value); // 부모 컴포넌트의 상태도 업데이트
+    } else {
+      console.error("Event or event target is undefined");
+    }
   };
 
   const handleEdit = () => {
-    setIsEditing(true);
     noteRef.current.focus();
     updateData();
+  };
+
+  const handleSave = () => {
+    onSubmit();
+    setIsEditing(true);
   };
 
   return (
@@ -177,21 +126,13 @@ const Memo = ({ selectedDate }) => {
         value={note}
         onChange={handleChange}
         placeholder="학습 내용을 입력하세요."
-        readOnly={!isEditing} // isEditing이 false일 때 읽기 전용으로 설정
       />
       <ButtonWrapper>
-        {note.trim() ? (
+        {isEditing || pSeq ? (
           <Button onClick={handleEdit}>수정</Button>
         ) : (
           <Button className="save" onClick={handleSave}>
             작성
-            {/* {isEditing ? (
-//           <Button className="save" onClick={handleSave}>
-//             저장
-//           </Button>
-//         ) : (
-//           <Button className="edit" onClick={handleEdit}>
-//             수정 */}
           </Button>
         )}
       </ButtonWrapper>
