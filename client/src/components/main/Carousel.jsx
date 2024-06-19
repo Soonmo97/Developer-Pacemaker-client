@@ -115,7 +115,7 @@ const Carousel = () => {
             },
           }
         );
-        console.log(response.data);
+        console.log("추천스터디 :", response.data);
         setStudyGroups(response.data);
       } catch (error) {
         console.error("스터디 그룹 데이터를 불러오는데 실패했습니다:", error);

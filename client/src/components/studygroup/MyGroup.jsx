@@ -45,6 +45,7 @@ const SlideItem = styled.div`
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  height: 25vh;
 
   &:hover {
     transform: scale(1.05);
@@ -118,7 +119,7 @@ const MyGroup = () => {
             },
           }
         );
-        console.log(response.data);
+        console.log("내 스터디 그룹: ", response.data);
         setGroupList(response.data);
       } catch (error) {
         console.error("Failed to fetch group list:", error);
@@ -138,7 +139,7 @@ const MyGroup = () => {
         );
 
         fetchGroupList();
-        console.log(response.data);
+        console.log("그룹장 ", response.data);
         setMyStudyGroups(response.data);
       } catch (error) {
         console.error("스터디 그룹 데이터를 불러오는데 실패했습니다:", error);
@@ -148,8 +149,8 @@ const MyGroup = () => {
     fetchData();
   }, []);
 
-  const difference = myStudyGroups.filter(
-    (item2) => !groupList.some((item1) => item1.sgSeq === item2.sgSeq)
+  const difference = groupList.filter(
+    (item2) => !myStudyGroups.some((item1) => item1.sgSeq === item2.sgSeq)
   );
 
   const settings = {

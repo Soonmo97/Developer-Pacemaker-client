@@ -8,6 +8,7 @@ import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
 import styled from "styled-components";
 import { Button } from "@mui/material";
+import { useNavigate, useParams } from "react-router-dom";
 
 const MainContainer = styled.div`
   display: flex;
@@ -47,10 +48,14 @@ const TitleInput = styled.input`
 `;
 
 const StudyPost = () => {
+  const { rbSeq } = useParams();
+  const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [selectedGroupSeq, setSelectedGroupSeq] = useState(null);
   const [groupList, setGroupList] = useState([]);
+  const [boardData, setBoardData] = useState(null);
+  const [sgSeq, setSgSeq] = useState(null);
 
   useEffect(() => {
     const fetchGroupList = async () => {
@@ -64,7 +69,6 @@ const StudyPost = () => {
             },
           }
         );
-        console.log(response.data);
         setGroupList(response.data);
       } catch (error) {
         console.error("Failed to fetch group list:", error);
@@ -73,6 +77,41 @@ const StudyPost = () => {
 
     fetchGroupList();
   }, []);
+
+  useEffect(() => {
+    if (rbSeq) {
+      const fetchPostData = async () => {
+        try {
+          const token = localStorage.getItem("accessToken");
+          const response = await axios.get(
+            `${process.env.REACT_APP_API_SERVER}/api/recruitmentBoard`,
+            {
+              headers: {
+                Authorization: `Bearer ${token}`,
+              },
+            }
+          );
+          const filteredData = response.data.filter(
+            (item) => item.rbSeq.toString() === rbSeq
+          );
+          if (filteredData.length > 0) {
+            const postData = filteredData[0];
+            setBoardData(postData);
+            setSgSeq(postData.studyGroup.sgSeq);
+            setContent(postData.content);
+            setTitle(postData.name);
+            console.log(postData);
+          } else {
+            setBoardData(null);
+          }
+        } catch (error) {
+          console.error("Failed to fetch post data:", error);
+        }
+      };
+
+      fetchPostData();
+    }
+  }, [rbSeq]);
 
   const handleTitleChange = (e) => setTitle(e.target.value);
   const handleContentChange = (content) => {
@@ -97,34 +136,52 @@ const StudyPost = () => {
       return;
     }
 
-    if (!selectedGroupSeq) {
+    if (!selectedGroupSeq && !rbSeq) {
       alert("그룹을 선택해주세요.");
       return;
     }
-    console.log(selectedGroupSeq);
 
     const token = localStorage.getItem("accessToken");
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_SERVER}/api/recruitmentBoard`,
-        {
-          name: title,
-          content: content,
-          sgSeq: selectedGroupSeq,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
 
-      console.log("글이 성공적으로 작성되었습니다.", response.data);
-      alert("글이 성공적으로 작성되었습니다.");
-      window.location.href = "/main/studygroupboard";
+    try {
+      if (rbSeq) {
+        // 수정 모드
+        await axios.patch(
+          `${process.env.REACT_APP_API_SERVER}/api/recruitmentBoard/${rbSeq}`,
+          {
+            name: title,
+            content: content,
+            sgSeq: sgSeq,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        alert("수정이 완료되었습니다.");
+        navigate("/main/studygroupboard");
+      } else {
+        // 작성 모드
+        await axios.post(
+          `${process.env.REACT_APP_API_SERVER}/api/recruitmentBoard`,
+          {
+            name: title,
+            content: content,
+            sgSeq: selectedGroupSeq,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        alert("글이 성공적으로 작성되었습니다.");
+      }
+      navigate("/main/studygroupboard");
     } catch (error) {
-      console.error("글 작성에 실패했습니다:", error);
-      alert("글 작성에 실패했습니다.");
+      console.error("글 작성/수정에 실패했습니다:", error);
+      alert("글 작성/수정에 실패했습니다.");
     }
   };
 
@@ -134,21 +191,25 @@ const StudyPost = () => {
       <MainContainer>
         <div>
           <h1>팀원 모집 게시판</h1>
-          <SelectBar
-            value={selectedGroupSeq || ""}
-            onChange={(e) => {
-              setSelectedGroupSeq(e.target.value);
-            }}
-          >
-            <option value="" disabled>
-              스터디 그룹을 선택하세요.
-            </option>
-            {groupList.map((group) => (
-              <option key={group.sgSeq} value={group.sgSeq}>
-                {group.name}
+          {!rbSeq ? (
+            <SelectBar
+              value={selectedGroupSeq || ""}
+              onChange={(e) => {
+                setSelectedGroupSeq(e.target.value);
+              }}
+            >
+              <option value="" disabled>
+                스터디 그룹을 선택하세요.
               </option>
-            ))}
-          </SelectBar>
+              {groupList.map((group) => (
+                <option key={group.sgSeq} value={group.sgSeq}>
+                  {group.name}
+                </option>
+              ))}
+            </SelectBar>
+          ) : (
+            <div>그룹명: {boardData?.studyGroup?.name || "로딩 중..."}</div>
+          )}
           <div>
             <TitleInput
               type="text"
@@ -167,7 +228,7 @@ const StudyPost = () => {
                 setOptions={{
                   width: "100%",
                   height: "400px",
-                  charCounter: true,
+                  // charCounter: true,
                   placeholder: "내용을 입력하세요...",
                   popupDisplay: "local",
                   buttonList: [
@@ -188,13 +249,13 @@ const StudyPost = () => {
                   plugins: plugins,
                   cleanHTMLRules: "no_tag",
                 }}
-                defaultValue={content}
+                setContents={content}
                 onChange={handleContentChange}
               />
             </div>
             <div>
               <WriteButton variant="contained" color="primary" type="submit">
-                작성
+                {rbSeq ? "수정" : "작성"}
               </WriteButton>
             </div>
           </form>

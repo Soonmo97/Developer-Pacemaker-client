@@ -42,6 +42,15 @@ const BoardTd = styled.td`
   text-align: center;
 `;
 
+const BoardTd2 = styled.td`
+  border-bottom: 1px solid #ccc;
+  text-align: center;
+  font-weight: bold;
+  border-radius: 20px;
+  color: ${(props) => (props.recruiting ? "#007bff" : "#dc3545")};
+  /* color: white; */
+`;
+
 const SearchWrapper = styled.div`
   display: flex;
   align-items: center;
@@ -144,18 +153,20 @@ const Board = () => {
               <tr key={item.rbSeq}>
                 <BoardTd>{item.rbSeq}</BoardTd>
                 <BoardTd>
-                  <Link to={`/main/studygroupboard/post/${item.rbSeq}`}>
+                  <Link to={`/main/studygroupboard/${item.rbSeq}`}>
                     {item.name}
                   </Link>
                 </BoardTd>
                 <BoardTd>{item.nickname}</BoardTd>
                 <BoardTd>{formatDate(item.registered)}</BoardTd>
-                <BoardTd>{item.status}</BoardTd>
+                <BoardTd2 recruiting={item.studyGroup.status.toString()}>
+                  {item.studyGroup.status ? "모집중" : "모집마감"}
+                </BoardTd2>
               </tr>
             ))}
           </tbody>
         </BoardTable>
-        <Link to="/main/studygroupboard/writePost">
+        <Link to="/main/studygroupboard/write">
           <WriteButton variant="contained" color="primary">
             글쓰기
           </WriteButton>

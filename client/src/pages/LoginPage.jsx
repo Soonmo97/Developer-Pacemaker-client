@@ -364,6 +364,8 @@ function LoginPage() {
         },
         { headers: { "Content-Type": "application/json" } }
       );
+      console.log(response.data.useq);
+      // console.log(response.data);
       if (response.data.token) {
         localStorage.setItem("accessToken", response.data.token);
         setShowModal(true);
