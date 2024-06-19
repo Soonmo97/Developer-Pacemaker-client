@@ -1,10 +1,10 @@
-import axios from "axios";
-import React, { useState } from "react";
-import moment from "moment";
-import styled from "styled-components";
-import Calendar from "react-calendar";
-import "react-calendar/dist/Calendar.css";
-import UserCalendarModal from "./UserCalendarModal";
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import moment from 'moment';
+import styled from 'styled-components';
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
+import UserCalendarModal from './UserCalendarModal';
 
 const CalendarBody = styled.div`
   display: flex;
@@ -70,12 +70,12 @@ const StyledCalendarWrapper = styled.div`
   }
 
   /* 일요일에만 빨간 폰트 */
-  .react-calendar__month-view__weekdays__weekday--weekend abbr[title="일요일"] {
+  .react-calendar__month-view__weekdays__weekday--weekend abbr[title='일요일'] {
     color: ${(props) => props.theme.red_1};
   }
 
   /* 토요일에만 빨간 폰트 */
-  .react-calendar__month-view__weekdays__weekday--weekend abbr[title="토요일"] {
+  .react-calendar__month-view__weekdays__weekday--weekend abbr[title='토요일'] {
     color: ${(props) => props.theme.blue_1};
   }
 
@@ -166,12 +166,38 @@ const UserCalendar = () => {
   const [selectedDate, setSelectedDate] = useState(null);
   const [response, setResponse] = useState(null);
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem('accessToken');
+        const formattedDate = moment(activeStartDate).format('YYYY-MM');
+        const response = await axios.get(
+          `${process.env.REACT_APP_API_SERVER}/api/planner/grass`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            params: {
+              yearMonthStr: formattedDate,
+            },
+          }
+        );
+
+        console.log('=== grass ===', response.data);
+      } catch (err) {
+        console.error('Error fetching data:', err);
+      }
+    };
+
+    fetchData();
+  }, [activeStartDate]);
+
   const handleDateClick = async (date) => {
-    const formattedDate = moment(date).format("YYYY-MM-DD");
-    console.log("============date", formattedDate);
+    const formattedDate = moment(date).format('YYYY-MM-DD');
+    console.log('============date', formattedDate);
 
     try {
-      const token = localStorage.getItem("accessToken");
+      const token = localStorage.getItem('accessToken');
       const response = await axios.get(
         `${process.env.REACT_APP_API_SERVER}/api/planner?date=${formattedDate}`,
         {
@@ -180,10 +206,10 @@ const UserCalendar = () => {
           },
         }
       );
-      console.log("======response========", response.data);
+      console.log('======response========', response.data);
       setResponse(response.data);
     } catch (error) {
-      console.error("Failed to fetch data:", error);
+      console.error('Failed to fetch data:', error);
     }
     setSelectedDate(date);
     setModalOpen(true);
@@ -211,9 +237,9 @@ const UserCalendar = () => {
             onClickDay={handleDateClick}
             value={date}
             onChange={handleDateChange}
-            formatDay={(locale, date) => moment(date).format("D")}
-            formatYear={(locale, date) => moment(date).format("YYYY")}
-            formatMonthYear={(locale, date) => moment(date).format("YYYY. MM")}
+            formatDay={(locale, date) => moment(date).format('D')}
+            formatYear={(locale, date) => moment(date).format('YYYY')}
+            formatMonthYear={(locale, date) => moment(date).format('YYYY. MM')}
             calendarType="gregory"
             showNeighboringMonth={false}
             next2Label={null}
@@ -226,11 +252,11 @@ const UserCalendar = () => {
             tileContent={({ date, view }) => {
               let html = [];
               if (
-                view === "month" &&
+                view === 'month' &&
                 date.getMonth() === today.getMonth() &&
                 date.getDate() === today.getDate()
               ) {
-                html.push(<StyledToday key={"today"}>오늘</StyledToday>);
+                html.push(<StyledToday key={'today'}>오늘</StyledToday>);
               }
 
               return <>{html}</>;
@@ -242,7 +268,7 @@ const UserCalendar = () => {
       {modalOpen && (
         <UserCalendarModal
           onClose={handleModalClose}
-          titleDate={moment(selectedDate).format("YYYY년 MM월 DD일")}
+          titleDate={moment(selectedDate).format('YYYY년 MM월 DD일')}
           selectedDate={selectedDate}
           response={response}
         />

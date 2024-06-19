@@ -1,5 +1,5 @@
-import styled from "styled-components";
-import GroupTodoList from "./groupTodolist/GroupTodoList";
+import styled from 'styled-components';
+import GroupTodoList from './groupTodolist/GroupTodoList';
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -57,7 +57,7 @@ const SectionTitle = styled.h3`
   color: red;
 `;
 
-const StudyGroupPlannerModal = ({ onClose, children }) => {
+const StudyGroupPlannerModal = ({ onClose, children, date }) => {
   return (
     <ModalOverlay>
       <ModalContent>
@@ -65,15 +65,15 @@ const StudyGroupPlannerModal = ({ onClose, children }) => {
           <ModalTitle>{children}</ModalTitle>
           <CloseButton onClick={onClose}>X</CloseButton>
         </ModalHeader>
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <ModalBody style={{ width: "100%" }}>
-            <TodoListSection style={{ border: "1px solid black" }}>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <ModalBody style={{ width: '100%' }}>
+            <TodoListSection style={{ border: '1px solid black' }}>
               <SectionTitle
-                style={{ display: "flex", justifyContent: "center" }}
+                style={{ display: 'flex', justifyContent: 'center' }}
               >
                 TodoList
               </SectionTitle>
-              <GroupTodoList></GroupTodoList>
+              <GroupTodoList date={date}></GroupTodoList>
             </TodoListSection>
           </ModalBody>
         </div>

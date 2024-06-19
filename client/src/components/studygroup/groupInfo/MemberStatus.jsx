@@ -1,17 +1,17 @@
-import React, { useEffect, useState } from "react";
-import styled, { ThemeProvider } from "styled-components";
-import Modal from "react-modal";
-import StudyGroupPlanner from "./StudyGroupPlanner";
-import axios from "axios";
-import { useParams } from "react-router-dom";
+import React, { useEffect, useState } from 'react';
+import styled, { ThemeProvider } from 'styled-components';
+import Modal from 'react-modal';
+import StudyGroupPlanner from './StudyGroupPlanner';
+import axios from 'axios';
+import { useParams } from 'react-router-dom';
 
 const theme = {
-  red_1: "#FF0000",
-  blue_1: "#0260f8",
-  primary_2: "#fa9805",
-  primary_3: "#ffaa0c",
-  yellow_2: "#f9e8c3",
-  br_2: "#666666",
+  red_1: '#FF0000',
+  blue_1: '#0260f8',
+  primary_2: '#fa9805',
+  primary_3: '#ffaa0c',
+  yellow_2: '#f9e8c3',
+  br_2: '#666666',
 };
 
 const StatusContainer = styled.div`
@@ -87,10 +87,10 @@ const MemberStatus = () => {
         const response = await axios.get(
           `${process.env.REACT_APP_API_SERVER}/api/group-members/${sgSeq}`
         );
-        console.log("members", response.data);
+        console.log('members', response.data);
         setMembers(response.data.slice(0, 15)); // 최대 15명으로 제한
       } catch (error) {
-        console.error("Failed to fetch members", error);
+        console.error('Failed to fetch members', error);
       }
     };
 
@@ -137,7 +137,7 @@ const MemberStatus = () => {
         <MemberTable>
           <thead>
             <MemberRow>
-              <MemberCell colSpan={5} style={{ backgroundColor: "#faf8f8" }}>
+              <MemberCell colSpan={5} style={{ backgroundColor: '#faf8f8' }}>
                 그룹원
               </MemberCell>
             </MemberRow>
@@ -150,7 +150,7 @@ const MemberStatus = () => {
         isOpen={isModalOpen}
         onRequestClose={closeModal}
         contentLabel="Member Detail Modal"
-        style={{ display: "flex", justifyContent: "center" }}
+        style={{ display: 'flex', justifyContent: 'center' }}
       >
         <CloseButton onClick={closeModal}>X</CloseButton>
         {selectedMember && (
