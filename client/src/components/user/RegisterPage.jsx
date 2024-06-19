@@ -250,6 +250,7 @@ function RegisterPage() {
     nickname: "",
     email: "",
     pw: "",
+    // img: "",
   });
   const [serverError, setServerError] = useState("");
   const [errors, setErrors] = useState({});
