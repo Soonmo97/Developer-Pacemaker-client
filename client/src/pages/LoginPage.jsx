@@ -130,7 +130,11 @@ const CheckButton = styled.button`
   }
 `;
 const SuccessModal = styled.div`
-  width: 80%;
+  position: absolute; /* 위치를 절대값으로 설정 */
+  top: 40%; /* 위에서 20% 지점에 위치하도록 설정 */
+  left: 50%;
+  transform: translate(-50%, -20%); /* 가운데 정렬을 위해 translate 사용 */
+  width: 60%;
   max-width: 400px;
   margin: 0 auto; /* 가운데 정렬을 위해 margin auto 추가 */
   background-color: white;
