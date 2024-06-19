@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import axios from "axios";
 import UserCompletedTodoList from "./UserCompletedTodoList";
+import UserUncompletedTodoList from "./UserUncompletedTodoList";
 import UserTodoListSet from "./UserTodoListSet";
 
 const API_URL = "http://localhost:8080/api/todo"; // 백엔드 API 주소로 변경
@@ -29,28 +30,33 @@ const TodoButton = styled.button`
 `;
 
 // API 함수
-const getTodos = async (uSeq, pSeq) => {
-  try {
-    const response = await axios.get(
-      `${process.env.REACT_APP_API_SERVER}/api/todo/${pSeq}`,
-      {
-        headers: { Authorization: `Bearer ${uSeq}` },
-      }
-    );
-    return response.data;
-  } catch (error) {
-    console.error("Failed to fetch todos:", error);
-    throw error;
-  }
-};
+// const getTodos = async (uSeq, pSeq) => {
+//   try {
+//     const response = await axios.get(
+//       `${process.env.REACT_APP_API_SERVER}/api/todo/${pSeq}`,
+//       {
+//         headers: { Authorization: `Bearer ${uSeq}` },
+//       }
+//     );
+//     return response.data;
+//   } catch (error) {
+//     console.error("Failed to fetch todos:", error);
+//     throw error;
+//   }
+// };
 
-const addTodo = async (uSeq, pSeq, todo) => {
+const addTodo = async (pSeq, todo) => {
   try {
+    if (pSeq == null) {
+      alert("플래너를 먼저 생성해주세요.");
+      return false;
+    }
+    const token = localStorage.getItem("accessToken");
     const response = await axios.post(
       `${process.env.REACT_APP_API_SERVER}/api/todo/${pSeq}`,
       todo,
       {
-        headers: { Authorization: `Bearer ${uSeq}` },
+        headers: { Authorization: `Bearer ${token}` },
       }
     );
     return response.data;
@@ -60,28 +66,13 @@ const addTodo = async (uSeq, pSeq, todo) => {
   }
 };
 
-const updateTodo = async (uSeq, tSeq, todo) => {
+const deleteTodo = async (tSeq) => {
   try {
-    const response = await axios.patch(
-      `${process.env.REACT_APP_API_SERVER}/api/todo/${tSeq}`,
-      todo,
-      {
-        headers: { Authorization: `Bearer ${uSeq}` },
-      }
-    );
-    return response.data;
-  } catch (error) {
-    console.error("Failed to update todo:", error);
-    throw error;
-  }
-};
-
-const deleteTodo = async (uSeq, tSeq) => {
-  try {
+    const token = localStorage.getItem("accessToken");
     const response = await axios.delete(
       `${process.env.REACT_APP_API_SERVER}/api/todo/${tSeq}`,
       {
-        headers: { Authorization: `Bearer ${uSeq}` },
+        headers: { Authorization: `Bearer ${token}` },
       }
     );
     return response.data;
@@ -91,33 +82,67 @@ const deleteTodo = async (uSeq, tSeq) => {
   }
 };
 
-const UserTodoList = ({ uSeq, pSeq }) => {
-  const [todos, setTodos] = useState([]);
+const updateTodo = async (tSeq, todo) => {
+  try {
+    const token = localStorage.getItem("accessToken");
+    const response = await axios.patch(
+      `${process.env.REACT_APP_API_SERVER}/api/todo/${tSeq}`,
+      todo,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Failed to update todo:", error);
+    throw error;
+  }
+};
+
+const UserTodoList = ({ uSeq, pSeq, todo, onTodosChange }) => {
+  const [todos, setTodos] = useState(todo);
   const [completedTodos, setCompletedTodos] = useState([]);
+  const [uncompletedTodos, setUncompletedTodos] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [editIndex, setEditIndex] = useState(null);
 
-  useEffect(() => {
-    const fetchTodos = async () => {
-      try {
-        console.log("Fetching todos...");
-        const todos = await getTodos(uSeq, pSeq);
-        console.log("Fetched todos:", todos);
-        setTodos(todos);
-      } catch (error) {
-        console.error("Failed to fetch todos:", error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchTodos = async () => {
+  //     try {
+  //       console.log("====투두리스트===", todos);
+  //       console.log("Fetching todos...");
+  //       const todos = await getTodos(uSeq, pSeq);
+  //       console.log("Fetched todos:", todos);
+  //       setTodos(todos);
+  //     } catch (error) {
+  //       console.error("Failed to fetch todos:", error);
+  //     }
+  //   };
 
-    fetchTodos();
-  }, [uSeq, pSeq]);
+  //   fetchTodos();
+  // }, [uSeq, pSeq]);
+
+  useEffect(() => {
+    if (todos) {
+      const filteredTodos = todos.filter((todoItem) => todoItem.isCompleted);
+      setCompletedTodos(filteredTodos);
+      const UncompletedTodos = todos.filter(
+        (todoItem) => !todoItem.isCompleted
+      );
+      setUncompletedTodos(UncompletedTodos);
+    }
+  }, []);
+
+  const handleInputChange = (value) => {
+    setInputValue(value);
+    onTodosChange(value);
+  };
 
   const handleAddTodo = async () => {
     if (inputValue.trim() === "") return;
 
     const newTodo = { content: inputValue };
-
     try {
       if (isEditing) {
         const updatedTodo = await updateTodo(
@@ -131,8 +156,13 @@ const UserTodoList = ({ uSeq, pSeq }) => {
         setIsEditing(false);
         setEditIndex(null);
       } else {
-        const addedTodo = await addTodo(uSeq, pSeq, newTodo);
-        setTodos([...todos, addedTodo]);
+        const addedTodo = await addTodo(pSeq, newTodo);
+        if (!addedTodo) {
+          setInputValue("");
+          return;
+        }
+        // 추가하면 바로 미완료 목록으로 추가되게끔 설정 (임시)
+        setUncompletedTodos([...uncompletedTodos, newTodo]);
       }
       setInputValue("");
     } catch (error) {
@@ -149,7 +179,7 @@ const UserTodoList = ({ uSeq, pSeq }) => {
   const handleCompleteTodo = async (index) => {
     const todo = todos[index];
     try {
-      await deleteTodo(uSeq, todo.tSeq);
+      await deleteTodo(todo.tSeq);
       setTodos(todos.filter((_, idx) => idx !== index));
       setCompletedTodos([...completedTodos, todo]);
     } catch (error) {
@@ -157,18 +187,33 @@ const UserTodoList = ({ uSeq, pSeq }) => {
     }
   };
 
-  const handleDeleteTodo = async (index) => {
+  const handleDeleteTodo = async (tSeq) => {
     try {
-      await deleteTodo(uSeq, todos[index].tSeq);
-      setTodos(todos.filter((_, idx) => idx !== index));
+      await deleteTodo(tSeq);
+      setCompletedTodos(completedTodos.filter((todo) => todo.tseq !== tSeq));
+      setUncompletedTodos(
+        uncompletedTodos.filter((todo) => todo.tseq !== tSeq)
+      );
     } catch (error) {
       console.error("Failed to delete todo:", error);
     }
   };
 
-  const handleDeleteCompletedTodo = (index) => {
-    setCompletedTodos(completedTodos.filter((_, idx) => idx !== index));
+  const handleUpdateTodo = async (tSeq) => {
+    try {
+      await updateTodo(tSeq);
+      // setCompletedTodos(completedTodos.filter((todo) => todo.tseq !== tSeq));
+      // setUncompletedTodos(
+      //   uncompletedTodos.filter((todo) => todo.tseq !== tSeq)
+      // );
+    } catch (error) {
+      console.error("Failed to update todo:", error);
+    }
   };
+
+  // const handleDeleteCompletedTodo = (index) => {
+  //   setCompletedTodos(completedTodos.filter((_, idx) => idx !== index));
+  // };
 
   return (
     <TodoListContainer>
@@ -176,7 +221,7 @@ const UserTodoList = ({ uSeq, pSeq }) => {
         <TodoInput
           type="text"
           value={inputValue}
-          onChange={(e) => setInputValue(e.target.value)}
+          onChange={(e) => handleInputChange(e.target.value)}
           onKeyPress={handleKeyPress}
           placeholder="할 일을 입력하세요"
         />
@@ -187,14 +232,21 @@ const UserTodoList = ({ uSeq, pSeq }) => {
           {isEditing ? "수정" : "추가"}
         </TodoButton>
       </div>
+      {/*
       <UserTodoListSet
         todos={todos}
         handleCompleteTodo={handleCompleteTodo}
         handleDeleteTodo={handleDeleteTodo}
-      />
+      />*/}
       <UserCompletedTodoList
         completedTodos={completedTodos}
-        handleDeleteCompletedTodo={handleDeleteCompletedTodo}
+        handleDeleteTodo={handleDeleteTodo}
+        handleUpdateTodo={handleUpdateTodo}
+      />
+      <UserUncompletedTodoList
+        UncompletedTodos={uncompletedTodos}
+        handleDeleteTodo={handleDeleteTodo}
+        handleUpdateTodo={handleUpdateTodo}
       />
     </TodoListContainer>
   );

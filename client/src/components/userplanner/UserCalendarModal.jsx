@@ -1,5 +1,7 @@
-import React from "react";
+import axios from "axios";
+import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
+import moment from "moment";
 
 import Memo from "./Memo";
 import UserTodoList from "./UserTodoList";
@@ -66,7 +68,75 @@ const StudyDiarySection = styled.div`
   flex-direction: column;
 `;
 
-const UserCalendarModal = ({ onClose, children, titleDate, selectedDate }) => {
+const UserCalendarModal = ({
+  onClose,
+  children,
+  titleDate,
+  selectedDate,
+  response,
+}) => {
+  const formattedDate = moment(selectedDate).format("YYYY-MM-DD");
+  const [memo, setMemo] = useState(response.memo);
+  const [todo, setTodo] = useState(response.todoDTOList);
+  const [pSeq, setPSeq] = useState(response.pseq);
+  const [newMemo, setNewMemo] = useState("");
+  const [newTodo, setNewTodo] = useState("");
+
+  // useEffect(() => {
+  //   const getData = async () => {
+  //     const token = localStorage.getItem("accessToken");
+  //     try {
+  //       const response = await axios.get(
+  //         `${process.env.REACT_APP_API_SERVER}/api/planner?date=${formattedDate}`,
+  //         {
+  //           headers: {
+  //             Authorization: `Bearer ${token}`,
+  //           },
+  //         }
+  //       );
+
+  //       console.log("데이터를 성공적으로 받아왔습니다.", response.data);
+  //     } catch (error) {
+  //       console.error("데이터를 받아오는데 실패했습니다:", error);
+  //     }
+  //   };
+
+  //   getData();
+  // }, [selectedDate]);
+
+  const handleTodosChange = (newTodos) => {
+    setNewTodo(newTodos);
+  };
+
+  const handleMemoChange = (newMemo) => {
+    setNewMemo(newMemo);
+  };
+
+  const handleSubmit = async () => {
+    try {
+      const token = localStorage.getItem("accessToken");
+
+      const payload = {
+        memo: newMemo,
+        ...(newTodo ? { todoCreateDTOList: [{ content: newTodo }] } : {}),
+      };
+
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_SERVER}/api/planner?date=${formattedDate}`,
+        payload,
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      );
+      alert("플래너 생성이 완료되었습니다.");
+      setPSeq(response.data.pseq);
+      return response.data;
+    } catch (error) {
+      console.error("Failed to add todo:", error);
+      throw error;
+    }
+  };
+
   return (
     <ModalOverlay>
       <ModalContent>
@@ -78,11 +148,21 @@ const UserCalendarModal = ({ onClose, children, titleDate, selectedDate }) => {
         <ModalBody>
           <TodoListSection>
             <SectionTitle>TodoList</SectionTitle>
-            <UserTodoList></UserTodoList>
+            <UserTodoList
+              pSeq={pSeq}
+              todo={todo}
+              onTodosChange={handleTodosChange}
+            ></UserTodoList>
           </TodoListSection>
           <StudyDiarySection>
             <SectionTitle style={{ color: "#1e90ff" }}>학습일지</SectionTitle>
-            <Memo selectedDate={selectedDate}></Memo>
+            <Memo
+              selectedDate={selectedDate}
+              memo={memo}
+              pSeq={pSeq}
+              onMemoChange={handleMemoChange}
+              onSubmit={handleSubmit}
+            ></Memo>
           </StudyDiarySection>
         </ModalBody>
       </ModalContent>
