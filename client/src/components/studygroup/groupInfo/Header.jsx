@@ -244,7 +244,7 @@ const Header = () => {
   const { sgSeq } = useParams();
   const [joinData, setJoinData] = useState([]);
   const [members, setMembers] = useState([]);
-  const [jSeq, setJSeq] = useState();
+  // const [jSeq, setJSeq] = useState();
   const [uSeq, setUSeq] = useState(null);
   const [isGroupMember, setIsGroupMember] = useState(false);
   const [nickname, setNickname] = useState("");
@@ -374,23 +374,24 @@ const Header = () => {
 
         console.log("신청 데이터 :", response.data);
         setJoinData(response.data);
-        if (response.data) {
-          const foundItem = response.data.find(
-            (item) => item.nickname === "asdf"
-          );
-          const jseqValue = foundItem?.joinRequest.jseq;
-          const uSeqValue = foundItem?.joinRequest.useq;
-          setJSeq(jseqValue);
-          setUSeq(uSeqValue);
-          console.log("jSeq:", jSeq);
-        }
+        // if (response.data) {
+        //   const foundItem = response.data.find(
+        //     (item) => item.nickname ===
+        //   );
+        //   const jseqValue = foundItem?.joinRequest.jseq;
+        //   const uSeqValue = foundItem?.joinRequest.useq;
+        //   console.log("abcd ", foundItem);
+        //   setJSeq(jseqValue);
+        //   setUSeq(uSeqValue);
+        //   console.log("jSeq:", jSeq);
+        // }
       } catch (error) {
         console.error("가입신청 데이터를 받아오지 못했습니다.:", error);
         throw error;
       }
     };
     joinData();
-  }, [jSeq]);
+  }, []);
 
   useEffect(() => {
     if (isModalOpen) {
@@ -416,15 +417,16 @@ const Header = () => {
     }
   }, [members, nickname]);
 
-  console.log(`post 데이터: seSeq는 ${sgSeq}, useq는 ${uSeq}`);
+  // console.log(`post 데이터: seSeq는 ${sgSeq}, useq는 ${uSeq}`);
 
   const openModal = () => {
     setIsModalOpen(true);
   };
 
-  const handleAccept = async () => {
+  const handleAccept = async (jSeq, uSeq) => {
     try {
       const token = localStorage.getItem("accessToken");
+      console.log("dddd", jSeq);
       const response = await axios.post(
         `${process.env.REACT_APP_API_SERVER}/api/join/accept/${jSeq}`,
         {
@@ -582,7 +584,13 @@ const Header = () => {
                     <strong>{item.nickname}</strong>님
                   </div>
                   <div>스터디 그룹 신청합니다!</div>
-                  <InviteButton onClick={handleAccept}>수락</InviteButton>
+                  <InviteButton
+                    onClick={() =>
+                      handleAccept(item.joinRequest.jseq, item.joinRequest.useq)
+                    }
+                  >
+                    수락
+                  </InviteButton>
                 </ListItem>
               ))}
           </List>
