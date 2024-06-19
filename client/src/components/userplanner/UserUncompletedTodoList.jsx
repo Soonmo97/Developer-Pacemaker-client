@@ -17,9 +17,18 @@ const TodoItem = styled.div`
   border: 1px solid #ddd;
   border-radius: 5px;
 `;
-
+// #4caf50
 const TodoButton = styled.button`
-  background-color: ${(props) => (props.$completed ? "#4caf50" : "#f44336")};
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+`;
+
+const TodoButton2 = styled.button`
+  background-color: #4caf50;
   color: white;
   border: none;
   padding: 0.5rem 1rem;
@@ -36,6 +45,7 @@ const UserUncompletedTodoList = ({ UncompletedTodos, handleDeleteTodo }) => (
           <span>
             <li>{todo.content}</li>
           </span>
+          <TodoButton2>완료</TodoButton2>
           <TodoButton
             onClick={() => {
               handleDeleteTodo(todo.tseq);
