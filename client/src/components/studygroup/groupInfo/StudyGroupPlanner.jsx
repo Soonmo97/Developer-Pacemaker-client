@@ -184,28 +184,28 @@ const UserCalendar = () => {
     setDate(today);
   };
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await axios.post(
-          `${process.env.REACT_APP_API_SERVER}/api/group-planner/grass`,
-          { sgSeq: sgSeq, uSeq: uSeq },
-          { yearMonthStr: { date: date } }
-        );
-        console.log('>>:', response.data);
-        if (response.data.length > 0) {
-          setTodos();
-        } else {
-          setTodos(null); // 데이터가 없으면 null로 설정
-        }
-      } catch (error) {
-        console.error(
-          '스터디그룹 플래너 투두리스트 데이터를 불러오는데 실패했습니다:',
-          error
-        );
-      }
-    };
-  }, []);
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await axios.post(
+  //         `${process.env.REACT_APP_API_SERVER}/api/group-planner/grass`,
+  //         { sgSeq: sgSeq, uSeq: uSeq },
+  //         { yearMonthStr: { date: date } }
+  //       );
+  //       console.log('>>:', response.data);
+  //       if (response.data.length > 0) {
+  //         setTodos();
+  //       } else {
+  //         setTodos(null); // 데이터가 없으면 null로 설정
+  //       }
+  //     } catch (error) {
+  //       console.error(
+  //         '스터디그룹 플래너 투두리스트 데이터를 불러오는데 실패했습니다:',
+  //         error
+  //       );
+  //     }
+  //   };
+  // }, []);
 
   return (
     <div>

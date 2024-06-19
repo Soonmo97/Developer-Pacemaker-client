@@ -170,24 +170,27 @@ const UserCalendar = () => {
     const fetchData = async () => {
       try {
         const token = localStorage.getItem('accessToken');
-        const formattedDate = moment(date).format('YYYY-MM');
+        const formattedDate = moment(activeStartDate).format('YYYY-MM');
         const response = await axios.get(
-          `${process.env.REACT_APP_API_SERVER}/api/planner/grass?date=${formattedDate}`,
+          `${process.env.REACT_APP_API_SERVER}/api/planner/grass`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
             },
+            params: {
+              yearMonthStr: formattedDate,
+            },
           }
         );
 
-        console.log('=== grass ===', response);
+        console.log('=== grass ===', response.data);
       } catch (err) {
         console.error('Error fetching data:', err);
       }
     };
 
     fetchData();
-  }, [date]);
+  }, [activeStartDate]);
 
   const handleDateClick = async (date) => {
     const formattedDate = moment(date).format('YYYY-MM-DD');
