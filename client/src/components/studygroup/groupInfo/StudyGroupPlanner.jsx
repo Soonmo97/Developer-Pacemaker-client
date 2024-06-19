@@ -158,7 +158,7 @@ const StyledToday = styled.div`
   transform: translateX(-50%);
 `;
 
-const UserCalendar = () => {
+const UserCalendar = ({ sgSeq, uSeq }) => {
   const today = new Date();
   const [date, setDate] = useState(today);
   const [activeStartDate, setActiveStartDate] = useState(today);
@@ -183,6 +183,38 @@ const UserCalendar = () => {
     setActiveStartDate(today);
     setDate(today);
   };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        console.log('sgSeq >> ', sgSeq);
+        console.log('uSeq >> ', uSeq);
+        const token = localStorage.getItem('accessToken');
+        const formattedDate = moment(activeStartDate).format('YYYY-MM');
+        const response = await axios.post(
+          `${process.env.REACT_APP_API_SERVER}/api/group-planner/grass`,
+          {
+            sgSeq: sgSeq,
+            uSeq: uSeq,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            params: {
+              yearMonthStr: formattedDate,
+            },
+          }
+        );
+
+        console.log('=== grass ===', response.data);
+      } catch (err) {
+        console.error('Error fetching data:', err);
+      }
+    };
+
+    fetchData();
+  }, [activeStartDate]);
 
   // useEffect(() => {
   //   const fetchData = async () => {
