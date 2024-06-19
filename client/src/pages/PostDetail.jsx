@@ -58,7 +58,8 @@ const ApplyBtn = styled(Button)`
   && {
     height: 2.5rem;
     border-radius: 15px;
-    width: 5rem;
+    width: 6rem;
+    font-weight: bold;
   }
 `;
 
