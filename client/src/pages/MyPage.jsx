@@ -23,6 +23,7 @@ const ProfileContainer = styled.div`
   align-items: center;
   justify-content: center;
   background-color: #f9f9f9;
+  min-height: 62vh;
 `;
 
 const Imgdiv = styled.div`
@@ -195,7 +196,28 @@ const MyPage = () => {
     }
 
     try {
+      console.log("aa");
       const token = localStorage.getItem("accessToken");
+      console.log("bb");
+      // 그룹장인지 확인하는 API 호출
+      const response = await axios.get(
+        `${process.env.REACT_APP_API_SERVER}/api/study-group/check-uSeq`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("cc");
+      // response.data가 true이면 그룹장이므로 탈퇴 불가
+      if (response.data === true) {
+        alert(
+          "회원탈퇴를 할 수 없습니다. 그룹장을 다른 사람에게 위임해주세요."
+        );
+        return;
+      }
+
+      // 그룹장이 아니면 탈퇴 진행
       await axios.delete(`${process.env.REACT_APP_API_SERVER}/api/user`, {
         headers: {
           Authorization: `Bearer ${token}`,

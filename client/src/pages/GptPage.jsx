@@ -163,27 +163,8 @@ const GptPage = () => {
   const [clickedButtons, setClickedButtons] = useState([]);
 
   useEffect(() => {
-    fetchGptList();
     fetchSavedAnswers(); // 추가: 저장된 답변 불러오기
   }, []);
-
-  const fetchGptList = async () => {
-    try {
-      const token = localStorage.getItem("accessToken");
-      const response = await axios.get(
-        `${process.env.REACT_APP_API_SERVER}/api/gpt`,
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-      setGptList(response.data);
-    } catch (error) {
-      console.error("GPT 목록을 불러오는 중 오류 발생:", error);
-      setError("GPT 목록을 불러오는 중 오류가 발생했습니다.");
-    }
-  };
 
   const fetchSavedAnswers = async () => {
     try {

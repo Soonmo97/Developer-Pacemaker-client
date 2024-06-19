@@ -155,7 +155,11 @@ const SuccessModal = styled.div`
 `;
 
 const ErrorModal = styled.div`
-  width: 80%;
+  position: absolute; /* 위치를 절대값으로 설정 */
+  top: 40%; /* 위에서 20% 지점에 위치하도록 설정 */
+  left: 50%;
+  transform: translate(-50%, -20%); /* 가운데 정렬을 위해 translate 사용 */
+  width: 60%;
   max-width: 400px;
   margin: 0 auto; /* 가운데 정렬을 위해 margin auto 추가 */
   background-color: white;
@@ -163,6 +167,16 @@ const ErrorModal = styled.div`
   border-radius: 10px;
   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
   z-index: 1000;
+
+  @media (max-width: 768px) {
+    width: 90%; /* Adjusted width for smaller screens */
+    max-width: 300px; /* Adjusted max-width for smaller screens */
+  }
+
+  @media (min-width: 1024px) {
+    width: 50%; /* Adjusted width for larger screens */
+    max-width: 500px; /* Adjusted max-width for larger screens */
+  }
 `;
 
 const ErrorModalHeader = styled.div`
