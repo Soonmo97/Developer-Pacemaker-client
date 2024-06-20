@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import Modal from 'react-modal';
-import { useParams } from 'react-router-dom';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+import Modal from "react-modal";
+import { useParams } from "react-router-dom";
+import axios from "axios";
+import UserImg from "../../user/UserImg";
 
 const InfoContainer = styled.div`
   padding: 1rem;
@@ -314,8 +315,8 @@ const Header = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSetModalOpen, setIsSetModalOpen] = useState(false);
   const [studyGroups, setStudyGroups] = useState([]);
-  const [groupName, setGroupName] = useState('');
-  const [groupGoal, setGroupGoal] = useState('');
+  const [groupName, setGroupName] = useState("");
+  const [groupGoal, setGroupGoal] = useState("");
   const [whoAmI, setWhoAmI] = useState(false);
   const { sgSeq } = useParams();
   const [joinData, setJoinData] = useState([]);
@@ -324,7 +325,12 @@ const Header = () => {
   const [uSeq, setUSeq] = useState(null);
   const [isGroupMember, setIsGroupMember] = useState(false);
   const [nickname, setNickname] = useState("");
+
+  const [userImg, setUserImg] = useState(null);
+  const [user, setUser] = useState(null);
+
   const [isSubmitting, setIsSubmitting] = useState(false);
+
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -343,6 +349,7 @@ const Header = () => {
         console.log('response.data.useq', response.data.useq);
         setNickname(response.data.nickname);
         setUSeq(response.data.useq);
+        setUser(response.data);
       } catch (err) {
         console.error(err);
       }
@@ -359,7 +366,7 @@ const Header = () => {
           `${process.env.REACT_APP_API_SERVER}/api/study-group`
         );
 
-        console.log('>>:', response.data);
+        console.log(">>:", response.data);
         const filteredData = response.data.filter(
           (item) => item.sgSeq.toString() === sgSeq
         );
@@ -369,13 +376,13 @@ const Header = () => {
           setStudyGroups(null);
         }
       } catch (error) {
-        console.error('스터디 그룹 데이터를 불러오는데 실패했습니다:', error);
+        console.error("스터디 그룹 데이터를 불러오는데 실패했습니다:", error);
       }
     };
 
     const RecruitmentStatus = async () => {
       try {
-        const token = localStorage.getItem('accessToken');
+        const token = localStorage.getItem("accessToken");
         const response = await axios.get(
           `${process.env.REACT_APP_API_SERVER}/api/study-group/status/${sgSeq}`,
           {
@@ -384,9 +391,9 @@ const Header = () => {
             },
           }
         );
-        console.log('모집여부 데이터:', response.data);
+        console.log("모집여부 데이터:", response.data);
       } catch (error) {
-        console.error('모집 여부 데이터를 불러오는데 실패했습니다:', error);
+        console.error("모집 여부 데이터를 불러오는데 실패했습니다:", error);
       }
     };
 
@@ -396,7 +403,7 @@ const Header = () => {
 
   useEffect(() => {
     const checkUserMembership = async () => {
-      const token = localStorage.getItem('accessToken');
+      const token = localStorage.getItem("accessToken");
       try {
         const response = await axios.get(
           `${process.env.REACT_APP_API_SERVER}/api/study-group/check-uSeq-me/${sgSeq}`,
@@ -409,7 +416,7 @@ const Header = () => {
 
         setWhoAmI(response.data);
       } catch (error) {
-        console.error('그룹장 확인에 실패했습니다:', error);
+        console.error("그룹장 확인에 실패했습니다:", error);
         throw error;
       }
     };
@@ -418,7 +425,7 @@ const Header = () => {
 
   useEffect(() => {
     const joinData = async () => {
-      const token = localStorage.getItem('accessToken');
+      const token = localStorage.getItem("accessToken");
       try {
         const response = await axios.get(
           `${process.env.REACT_APP_API_SERVER}/api/join/${sgSeq}`,
@@ -431,7 +438,7 @@ const Header = () => {
 
         console.log(response.data);
       } catch (error) {
-        console.error('가입신청 데이터를 받아오지 못했습니다.:', error);
+        console.error("가입신청 데이터를 받아오지 못했습니다.:", error);
         throw error;
       }
     };
@@ -440,7 +447,7 @@ const Header = () => {
 
   useEffect(() => {
     const joinData = async () => {
-      const token = localStorage.getItem('accessToken');
+      const token = localStorage.getItem("accessToken");
       try {
         const response = await axios.get(
           `${process.env.REACT_APP_API_SERVER}/api/join/${sgSeq}`,
@@ -451,7 +458,7 @@ const Header = () => {
           }
         );
 
-        console.log('신청 데이터 :', response.data);
+        console.log("신청 데이터 :", response.data);
         setJoinData(response.data);
         // if (response.data) {
         //   const foundItem = response.data.find(
@@ -465,7 +472,7 @@ const Header = () => {
         //   console.log("jSeq:", jSeq);
         // }
       } catch (error) {
-        console.error('가입신청 데이터를 받아오지 못했습니다.:', error);
+        console.error("가입신청 데이터를 받아오지 못했습니다.:", error);
         throw error;
       }
     };
@@ -474,10 +481,10 @@ const Header = () => {
         const response = await axios.get(
           `${process.env.REACT_APP_API_SERVER}/api/group-members/${sgSeq}`
         );
-        console.log('members', response.data);
+        console.log("members", response.data);
         setMembers(response.data);
       } catch (error) {
-        console.error('Failed to fetch members', error);
+        console.error("Failed to fetch members", error);
       }
     };
 
@@ -543,8 +550,8 @@ const Header = () => {
 
   const handleReject = async (jSeq, uSeq) => {
     try {
-      const token = localStorage.getItem('accessToken');
-      console.log('dddd', jSeq);
+      const token = localStorage.getItem("accessToken");
+      console.log("dddd", jSeq);
       const response = await axios.delete(
         `${process.env.REACT_APP_API_SERVER}/api/join/reject/${jSeq}`,
         {
@@ -553,17 +560,17 @@ const Header = () => {
           },
         }
       );
-      console.log('거절성공!', response.data);
-      alert('거절완료!');
+      console.log("거절성공!", response.data);
+      alert("거절완료!");
       window.location.reload();
     } catch (error) {
-      console.error('Failed to fetch members', error);
+      console.error("Failed to fetch members", error);
     }
   };
 
   const handleAuthorize = async (newUSeq) => {
     try {
-      const token = localStorage.getItem('accessToken');
+      const token = localStorage.getItem("accessToken");
       const response = await axios.patch(
         `${process.env.REACT_APP_API_SERVER}/api/study-group/change-uSeq`,
         {
@@ -577,29 +584,29 @@ const Header = () => {
         }
       );
       console.log(`그룹장 위임 성공! sgSeq: ${sgSeq}, newUSeq: ${newUSeq}`);
-      alert('그룹장이 위임되었습니다.');
+      alert("그룹장이 위임되었습니다.");
       window.location.reload();
     } catch (error) {
-      console.error('그룹장 위임에 실패했습니다:', error);
+      console.error("그룹장 위임에 실패했습니다:", error);
     }
   };
 
-  const handleKick = async (uSeq) => {
+  const handleKick = async (kickUSeq) => {
     try {
       const token = localStorage.getItem('accessToken');
       const response = await axios.delete(
         `${process.env.REACT_APP_API_SERVER}/api/group-members/kick`,
         {
-          sgSeq: sgSeq,
-          uSeq: uSeq,
-        },
-        {
           headers: {
             Authorization: `Bearer ${token}`,
           },
+          data: {
+            sgSeq: sgSeq,
+            uSeq: kickUSeq,
+          },
         }
       );
-      console.log(`그룹원 강퇴 성공! sgSeq: ${sgSeq}, uSeq: ${uSeq}`);
+      console.log(`그룹원 강퇴 성공! sgSeq: ${sgSeq}, uSeq: ${kickUSeq}`);
       alert('그룹원이 강퇴되었습니다.');
       window.location.reload();
     } catch (error) {
@@ -619,7 +626,7 @@ const Header = () => {
     e.preventDefault();
 
     try {
-      const token = localStorage.getItem('accessToken');
+      const token = localStorage.getItem("accessToken");
 
       // 그룹 이름 중복 확인
       const checkResponse = await axios.get(
@@ -633,7 +640,7 @@ const Header = () => {
       );
 
       if (checkResponse.data) {
-        alert('이미 사용 중인 그룹 이름입니다. 다른 이름을 입력해주세요.');
+        alert("이미 사용 중인 그룹 이름입니다. 다른 이름을 입력해주세요.");
         return;
       }
 
@@ -651,19 +658,19 @@ const Header = () => {
         }
       );
 
-      alert('그룹 이름이 수정되었습니다.');
+      alert("그룹 이름이 수정되었습니다.");
       window.location.reload();
       // setGroupName(updateGroupName.data);
     } catch (error) {
-      console.error('그룹 이름 수정에 실패했습니다:', error);
-      alert('그룹 이름 수정에 실패했습니다.');
+      console.error("그룹 이름 수정에 실패했습니다:", error);
+      alert("그룹 이름 수정에 실패했습니다.");
     }
   };
 
   const handleGroupGoalUpdate = async (e) => {
     e.preventDefault();
 
-    const token = localStorage.getItem('accessToken');
+    const token = localStorage.getItem("accessToken");
     try {
       await axios.patch(
         `${process.env.REACT_APP_API_SERVER}/api/study-group/goal`,
@@ -677,10 +684,10 @@ const Header = () => {
           },
         }
       );
-      alert('그룹 목표가 수정되었습니다.');
+      alert("그룹 목표가 수정되었습니다.");
       window.location.reload();
     } catch (error) {
-      console.error('그룹 목표 수정에 실패했습니다:', error);
+      console.error("그룹 목표 수정에 실패했습니다:", error);
     }
   };
 
@@ -763,7 +770,7 @@ const Header = () => {
       <ManagementModal
         isOpen={isModalOpen}
         onRequestClose={closeModal}
-        contentLabel="Management Modal"
+        contentLabel='Management Modal'
       >
         <CloseButton onClick={closeModal}>X</CloseButton>
         <h1>스터디그룹 관리</h1>
@@ -801,17 +808,25 @@ const Header = () => {
               .map((item, index) => (
                 <ListItem key={index}>
                   <div>{item.nickname}</div>
-                  <div style={{ gap: "1rem" }}>
+
+                  <div style={{ gap: '1rem' }}>
                     <AuthorizeToBtn
                       onClick={() => {
-                        if (window.confirm("정말 위임하시겠습니까?")) {
+                        if (window.confirm('정말 위임하시겠습니까?')) {
                           handleAuthorize(item.useq);
                         }
                       }}
                     >
+
                       위임
                     </AuthorizeToBtn>
-                    <RemoveButton onClick={() => handleKick(item.useq)}>
+                    <RemoveButton
+                      onClick={() => {
+                        if (window.confirm('정말 강퇴하시겠습니까?')) {
+                          handleKick(item.useq);
+                        }
+                      }}
+                    >
                       강퇴
                     </RemoveButton>
                   </div>
@@ -824,16 +839,14 @@ const Header = () => {
       <MemberDetailModal
         isOpen={isSetModalOpen}
         onRequestClose={closeSetModal}
-        contentLabel="Member Detail Modal"
+        contentLabel='Member Detail Modal'
       >
         <CloseSetButton onClick={closeSetModal}>X</CloseSetButton>
         <DetailTitle>내 정보</DetailTitle>
         <DetailModalContainer>
           <DetailContainer>
             <DetailContent>
-              <ProfilePhoto />
-              프로필사진
-              <ActionButton>변경</ActionButton>
+              <UserImg userImg={userImg} />
             </DetailContent>
             가입일 : 2021-01-01
             <br />
@@ -848,11 +861,11 @@ const Header = () => {
                   <Label>그룹 이름</Label>
                   <br />
                   <Input
-                    type="text"
+                    type='text'
                     value={groupName}
                     onChange={handleGroupNameChange}
                   />
-                  <CheckButton type="submit" onClick={handleGroupNameUpdate}>
+                  <CheckButton type='submit' onClick={handleGroupNameUpdate}>
                     수정
                   </CheckButton>
                 </FormGroup>
@@ -863,11 +876,11 @@ const Header = () => {
                   <Label>팀 공동목표</Label>
                   <br />
                   <Input
-                    type="text"
+                    type='text'
                     value={groupGoal}
                     onChange={handleGroupGoalChange}
                   />
-                  <CheckButton type="submit" onClick={handleGroupGoalUpdate}>
+                  <CheckButton type='submit' onClick={handleGroupGoalUpdate}>
                     수정
                   </CheckButton>
                 </FormGroup>
