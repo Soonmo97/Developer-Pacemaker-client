@@ -127,6 +127,16 @@ const StyledCalendarWrapper = styled.div`
     background-color: ${(props) => props.theme.yellow_2};
     border-radius: 0.3rem;
   }
+
+  /* 초록색 배경색 추가 */
+  .react-calendar__tile--completed1 {
+    background-color: lightgreen;
+  }
+
+  /* 진한 초록색 배경색 추가 */
+  .react-calendar__tile--completed3 {
+    background-color: darkgreen;
+  }
 `;
 
 const StyledCalendarComponent = styled(Calendar)``;
@@ -165,6 +175,7 @@ const UserCalendar = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
   const [response, setResponse] = useState(null);
+  const [grassData, setGrassData] = useState({});
 
   useEffect(() => {
     const fetchData = async () => {
@@ -184,6 +195,7 @@ const UserCalendar = () => {
         );
 
         console.log('=== grass ===', response.data);
+        setGrassData(response.data);
       } catch (err) {
         console.error('Error fetching data:', err);
       }
@@ -229,6 +241,10 @@ const UserCalendar = () => {
     setDate(today);
   };
 
+  const getCompletedCount = (date) => {
+    return grassData[date] || 0;
+  };
+
   return (
     <div>
       <CalendarBody>
@@ -250,6 +266,17 @@ const UserCalendar = () => {
               setActiveStartDate(activeStartDate)
             }
             tileContent={({ date, view }) => {
+              const formattedDate = moment(date).format('YYYY-MM-DD');
+              const completedCount = getCompletedCount(formattedDate);
+
+              let className = '';
+              if (view === 'month' && completedCount > 0) {
+                className =
+                  completedCount >= 3
+                    ? 'react-calendar__tile--completed3'
+                    : 'react-calendar__tile--completed1';
+              }
+
               let html = [];
               if (
                 view === 'month' &&
@@ -259,7 +286,12 @@ const UserCalendar = () => {
                 html.push(<StyledToday key={'today'}>오늘</StyledToday>);
               }
 
-              return <>{html}</>;
+              return (
+                <>
+                  <div className={`react-calendar__tile ${className}`}></div>
+                  {html}
+                </>
+              );
             }}
           />
           <StyledDate onClick={handleTodayClick}>오늘</StyledDate>
