@@ -24,6 +24,11 @@ const HeaderContainer = styled.div`
   padding: 1rem;
   background-color: #f8f8f8;
   border-bottom: 1px solid #ddd;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    gap: 1rem;
+  }
 `;
 
 const Title = styled.h1`
@@ -33,6 +38,11 @@ const Title = styled.h1`
 const SetBtns = styled.div`
   display: flex;
   gap: 1rem;
+
+  @media (max-width: 480px) {
+    justify-content: flex-end;
+    margin-left: auto;
+  }
 `;
 
 const SettingsButton = styled.button`
@@ -52,9 +62,13 @@ const ManagementModal = styled(Modal)`
   padding: 1rem;
   background-color: white;
   border: 1px solid #ddd;
-  width: 40%;
-  height: 50%;
+  height: auto;
   margin: 5rem auto;
+  width: 40vw;
+
+  @media (max-width: 768px) {
+    width: 80%;
+  }
 `;
 
 const CloseButton = styled.button`
@@ -69,9 +83,14 @@ const CloseButton = styled.button`
 
 const Section = styled.div`
   display: flex;
-  justify-content: space-between;
-  width: 100%;
-  margin: 2.5rem 0;
+
+  flex-direction: row;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    margin-left: -2rem;
+    /* margin-left: -2rem; */
+  }
 `;
 
 const SectionHeader = styled.div`
@@ -83,12 +102,18 @@ const SectionHeader = styled.div`
 `;
 
 const List = styled.div`
-  width: 45%;
+  width: 18vw;
   border: 1px solid #ddd;
   padding: 1rem;
   max-height: 14rem;
   overflow-y: auto;
   overflow-x: hidden;
+  margin-bottom: 2rem;
+
+  @media (max-width: 768px) {
+    max-height: none;
+    width: 100%;
+  }
 `;
 
 const ListItem = styled.div`
