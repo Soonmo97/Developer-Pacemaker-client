@@ -8,11 +8,15 @@ import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 
 const BoardContainer = styled.div`
-  width: 70%;
+  width: 71%;
   margin: 0 auto;
   margin-top: 2rem;
   margin-bottom: 5rem;
   min-height: 65vh;
+
+  @media (max-width: 768px) {
+    width: 90%;
+  }
 `;
 
 const BoardHeader = styled.div`
@@ -20,8 +24,13 @@ const BoardHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-  background-color: #d9e7f5;
+  background-color: #b8d2b7;
   border-bottom: 1px solid #ccc;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 `;
 
 const BoardTable = styled.table`
@@ -33,13 +42,23 @@ const BoardTable = styled.table`
 const BoardTh = styled.th`
   border-bottom: 1px solid #ccc;
   padding: 0.5rem;
-  background-color: #bcdbf9;
+
+  background-color: #b8d2b7;
+
+  @media (max-width: 768px) {
+    padding: 0.25rem;
+  }
+
 `;
 
 const BoardTd = styled.td`
   border-bottom: 1px solid #ccc;
   padding: 0.5rem;
   text-align: center;
+
+  @media (max-width: 768px) {
+    padding: 0.25rem;
+  }
 `;
 
 const BoardTd2 = styled.td`
@@ -48,7 +67,6 @@ const BoardTd2 = styled.td`
   font-weight: bold;
   border-radius: 20px;
   color: ${(props) => (props.recruiting ? "#007bff" : "#dc3545")};
-  /* color: white; */
 `;
 
 const SearchWrapper = styled.div`
@@ -58,6 +76,12 @@ const SearchWrapper = styled.div`
   border: 1px solid #ccc;
   border-radius: 4px;
   padding: 0 0.5rem;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    margin-top: 0.5rem;
+    margin-left: -0.5rem;
+  }
 `;
 
 const StyledTextField = styled(TextField)`
@@ -71,6 +95,12 @@ const WriteButton = styled(Button)`
   && {
     margin-top: 1rem;
     float: right;
+
+    @media (max-width: 768px) {
+      width: 100%;
+      margin-top: 0.5rem;
+      float: none;
+    }
   }
 `;
 
@@ -107,12 +137,11 @@ const Board = () => {
   console.log("boardData", boardData);
 
   const formatDate = (dateString) => {
-    // 문자열에서 밀리초 제외하고 날짜와 시간 부분 추출
     const dateTimeParts = dateString.split(".");
     const dateTime = dateTimeParts[0];
     const date = new Date(dateTime);
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0"); // 월은 0부터 시작하므로 +1 필요
+    const month = String(date.getMonth() + 1).padStart(2, "0");
     const day = String(date.getDate()).padStart(2, "0");
     return `${year}-${month}-${day}`;
   };
@@ -161,9 +190,6 @@ const Board = () => {
                 </BoardTd>
                 <BoardTd>{item.nickname}</BoardTd>
                 <BoardTd>{formatDate(item.registered)}</BoardTd>
-                {/* <BoardTd2 recruiting={item.studyGroup.status.toString()}>
-                  {item.studyGroup.status ? "모집중" : "모집마감"}
-                </BoardTd2> */}
               </tr>
             ))}
           </tbody>

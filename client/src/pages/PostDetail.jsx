@@ -13,6 +13,8 @@ const PostContainer = styled.div`
   background-color: #f9f9f9;
   margin-bottom: 1rem;
   margin: 2rem auto;
+  max-width: 800px;
+  width: 90%;
 `;
 
 const Title = styled.h1`
@@ -58,8 +60,9 @@ const ApplyBtn = styled(Button)`
   && {
     height: 2.5rem;
     border-radius: 15px;
-    width: 6rem;
+    width: 5rem;
     font-weight: bold;
+    margin-right: 1rem;
   }
 `;
 
@@ -250,48 +253,48 @@ const PostDetail = () => {
       <div
         style={{ display: "flex", justifyContent: "center", minHeight: "77vh" }}
       >
-        <PostContainer style={{ width: "35%", minHeight: "30vh" }}>
+        <PostContainer>
           <Title>
             <Icon>📅</Icon>
             {boardData.name}
           </Title>
-          <div style={{ display: "flex", justifyContent: "space-between" }}>
-            <MetaData>
-              {boardData.nickname} · 작성일 {formatDate(boardData.registered)} ·{" "}
-              {/* <strong style={{ color: join ? "#007bff" : "#dc3545" }}>
+          <MetaData>
+            {boardData.nickname} · 작성일 {formatDate(boardData.registered)} ·{" "}
+            {/* <strong style={{ color: join ? "#007bff" : "#dc3545" }}>
                 {join ? "모집중" : "모집마감"}
               </strong>{" "} */}
-            </MetaData>
-            <div style={{ display: "flex", justifyContent: "center" }}>
-              {writer ? (
-                <div style={{ display: "flex", gap: "1rem" }}>
-                  <ApplyBtn
-                    variant="contained"
-                    color="secondary"
-                    onClick={handleEdit}
-                  >
-                    수정
-                  </ApplyBtn>
-                  <DeleteBtn
-                    style={{ backgroundColor: "#fb4d26", color: "white" }}
-                    onClick={handleDelete}
-                  >
-                    삭제
-                  </DeleteBtn>
-                </div>
-              ) : (
+          </MetaData>
+          <div style={{ display: "flex", justifyContent: "space-between" }}>
+            {writer ? (
+              <div style={{ display: "flex", gap: "1rem", marginTop: "1rem" }}>
                 <ApplyBtn
                   variant="contained"
-                  color="primary"
-                  onClick={handleJoin}
+                  color="secondary"
+                  onClick={handleEdit}
                 >
-                  신청하기
+                  수정
                 </ApplyBtn>
-              )}
-            </div>
+                <DeleteBtn
+                  style={{ backgroundColor: "#fb4d26", color: "white" }}
+                  onClick={handleDelete}
+                >
+                  삭제
+                </DeleteBtn>
+              </div>
+            ) : (
+              <ApplyBtn
+                variant="contained"
+                color="primary"
+                onClick={handleJoin}
+              >
+                신청하기
+              </ApplyBtn>
+            )}
           </div>
           <br />
-          <div style={{ borderBottom: "1px solid #ccc" }}></div>
+          <div
+            style={{ borderBottom: "1px solid #ccc", marginBottom: "1rem" }}
+          ></div>
           <Content>
             <Section>
               <SectionTitle> 그룹명 : {boardData.studyGroup.name}</SectionTitle>

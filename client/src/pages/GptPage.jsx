@@ -36,7 +36,7 @@ const ChatContainer = styled.div`
   border: 1px solid #ccc;
   border-radius: 10px;
   padding: 10px;
-  background-color: #f9f9f9;
+  background-color: #e9e2d3;
   display: flex;
   flex-direction: column;
 
@@ -48,12 +48,13 @@ const ChatContainer = styled.div`
 const ChatBox = styled.div`
   flex: 1;
   display: flex;
+  border: 1px solid #ccc;
   flex-direction: column;
   gap: 10px;
   margin-bottom: 10px;
   max-height: 500px;
   overflow-y: auto;
-  background-color: rgb(235, 235, 235);
+  background-color: #f2ebdc;
 `;
 
 const ChatMessage = styled.div`
@@ -88,12 +89,12 @@ const ChatInputButton = styled.button`
   padding: 10px 20px;
   border: none;
   border-radius: 20px;
-  background-color: #007bff;
+  background-color: #9fdbff;
   color: white;
   cursor: pointer;
 
   &:hover {
-    background-color: #0056b3;
+    background-color: #9fdbff;
   }
 `;
 
@@ -102,12 +103,12 @@ const SaveButton = styled.button`
   margin-left: 10px;
   border: none;
   border-radius: 10px;
-  background-color: #007bff;
+  background-color: #9fdbff;
   color: white;
   cursor: pointer;
 
   &:hover {
-    background-color: #0056b3;
+    background-color: #9fdbff;
   }
 `;
 
@@ -118,7 +119,7 @@ const SavedAnswersContainer = styled.div`
   border: 1px solid #ccc;
   border-radius: 10px;
   padding: 10px;
-  background-color: #f0f0f0;
+  background-color: #e9e2d3;
   max-height: 550px;
   overflow-y: auto;
 
@@ -130,13 +131,19 @@ const SavedAnswersContainer = styled.div`
 const SavedAnswer = styled.div`
   margin-bottom: 10px;
   padding: 10px;
+  border: 1px solid #ccc;
   border-radius: 10px;
-  background-color: #e1e1e1;
+  background-color: #f2ebdc;
 `;
 
 const ErrorMessage = styled.p`
   color: red;
   margin-top: 20px;
+`;
+
+const TitleDiv = styled.div`
+  margin-top: 2%;
+  margin-bottom: 3%;
 `;
 
 const DeleteButton = styled.button`
@@ -145,12 +152,12 @@ const DeleteButton = styled.button`
   padding: 5px 10px;
   border: none;
   border-radius: 5px;
-  background-color: #ff6b6b;
+  background-color: #b75f37;
   color: white;
   cursor: pointer;
 
   &:hover {
-    background-color: #ff4f4f;
+    background-color: #b75f37;
   }
 `;
 const GptPage = () => {
@@ -279,7 +286,9 @@ const GptPage = () => {
     <>
       <Navbar />
       <GptPageContainer>
-        <h1>GPT 채팅</h1>
+        <TitleDiv>
+          <h1>GPT 채팅</h1>
+        </TitleDiv>
         <ChatDiv>
           <ChatContainer>
             <ChatBox>

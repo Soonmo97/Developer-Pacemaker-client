@@ -12,38 +12,27 @@ const Container = styled.div`
   flex-direction: column;
   align-items: center;
   padding: 20px;
+  min-height: 100vh;
 `;
 
 const ProfileContainer = styled.div`
   width: 100%;
   max-width: 600px;
   padding: 20px;
-  height: 400px;
+  height: 300px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border: 1px solid #ccc;
   border-radius: 10px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #f9f9f9;
+  background-color: #f2ebdc;
   min-height: 62vh;
 `;
 
-const Imgdiv = styled.div`
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 150px;
-  height: 150px;
-  margin-right: 20px;
-  background-color: #ccc;
-  border-radius: 50%;
-  overflow: hidden;
-
-  img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-  }
+const TitleDiv = styled.div`
+  margin-top: 2%;
+  margin-bottom: 3%;
 `;
 
 const NameDiv = styled.div`
@@ -84,14 +73,14 @@ const Button = styled.button`
   margin-top: 20px;
   font-size: 1em;
   color: #fff;
-  background-color: #007bff;
+  background-color: #2b3115;
   border: none;
   border-radius: 5px;
   cursor: pointer;
   margin-right: 2%;
 
   &:hover {
-    background-color: #0056b3;
+    background-color: #2b3115;
   }
 `;
 
@@ -402,7 +391,9 @@ const MyPage = () => {
     <>
       <Navbar />
       <Container>
-        <h2>My Page</h2>
+        <TitleDiv>
+          <h2>내 정보</h2>
+        </TitleDiv>
         <ProfileContainer>
           {isEditing ? (
             <form onSubmit={handleSubmit}>

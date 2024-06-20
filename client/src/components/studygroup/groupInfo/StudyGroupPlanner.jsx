@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import moment from 'moment';
-import styled from 'styled-components';
-import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css';
-import StudyGroupPlannerModal from './StudyGroupPlannerModal';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import moment from "moment";
+import styled from "styled-components";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
+import StudyGroupPlannerModal from "./StudyGroupPlannerModal";
+import axios from "axios";
 
 const CalendarBody = styled.div`
   display: flex;
@@ -70,12 +70,12 @@ const StyledCalendarWrapper = styled.div`
   }
 
   /* 일요일에만 빨간 폰트 */
-  .react-calendar__month-view__weekdays__weekday--weekend abbr[title='일요일'] {
+  .react-calendar__month-view__weekdays__weekday--weekend abbr[title="일요일"] {
     color: ${(props) => props.theme.red_1};
   }
 
   /* 토요일에만 빨간 폰트 */
-  .react-calendar__month-view__weekdays__weekday--weekend abbr[title='토요일'] {
+  .react-calendar__month-view__weekdays__weekday--weekend abbr[title="토요일"] {
     color: ${(props) => props.theme.blue_1};
   }
 
@@ -168,15 +168,46 @@ const StyledToday = styled.div`
   transform: translateX(-50%);
 `;
 
-const UserCalendar = ({ sgSeq, uSeq }) => {
+const UserCalendar = ({ sgSeq, uSeq, member }) => {
   const today = new Date();
   const [date, setDate] = useState(today);
   const [activeStartDate, setActiveStartDate] = useState(today);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
+  const [response, setResponse] = useState(null);
+  const [formattedDate, setFormattedDate] = useState(null);
+  const [gpSeq, setGpSeq] = useState(null);
   const [grassData, setGrassData] = useState({});
 
-  const handleDateClick = (date) => {
+  const handleDateClick = async (date) => {
+    const formattedDate = moment(date).format("YYYY-MM-DD");
+    setFormattedDate(formattedDate);
+
+    try {
+      // 그룹원 플래너 조회
+      const token = localStorage.getItem("accessToken");
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_SERVER}/api/group-planner?date=${formattedDate}`,
+        { sgSeq: sgSeq, uSeq: member.useq },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("그룹원 플래너 조회", sgSeq, member.useq);
+      const data = response.data;
+      const key = Object.keys(data)[0]; // 첫 번째 키를 추출
+      const dataArray = Object.values(data).flat();
+
+      console.log("그룹원 플래너 조회data==========", data);
+      console.log("그룹원 플래너 조회key==========", key);
+      console.log("그룹원 플래너 조회==========", dataArray);
+      setGpSeq(key);
+      setResponse(dataArray);
+    } catch (error) {
+      console.error("Failed to fetch data:", error);
+    }
     setSelectedDate(date);
     setModalOpen(true);
   };
@@ -202,8 +233,8 @@ const UserCalendar = ({ sgSeq, uSeq }) => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const token = localStorage.getItem('accessToken');
-        const formattedDate = moment(activeStartDate).format('YYYY-MM');
+        const token = localStorage.getItem("accessToken");
+        const formattedDate = moment(activeStartDate).format("YYYY-MM");
         const response = await axios.post(
           `${process.env.REACT_APP_API_SERVER}/api/group-planner/grass`,
           {
@@ -220,10 +251,10 @@ const UserCalendar = ({ sgSeq, uSeq }) => {
           }
         );
 
-        console.log('=== grass ===', response.data);
+        console.log("=== grass ===", response.data);
         setGrassData(response.data);
       } catch (err) {
-        console.error('Error fetching data:', err);
+        console.error("Error fetching data:", err);
       }
     };
 
@@ -261,9 +292,9 @@ const UserCalendar = ({ sgSeq, uSeq }) => {
             onClickDay={handleDateClick}
             value={date}
             onChange={handleDateChange}
-            formatDay={(locale, date) => moment(date).format('D')}
-            formatYear={(locale, date) => moment(date).format('YYYY')}
-            formatMonthYear={(locale, date) => moment(date).format('YYYY. MM')}
+            formatDay={(locale, date) => moment(date).format("D")}
+            formatYear={(locale, date) => moment(date).format("YYYY")}
+            formatMonthYear={(locale, date) => moment(date).format("YYYY. MM")}
             calendarType="gregory"
             showNeighboringMonth={false}
             next2Label={null}
@@ -274,24 +305,24 @@ const UserCalendar = ({ sgSeq, uSeq }) => {
               setActiveStartDate(activeStartDate)
             }
             tileContent={({ date, view }) => {
-              const formattedDate = moment(date).format('YYYY-MM-DD');
+              const formattedDate = moment(date).format("YYYY-MM-DD");
               const completedCount = getCompletedCount(formattedDate);
 
-              let className = '';
-              if (view === 'month' && completedCount > 0) {
+              let className = "";
+              if (view === "month" && completedCount > 0) {
                 className =
                   completedCount >= 3
-                    ? 'react-calendar__tile--completed3'
-                    : 'react-calendar__tile--completed1';
+                    ? "react-calendar__tile--completed3"
+                    : "react-calendar__tile--completed1";
               }
 
               let html = [];
               if (
-                view === 'month' &&
+                view === "month" &&
                 date.getMonth() === today.getMonth() &&
                 date.getDate() === today.getDate()
               ) {
-                html.push(<StyledToday key={'today'}>오늘</StyledToday>);
+                html.push(<StyledToday key={"today"}>오늘</StyledToday>);
               }
 
               return (
@@ -306,8 +337,14 @@ const UserCalendar = ({ sgSeq, uSeq }) => {
         </StyledCalendarWrapper>
       </CalendarBody>
       {modalOpen && (
-        <StudyGroupPlannerModal onClose={handleModalClose} date={selectedDate}>
-          <div>{moment(selectedDate).format('YYYY년 MM월 DD일')}</div>
+        <StudyGroupPlannerModal
+          onClose={handleModalClose}
+          formattedDate={formattedDate}
+          response={response}
+          sgSeq={sgSeq}
+          gpSeq={gpSeq}
+        >
+          <div>{moment(selectedDate).format("YYYY년 MM월 DD일")}</div>
         </StudyGroupPlannerModal>
       )}
     </div>

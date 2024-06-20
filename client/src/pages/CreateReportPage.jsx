@@ -5,15 +5,16 @@ import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 
 const Container = styled.div`
-  max-width: 1200px;
+  max-width: 69%;
   margin: 0 auto;
   padding: 20px;
   font-family: "Arial", sans-serif;
   background-color: #f4f4f9;
-  border-radius: 10px;
+  /* border-radius: 10px; */
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   display: flex;
   justify-content: space-between;
+  min-height: 100vh;
 `;
 
 const FormContainer = styled.div`
