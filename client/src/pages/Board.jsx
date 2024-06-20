@@ -8,7 +8,7 @@ import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 
 const BoardContainer = styled.div`
-  width: 70%;
+  width: 71%;
   margin: 0 auto;
   margin-top: 2rem;
   margin-bottom: 5rem;
@@ -20,7 +20,7 @@ const BoardHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   padding: 1rem;
-  background-color: #d9e7f5;
+  background-color: #b8d2b7;
   border-bottom: 1px solid #ccc;
 `;
 
@@ -33,7 +33,7 @@ const BoardTable = styled.table`
 const BoardTh = styled.th`
   border-bottom: 1px solid #ccc;
   padding: 0.5rem;
-  background-color: #bcdbf9;
+  background-color: #b8d2b7;
 `;
 
 const BoardTd = styled.td`
