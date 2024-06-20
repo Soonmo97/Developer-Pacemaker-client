@@ -52,7 +52,29 @@ const SubTitle = styled.h2`
   margin-top: 20px;
   margin-bottom: 10px;
 `;
+const ModalContainer = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  z-index: 1000;
+`;
 
+const ModalContent = styled.div`
+  margin-top: 20px;
+`;
+const QuestionButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2em;
+  color: #666;
+  margin-top: 10px;
+`;
 const Text = styled.div`
   font-size: 1em;
   color: #666;
@@ -299,6 +321,7 @@ function LoginPage() {
     inputEmail: "",
     inputPw: "",
   });
+  const [showHelpModal, setShowHelpModal] = useState(false);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -383,6 +406,13 @@ function LoginPage() {
       setShowErrorModal(true);
     }
   };
+  const openHelpModal = () => {
+    setShowHelpModal(true);
+  };
+
+  const closeHelpModal = () => {
+    setShowHelpModal(false);
+  };
 
   const handlePasswordReset = async (newPassword) => {
     try {
@@ -434,7 +464,18 @@ function LoginPage() {
       inputPw: "",
     }); // 입력 필드 초기화
   };
-
+  const HelpModal = ({ closeModal }) => {
+    return (
+      <ModalContainer>
+        <CloseButton onClick={closeModal}>×</CloseButton>
+        <ModalContent>
+          <h2>도움말</h2>
+          <p>테스트 계정 아이디: test@test.com</p>
+          <p>테스트 계정 비밀번호: 1234</p>
+        </ModalContent>
+      </ModalContainer>
+    );
+  };
   const closeErrorModal = () => {
     setShowErrorModal(false);
   };
@@ -489,8 +530,12 @@ function LoginPage() {
             <KakaoButton type="button" onClick={handleKakaoLogin}>
               카카오로 로그인
             </KakaoButton>
+            <CheckButton type="button" onClick={openHelpModal}>
+              ?
+            </CheckButton>
           </ButtonContainer>
         </form>
+        {showHelpModal && <HelpModal closeModal={closeHelpModal} />}
         {showModal && (
           <SuccessModal>
             <ModalHeader>
