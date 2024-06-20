@@ -146,7 +146,7 @@ const Navbar = () => {
                 <Strong
                   className={selectedItem === "myplanner" ? "selected" : ""}
                 >
-                  내 학습일지
+                  내 플래너
                 </Strong>
                 <Icon>📝</Icon>
               </StyledButton>

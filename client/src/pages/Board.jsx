@@ -110,8 +110,11 @@ const Board = () => {
     // 문자열에서 밀리초 제외하고 날짜와 시간 부분 추출
     const dateTimeParts = dateString.split(".");
     const dateTime = dateTimeParts[0];
-
-    return dateTime;
+    const date = new Date(dateTime);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // 월은 0부터 시작하므로 +1 필요
+    const day = String(date.getDate()).padStart(2, "0");
+    return `${year}-${month}-${day}`;
   };
 
   useEffect(() => {
@@ -145,7 +148,6 @@ const Board = () => {
               <BoardTh>제목</BoardTh>
               <BoardTh>글쓴이</BoardTh>
               <BoardTh>작성일</BoardTh>
-              <BoardTh>모집여부</BoardTh>
             </tr>
           </thead>
           <tbody>
@@ -159,9 +161,9 @@ const Board = () => {
                 </BoardTd>
                 <BoardTd>{item.nickname}</BoardTd>
                 <BoardTd>{formatDate(item.registered)}</BoardTd>
-                <BoardTd2 recruiting={item.studyGroup.status.toString()}>
+                {/* <BoardTd2 recruiting={item.studyGroup.status.toString()}>
                   {item.studyGroup.status ? "모집중" : "모집마감"}
-                </BoardTd2>
+                </BoardTd2> */}
               </tr>
             ))}
           </tbody>

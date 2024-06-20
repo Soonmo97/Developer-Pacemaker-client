@@ -1,9 +1,10 @@
-import React, { useState } from "react";
-import moment from "moment";
-import styled from "styled-components";
-import Calendar from "react-calendar";
-import "react-calendar/dist/Calendar.css";
-import StudyGroupPlannerModal from "./StudyGroupPlannerModal";
+import React, { useEffect, useState } from 'react';
+import moment from 'moment';
+import styled from 'styled-components';
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
+import StudyGroupPlannerModal from './StudyGroupPlannerModal';
+import axios from 'axios';
 
 const CalendarBody = styled.div`
   display: flex;
@@ -69,12 +70,12 @@ const StyledCalendarWrapper = styled.div`
   }
 
   /* 일요일에만 빨간 폰트 */
-  .react-calendar__month-view__weekdays__weekday--weekend abbr[title="일요일"] {
+  .react-calendar__month-view__weekdays__weekday--weekend abbr[title='일요일'] {
     color: ${(props) => props.theme.red_1};
   }
 
   /* 토요일에만 빨간 폰트 */
-  .react-calendar__month-view__weekdays__weekday--weekend abbr[title="토요일"] {
+  .react-calendar__month-view__weekdays__weekday--weekend abbr[title='토요일'] {
     color: ${(props) => props.theme.blue_1};
   }
 
@@ -157,7 +158,7 @@ const StyledToday = styled.div`
   transform: translateX(-50%);
 `;
 
-const UserCalendar = () => {
+const UserCalendar = ({ sgSeq, uSeq }) => {
   const today = new Date();
   const [date, setDate] = useState(today);
   const [activeStartDate, setActiveStartDate] = useState(today);
@@ -183,6 +184,61 @@ const UserCalendar = () => {
     setDate(today);
   };
 
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        console.log('sgSeq >> ', sgSeq);
+        console.log('uSeq >> ', uSeq);
+        const token = localStorage.getItem('accessToken');
+        const formattedDate = moment(activeStartDate).format('YYYY-MM');
+        const response = await axios.post(
+          `${process.env.REACT_APP_API_SERVER}/api/group-planner/grass`,
+          {
+            sgSeq: sgSeq,
+            uSeq: uSeq,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            params: {
+              yearMonthStr: formattedDate,
+            },
+          }
+        );
+
+        console.log('=== grass ===', response.data);
+      } catch (err) {
+        console.error('Error fetching data:', err);
+      }
+    };
+
+    fetchData();
+  }, [activeStartDate]);
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await axios.post(
+  //         `${process.env.REACT_APP_API_SERVER}/api/group-planner/grass`,
+  //         { sgSeq: sgSeq, uSeq: uSeq },
+  //         { yearMonthStr: { date: date } }
+  //       );
+  //       console.log('>>:', response.data);
+  //       if (response.data.length > 0) {
+  //         setTodos();
+  //       } else {
+  //         setTodos(null); // 데이터가 없으면 null로 설정
+  //       }
+  //     } catch (error) {
+  //       console.error(
+  //         '스터디그룹 플래너 투두리스트 데이터를 불러오는데 실패했습니다:',
+  //         error
+  //       );
+  //     }
+  //   };
+  // }, []);
+
   return (
     <div>
       <CalendarBody>
@@ -191,9 +247,9 @@ const UserCalendar = () => {
             onClickDay={handleDateClick}
             value={date}
             onChange={handleDateChange}
-            formatDay={(locale, date) => moment(date).format("D")}
-            formatYear={(locale, date) => moment(date).format("YYYY")}
-            formatMonthYear={(locale, date) => moment(date).format("YYYY. MM")}
+            formatDay={(locale, date) => moment(date).format('D')}
+            formatYear={(locale, date) => moment(date).format('YYYY')}
+            formatMonthYear={(locale, date) => moment(date).format('YYYY. MM')}
             calendarType="gregory"
             showNeighboringMonth={false}
             next2Label={null}
@@ -206,11 +262,11 @@ const UserCalendar = () => {
             tileContent={({ date, view }) => {
               let html = [];
               if (
-                view === "month" &&
+                view === 'month' &&
                 date.getMonth() === today.getMonth() &&
                 date.getDate() === today.getDate()
               ) {
-                html.push(<StyledToday key={"today"}>오늘</StyledToday>);
+                html.push(<StyledToday key={'today'}>오늘</StyledToday>);
               }
 
               return <>{html}</>;
@@ -220,8 +276,8 @@ const UserCalendar = () => {
         </StyledCalendarWrapper>
       </CalendarBody>
       {modalOpen && (
-        <StudyGroupPlannerModal onClose={handleModalClose}>
-          <div>{moment(selectedDate).format("YYYY년 MM월 DD일")}</div>
+        <StudyGroupPlannerModal onClose={handleModalClose} date={selectedDate}>
+          <div>{moment(selectedDate).format('YYYY년 MM월 DD일')}</div>
         </StudyGroupPlannerModal>
       )}
     </div>
