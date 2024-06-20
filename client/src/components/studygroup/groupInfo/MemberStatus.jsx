@@ -18,7 +18,9 @@ const theme = {
 const StatusContainer = styled.div`
   padding: 1rem;
   text-align: center;
-  min-height: 40vh;
+  min-height: 60vh;
+  margin-left: -1rem;
+  width: 100%;
 `;
 
 const MemberTable = styled.table`
@@ -27,7 +29,15 @@ const MemberTable = styled.table`
 `;
 
 const MemberRow = styled.tr`
-  height: 50px;
+  height: auto;
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 1rem;
+  margin-top: 1rem;
+
+  @media (max-width: 480px) {
+    grid-template-columns: repeat(2, 1fr);
+  }
 `;
 
 const ProfileDiv = styled.div`
@@ -37,18 +47,7 @@ const ProfileDiv = styled.div`
 `;
 
 const MemberCell = styled.td`
-  /* border: 1px solid #ddd; */
-  width: 20%;
   text-align: center;
-`;
-
-const ProfileImage = styled.div`
-  width: 50px;
-  height: 50px;
-  border-radius: 50%;
-  background-color: #ccc;
-  margin: 0 auto;
-  cursor: pointer;
 `;
 
 const MemberDetailModal = styled(Modal)`
@@ -59,8 +58,12 @@ const MemberDetailModal = styled(Modal)`
   background-color: white;
   border: 1px solid #ddd;
   width: 35%;
-  height: 50%;
   margin: 5rem auto;
+
+  @media (max-width: 480px) {
+    width: 80%;
+    height: auto;
+  }
 `;
 
 const CloseButton = styled.button`
@@ -129,6 +132,7 @@ const MemberStatus = () => {
                 <br />
                 달성현황: {member.score}개
               </ProfileDiv>
+              <br />
             </MemberCell>
           ))}
           {rowMembers.length < 5 &&
@@ -146,11 +150,17 @@ const MemberStatus = () => {
       <StatusContainer>
         <MemberTable>
           <thead>
-            <MemberRow>
-              <MemberCell colSpan={5} style={{ backgroundColor: "#faf8f8" }}>
+            <tr>
+              <MemberCell
+                colSpan={5}
+                style={{
+                  backgroundColor: "#faf8f8",
+                  height: "3rem",
+                }}
+              >
                 그룹원
               </MemberCell>
-            </MemberRow>
+            </tr>
           </thead>
           <tbody>{renderRows()}</tbody>
         </MemberTable>
@@ -168,7 +178,7 @@ const MemberStatus = () => {
             <DetailTitle>{selectedMember.nickname}</DetailTitle>
             <DetailModalContainer>
               <ThemeProvider theme={theme}>
-                <StudyGroupPlanner sgSeq={sgSeq} uSeq={selectedMember.useq} />
+                <StudyGroupPlanner member={selectedMember} sgSeq={sgSeq} uSeq={selectedMember.useq}/>
               </ThemeProvider>
             </DetailModalContainer>
           </>

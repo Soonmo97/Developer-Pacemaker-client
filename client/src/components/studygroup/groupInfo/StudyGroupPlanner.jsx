@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import moment from "moment";
+
+
 import styled from "styled-components";
+
+
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import StudyGroupPlannerModal from "./StudyGroupPlannerModal";
@@ -11,6 +15,7 @@ const CalendarBody = styled.div`
   justify-content: center;
   align-items: center;
 `;
+
 const StyledCalendarWrapper = styled.div`
   font-weight: 800;
   width: 80%;
@@ -104,8 +109,12 @@ const StyledCalendarWrapper = styled.div`
 
   /* 일 날짜 간격 */
   .react-calendar__tile {
-    padding: 5px 0px 18px;
+    padding: 0.1rem 0rem 1rem;
     position: relative;
+
+    @media (max-width: 480px) {
+      padding: 0.05rem 0rem 0.7rem;
+    }
   }
 
   /* 네비게이션 월 스타일 적용 */
@@ -168,15 +177,46 @@ const StyledToday = styled.div`
   transform: translateX(-50%);
 `;
 
-const UserCalendar = ({ sgSeq, uSeq }) => {
+const UserCalendar = ({ sgSeq, uSeq, member }) => {
   const today = new Date();
   const [date, setDate] = useState(today);
   const [activeStartDate, setActiveStartDate] = useState(today);
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState(null);
+  const [response, setResponse] = useState(null);
+  const [formattedDate, setFormattedDate] = useState(null);
+  const [gpSeq, setGpSeq] = useState(null);
   const [grassData, setGrassData] = useState({});
 
-  const handleDateClick = (date) => {
+  const handleDateClick = async (date) => {
+    const formattedDate = moment(date).format("YYYY-MM-DD");
+    setFormattedDate(formattedDate);
+
+    try {
+      // 그룹원 플래너 조회
+      const token = localStorage.getItem("accessToken");
+      const response = await axios.post(
+        `${process.env.REACT_APP_API_SERVER}/api/group-planner?date=${formattedDate}`,
+        { sgSeq: sgSeq, uSeq: member.useq },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log("그룹원 플래너 조회", sgSeq, member.useq);
+      const data = response.data;
+      const key = Object.keys(data)[0]; // 첫 번째 키를 추출
+      const dataArray = Object.values(data).flat();
+
+      console.log("그룹원 플래너 조회data==========", data);
+      console.log("그룹원 플래너 조회key==========", key);
+      console.log("그룹원 플래너 조회==========", dataArray);
+      setGpSeq(key);
+      setResponse(dataArray);
+    } catch (error) {
+      console.error("Failed to fetch data:", error);
+    }
     setSelectedDate(date);
     setModalOpen(true);
   };
@@ -230,29 +270,6 @@ const UserCalendar = ({ sgSeq, uSeq }) => {
     fetchData();
   }, [activeStartDate]);
 
-  // useEffect(() => {
-  //   const fetchData = async () => {
-  //     try {
-  //       const response = await axios.post(
-  //         `${process.env.REACT_APP_API_SERVER}/api/group-planner/grass`,
-  //         { sgSeq: sgSeq, uSeq: uSeq },
-  //         { yearMonthStr: { date: date } }
-  //       );
-  //       console.log('>>:', response.data);
-  //       if (response.data.length > 0) {
-  //         setTodos();
-  //       } else {
-  //         setTodos(null); // 데이터가 없으면 null로 설정
-  //       }
-  //     } catch (error) {
-  //       console.error(
-  //         '스터디그룹 플래너 투두리스트 데이터를 불러오는데 실패했습니다:',
-  //         error
-  //       );
-  //     }
-  //   };
-  // }, []);
-
   return (
     <div>
       <CalendarBody>
@@ -292,6 +309,7 @@ const UserCalendar = ({ sgSeq, uSeq }) => {
                 date.getDate() === today.getDate()
               ) {
                 html.push(<StyledToday key={"today"}>오늘</StyledToday>);
+
               }
 
               return (
@@ -306,7 +324,17 @@ const UserCalendar = ({ sgSeq, uSeq }) => {
         </StyledCalendarWrapper>
       </CalendarBody>
       {modalOpen && (
-        <StudyGroupPlannerModal onClose={handleModalClose} date={selectedDate}>
+
+
+        <StudyGroupPlannerModal
+          onClose={handleModalClose}
+          formattedDate={formattedDate}
+          response={response}
+          sgSeq={sgSeq}
+          gpSeq={gpSeq}
+        >
+
+
           <div>{moment(selectedDate).format("YYYY년 MM월 DD일")}</div>
         </StudyGroupPlannerModal>
       )}

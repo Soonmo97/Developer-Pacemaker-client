@@ -158,12 +158,13 @@ const UserTodoList = ({ uSeq, pSeq, todo, onTodosChange }) => {
         setEditIndex(null);
       } else {
         const addedTodo = await addTodo(pSeq, newTodo);
+        console.log("========addedTodo==========", addedTodo);
         if (!addedTodo) {
           setInputValue('');
           return;
         }
         // 추가하면 바로 미완료 목록으로 추가되게끔 설정 (임시)
-        setUncompletedTodos([...uncompletedTodos, newTodo]);
+        setUncompletedTodos([...uncompletedTodos, addedTodo]);
       }
       setInputValue('');
     } catch (error) {

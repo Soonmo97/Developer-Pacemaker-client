@@ -31,14 +31,14 @@ const CompletedTodoList = ({ completedTodos, handleDeleteCompletedTodo }) => (
   <div>
     <div style={{ fontWeight: "bold", color: "#3700ff" }}>Completed</div>
     <TodoItemContainer>
-      {completedTodos.map((todo, index) => (
-        <TodoItem key={index}>
+      {completedTodos.map((todo) => (
+        <TodoItem key={todo.gtSeq}>
           <span>
-            <li>{todo}</li>
+            <li>{todo.content}</li>
           </span>
           <TodoButton
             onClick={() => {
-              handleDeleteCompletedTodo(index);
+              handleDeleteCompletedTodo(todo.gtSeq);
             }}
           >
             삭제
