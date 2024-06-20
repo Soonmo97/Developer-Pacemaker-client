@@ -24,7 +24,6 @@ const MainContainer = styled.div`
 `;
 
 const Content = styled.div`
-  width: 70%;
   padding: 2vh;
   margin-bottom: 10vh;
 `;

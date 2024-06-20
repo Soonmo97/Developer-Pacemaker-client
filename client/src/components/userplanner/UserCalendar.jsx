@@ -1,85 +1,92 @@
-import axios from 'axios';
-import React, { useEffect, useState } from 'react';
-import moment from 'moment';
-import styled from 'styled-components';
-import Calendar from 'react-calendar';
-import 'react-calendar/dist/Calendar.css';
-import UserCalendarModal from './UserCalendarModal';
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import moment from "moment";
+import styled from "styled-components";
+import Calendar from "react-calendar";
+import "react-calendar/dist/Calendar.css";
+import UserCalendarModal from "./UserCalendarModal";
 
 const CalendarBody = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 1rem;
+
+  @media (max-width: 768px) {
+    min-height: 35vh;
+  }
 `;
+
 const StyledCalendarWrapper = styled.div`
   font-weight: 800;
-  width: 40%;
-  height: auto;
   display: flex;
   justify-content: center;
   position: relative;
   background-color: white;
+  width: 35vw;
+  height: 40vh;
+  padding: 1rem;
+  box-shadow: 4px 2px 10px 0px rgba(0, 0, 0, 0.13);
+  border-radius: 0.5rem;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    height: 100%;
+  }
 
   .react-calendar {
     width: 100%;
     border: none;
-    border-radius: 0.5rem;
-    box-shadow: 4px 2px 10px 0px rgba(0, 0, 0, 0.13);
-    padding: 3% 5%;
+    padding: 1rem;
     background-color: white;
+
+    @media (max-width: 768px) {
+      width: 100%;
+      padding: 0.5rem;
+    }
   }
 
-  /* 전체 폰트 컬러 */
   .react-calendar__month-view {
     abbr {
       color: ${(props) => props.theme.gray_1};
     }
   }
 
-  /* 네비게이션 가운데 정렬 */
   .react-calendar__navigation {
     justify-content: center;
   }
 
-  /* 네비게이션 폰트 설정 */
   .react-calendar__navigation button {
     font-weight: 800;
     font-size: 1rem;
   }
 
-  /* 네비게이션 버튼 컬러 */
   .react-calendar__navigation button:focus {
     background-color: white;
   }
 
-  /* 네비게이션 비활성화 됐을때 스타일 */
   .react-calendar__navigation button:disabled {
     background-color: #eacea8;
     color: ${(props) => props.theme.darkBlack};
   }
 
-  /* 년/월 상단 네비게이션 칸 크기 줄이기 */
   .react-calendar__navigation__label {
     flex-grow: 0 !important;
   }
 
-  /* 요일 밑줄 제거 */
   .react-calendar__month-view__weekdays abbr {
     text-decoration: none;
     font-weight: 800;
   }
 
-  /* 일요일에만 빨간 폰트 */
-  .react-calendar__month-view__weekdays__weekday--weekend abbr[title='일요일'] {
+  .react-calendar__month-view__weekdays__weekday--weekend abbr[title="일요일"] {
     color: ${(props) => props.theme.red_1};
   }
 
-  /* 토요일에만 빨간 폰트 */
-  .react-calendar__month-view__weekdays__weekday--weekend abbr[title='토요일'] {
+  .react-calendar__month-view__weekdays__weekday--weekend abbr[title="토요일"] {
     color: ${(props) => props.theme.blue_1};
   }
 
-  /* 오늘 날짜 폰트 컬러 */
   .react-calendar__tile--now {
     background: none;
     abbr {
@@ -87,14 +94,12 @@ const StyledCalendarWrapper = styled.div`
     }
   }
 
-  /* 네비게이션 월 스타일 적용 */
   .react-calendar__year-view__months__month {
     border-radius: 0.8rem;
     background-color: ${(props) => props.theme.gray_5};
     padding: 0;
   }
 
-  /* 네비게이션 현재 월 스타일 적용 */
   .react-calendar__tile--hasActive {
     background-color: ${(props) => props.theme.primary_2};
     abbr {
@@ -102,13 +107,11 @@ const StyledCalendarWrapper = styled.div`
     }
   }
 
-  /* 일 날짜 간격 */
   .react-calendar__tile {
     padding: 5px 0px 18px;
     position: relative;
   }
 
-  /* 네비게이션 월 스타일 적용 */
   .react-calendar__year-view__months__month {
     flex: 0 0 calc(33.3333% - 10px) !important;
     margin-inline-start: 5px !important;
@@ -120,7 +123,6 @@ const StyledCalendarWrapper = styled.div`
     color: ${(props) => props.theme.gray_1};
   }
 
-  /* 선택한 날짜 스타일 적용 */
   .react-calendar__tile:enabled:hover,
   .react-calendar__tile:enabled:focus,
   .react-calendar__tile--active {
@@ -156,6 +158,12 @@ const StyledDate = styled.div`
   border-radius: 15px;
   font-size: 0.8rem;
   font-weight: 800;
+  cursor: pointer;
+
+  @media (max-width: 375px) {
+    right: 4%;
+    width: 15%;
+  }
 `;
 
 const StyledToday = styled.div`
@@ -180,8 +188,8 @@ const UserCalendar = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const token = localStorage.getItem('accessToken');
-        const formattedDate = moment(activeStartDate).format('YYYY-MM');
+        const token = localStorage.getItem("accessToken");
+        const formattedDate = moment(activeStartDate).format("YYYY-MM");
         const response = await axios.get(
           `${process.env.REACT_APP_API_SERVER}/api/planner/grass`,
           {
@@ -197,7 +205,7 @@ const UserCalendar = () => {
         console.log('=== grass ===', response.data);
         setGrassData(response.data);
       } catch (err) {
-        console.error('Error fetching data:', err);
+        console.error("Error fetching data:", err);
       }
     };
 
@@ -205,11 +213,11 @@ const UserCalendar = () => {
   }, [activeStartDate]);
 
   const handleDateClick = async (date) => {
-    const formattedDate = moment(date).format('YYYY-MM-DD');
-    console.log('============date', formattedDate);
+    const formattedDate = moment(date).format("YYYY-MM-DD");
+    console.log("============date", formattedDate);
 
     try {
-      const token = localStorage.getItem('accessToken');
+      const token = localStorage.getItem("accessToken");
       const response = await axios.get(
         `${process.env.REACT_APP_API_SERVER}/api/planner?date=${formattedDate}`,
         {
@@ -218,10 +226,10 @@ const UserCalendar = () => {
           },
         }
       );
-      console.log('======response========', response.data);
+      console.log("======response========", response.data);
       setResponse(response.data);
     } catch (error) {
-      console.error('Failed to fetch data:', error);
+      console.error("Failed to fetch data:", error);
     }
     setSelectedDate(date);
     setModalOpen(true);
@@ -253,9 +261,9 @@ const UserCalendar = () => {
             onClickDay={handleDateClick}
             value={date}
             onChange={handleDateChange}
-            formatDay={(locale, date) => moment(date).format('D')}
-            formatYear={(locale, date) => moment(date).format('YYYY')}
-            formatMonthYear={(locale, date) => moment(date).format('YYYY. MM')}
+            formatDay={(locale, date) => moment(date).format("D")}
+            formatYear={(locale, date) => moment(date).format("YYYY")}
+            formatMonthYear={(locale, date) => moment(date).format("YYYY. MM")}
             calendarType="gregory"
             showNeighboringMonth={false}
             next2Label={null}
@@ -279,11 +287,11 @@ const UserCalendar = () => {
 
               let html = [];
               if (
-                view === 'month' &&
+                view === "month" &&
                 date.getMonth() === today.getMonth() &&
                 date.getDate() === today.getDate()
               ) {
-                html.push(<StyledToday key={'today'}>오늘</StyledToday>);
+                html.push(<StyledToday key={"today"}>오늘</StyledToday>);
               }
 
               return (
@@ -300,7 +308,7 @@ const UserCalendar = () => {
       {modalOpen && (
         <UserCalendarModal
           onClose={handleModalClose}
-          titleDate={moment(selectedDate).format('YYYY년 MM월 DD일')}
+          titleDate={moment(selectedDate).format("YYYY년 MM월 DD일")}
           selectedDate={selectedDate}
           response={response}
         />
