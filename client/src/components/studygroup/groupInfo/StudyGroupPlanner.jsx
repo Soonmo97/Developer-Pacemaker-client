@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
 import moment from "moment";
 
+
 import styled from "styled-components";
+
 
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
@@ -323,6 +325,7 @@ const UserCalendar = ({ sgSeq, uSeq, member }) => {
       </CalendarBody>
       {modalOpen && (
 
+
         <StudyGroupPlannerModal
           onClose={handleModalClose}
           formattedDate={formattedDate}
@@ -330,6 +333,7 @@ const UserCalendar = ({ sgSeq, uSeq, member }) => {
           sgSeq={sgSeq}
           gpSeq={gpSeq}
         >
+
 
           <div>{moment(selectedDate).format("YYYY년 MM월 DD일")}</div>
         </StudyGroupPlannerModal>
