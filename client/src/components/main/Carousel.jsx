@@ -1,21 +1,23 @@
-import React, { useState, useEffect } from "react";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import UserCalendar from "../userplanner/UserCalendar";
-import { ThemeProvider } from "styled-components";
-import { Link } from "react-router-dom";
+import React, { useState, useEffect } from 'react';
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+import UserCalendar from '../userplanner/UserCalendar';
+import { ThemeProvider } from 'styled-components';
+import { Link } from 'react-router-dom';
 
-import { FcNext, FcPrevious } from "react-icons/fc";
-import styled from "styled-components";
-import axios from "axios";
+import { FcNext, FcPrevious } from 'react-icons/fc';
+import styled from 'styled-components';
+import axios from 'axios';
 
 const theme = {
-  blue_1: "#0260f8",
-  primary_2: "#fa9805",
-  primary_3: "#ffaa0c",
-  yellow_2: "#f9e8c3",
-  br_2: "#666666",
+  blue_1: '#0260f8',
+  primary_2: '#fa9805',
+  primary_3: '#ffaa0c',
+  yellow_2: '#f9e8c3',
+  br_2: '#666666',
+  green: '#58b548',
+  deepGreen: '#338923',
 };
 
 const CardButton = styled.button`
@@ -76,7 +78,7 @@ const PrevArrow = (props) => {
   return (
     <FcPrevious
       className={className}
-      style={{ ...style, display: "block" }}
+      style={{ ...style, display: 'block' }}
       onClick={onClick}
     />
   );
@@ -87,7 +89,7 @@ const NextArrow = (props) => {
   return (
     <FcNext
       className={className}
-      style={{ ...style, display: "block" }}
+      style={{ ...style, display: 'block' }}
       onClick={onClick}
     />
   );
@@ -104,7 +106,7 @@ const Carousel = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const token = localStorage.getItem("accessToken");
+      const token = localStorage.getItem('accessToken');
       try {
         const response = await axios.get(
           `${process.env.REACT_APP_API_SERVER}/api/study-group/openAll`,
@@ -114,10 +116,10 @@ const Carousel = () => {
             },
           }
         );
-        console.log("추천스터디 :", response.data);
+        console.log('추천스터디 :', response.data);
         setStudyGroups(response.data);
       } catch (error) {
-        console.error("스터디 그룹 데이터를 불러오는데 실패했습니다:", error);
+        console.error('스터디 그룹 데이터를 불러오는데 실패했습니다:', error);
       }
     };
 
@@ -167,7 +169,7 @@ const Carousel = () => {
   return (
     <>
       <div>
-        <div className="carousel" style={{ marginBottom: "5rem" }}>
+        <div className="carousel" style={{ marginBottom: '5rem' }}>
           <h1>추천 스터디</h1>
           <CarouselWrapper>
             <SliderWrapper {...settings}>
