@@ -3,9 +3,6 @@ import styled from "styled-components";
 
 const FooterWrapper = styled.div`
   box-sizing: border-box;
-  /* position: fixed;
-  bottom: 0;
-  left: 0; */
   width: 100%;
   display: flex;
   justify-content: center;
@@ -21,6 +18,12 @@ const FooterContainer = styled.div`
   display: flex;
   justify-content: space-between;
   width: 80%;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
 `;
 
 const LeftSection = styled.div`
@@ -63,6 +66,7 @@ const CDiv = styled.div`
     display: none;
   }
 `;
+
 const Footer = () => {
   return (
     <FooterWrapper>
