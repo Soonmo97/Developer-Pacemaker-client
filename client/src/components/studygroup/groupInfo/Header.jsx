@@ -639,7 +639,13 @@ const Header = () => {
                 <ListItem key={index}>
                   <div>{item.nickname}</div>
                   <div style={{ gap: "1rem" }}>
-                    <AuthorizeToBtn onClick={() => handleAuthorize(item.useq)}>
+                    <AuthorizeToBtn
+                      onClick={() => {
+                        if (window.confirm("정말 위임하시겠습니까?")) {
+                          handleAuthorize(item.useq);
+                        }
+                      }}
+                    >
                       위임
                     </AuthorizeToBtn>
                     <RemoveButton>강퇴</RemoveButton>
