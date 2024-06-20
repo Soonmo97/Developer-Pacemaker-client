@@ -108,7 +108,7 @@ const StyledCalendarWrapper = styled.div`
   }
 
   .react-calendar__tile {
-    padding: 5px 0px 18px;
+    padding: 0.1rem 0rem 1rem;
     position: relative;
   }
 
@@ -202,7 +202,7 @@ const UserCalendar = () => {
           }
         );
 
-        console.log('=== grass ===', response.data);
+        console.log("=== grass ===", response.data);
         setGrassData(response.data);
       } catch (err) {
         console.error("Error fetching data:", err);
@@ -274,15 +274,15 @@ const UserCalendar = () => {
               setActiveStartDate(activeStartDate)
             }
             tileContent={({ date, view }) => {
-              const formattedDate = moment(date).format('YYYY-MM-DD');
+              const formattedDate = moment(date).format("YYYY-MM-DD");
               const completedCount = getCompletedCount(formattedDate);
 
-              let className = '';
-              if (view === 'month' && completedCount > 0) {
+              let className = "";
+              if (view === "month" && completedCount > 0) {
                 className =
                   completedCount >= 3
-                    ? 'react-calendar__tile--completed3'
-                    : 'react-calendar__tile--completed1';
+                    ? "react-calendar__tile--completed3"
+                    : "react-calendar__tile--completed1";
               }
 
               let html = [];

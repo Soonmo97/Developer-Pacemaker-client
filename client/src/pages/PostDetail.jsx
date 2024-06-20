@@ -58,11 +58,12 @@ const ListItem = styled.li`
 
 const ApplyBtn = styled(Button)`
   && {
+    margin-left: auto;
+    margin-top: 1rem;
     height: 2.5rem;
     border-radius: 15px;
-    width: 5rem;
+    width: 6rem;
     font-weight: bold;
-    margin-right: 1rem;
   }
 `;
 
