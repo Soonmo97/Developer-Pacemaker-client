@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
-import CompletedTodoList from './CompletedTodoList';
-import TodoList from './TodoList';
-import axios from 'axios';
+import axios from "axios";
+import React, { useState, useEffect } from "react";
+import styled from "styled-components";
+import CompletedTodoList from "./CompletedTodoList";
+import TodoList from "./TodoList";
 
 const TodoListContainer = styled.div`
   width: 100%;
@@ -17,7 +17,7 @@ const TodoInput = styled.input`
 `;
 
 const TodoButton = styled.button`
-  background-color: ${(props) => (props.$completed ? '#4caf50' : '#f44336')};
+  background-color: ${(props) => (props.$completed ? "#4caf50" : "#f44336")};
   color: white;
   border: none;
   padding: 0.5rem 1rem;
@@ -25,86 +25,174 @@ const TodoButton = styled.button`
   cursor: pointer;
 `;
 
-const GroupTodoList = ({ date }) => {
-  const [todos, setTodos] = useState([]);
+const deleteTodo = async (gtSeq) => {
+  try {
+    console.log("======gtSeq======", gtSeq);
+    const token = localStorage.getItem("accessToken");
+    const response = await axios.delete(
+      `${process.env.REACT_APP_API_SERVER}/api/group-todo/${gtSeq}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Failed to delete todo:", error);
+    throw error;
+  }
+};
+
+const patchTodo = async (gtSeq) => {
+  try {
+    console.log("======gtSeq======", gtSeq);
+    const token = localStorage.getItem("accessToken");
+    const response = await axios.patch(
+      `${process.env.REACT_APP_API_SERVER}/api/group-todo/change/${gtSeq}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    return response.data;
+  } catch (error) {
+    console.error("Failed to patch todo:", error);
+    throw error;
+  }
+};
+
+const GroupTodoList = ({ response, formattedDate, sgSeq, gpSeq }) => {
+  const [todos, setTodos] = useState(response);
   const [completedTodos, setCompletedTodos] = useState([]);
-  const [inputValue, setInputValue] = useState('');
+  const [uncompletedTodos, setUncompletedTodos] = useState([]);
+  const [inputValue, setInputValue] = useState("");
   const [isEditing, setIsEditing] = useState(false);
   const [editIndex, setEditIndex] = useState(null);
 
   useEffect(() => {
-    // const fetchData = async () => {
-    //   try {
-    //     const response = await axios.post(
-    //       `${process.env.REACT_APP_API_SERVER}/api/group-planner`,
-    //       { sgSeq: sgSeq, uSeq: uSeq },
-    //       { params: { date: date } }
-    //     );
-    //     console.log('>>:', response.data);
-    //     if (response.data.length > 0) {
-    //       setTodos();
-    //     } else {
-    //       setTodos(null); // 데이터가 없으면 null로 설정
-    //     }
-    //   } catch (error) {
-    //     console.error(
-    //       '스터디그룹 플래너 투두리스트 데이터를 불러오는데 실패했습니다:',
-    //       error
-    //     );
-    //   }
-    // };
-    // const storedTodos = localStorage.getItem('todos');
-    // const storedCompletedTodos = localStorage.getItem('completedTodos');
-    // if (storedTodos) setTodos(JSON.parse(storedTodos));
-    // if (storedCompletedTodos)
-    //   setCompletedTodos(JSON.parse(storedCompletedTodos));
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem('todos', JSON.stringify(todos));
-    localStorage.setItem('completedTodos', JSON.stringify(completedTodos));
-  }, [todos, completedTodos]);
-
-  const handleAddTodo = () => {
-    if (inputValue.trim() === '') return;
-
-    if (isEditing) {
-      const updatedTodos = todos.map((todo, index) =>
-        index === editIndex ? inputValue : todo
-      );
-      setTodos(updatedTodos);
-      setIsEditing(false);
-      setEditIndex(null);
-    } else {
-      setTodos([...todos, inputValue]);
+    console.log("========gpSeq===gpSeq", gpSeq);
+    if (response) {
+      console.log("===========response", response);
+      // setGpSeq(response[0].gpSeq);
     }
+    console.log("****** ***gpSeq, sgSeq*******", gpSeq, sgSeq);
+    if (todos) {
+      const filteredTodos = todos.filter((todoItem) => todoItem.isCompleted);
+      setCompletedTodos(filteredTodos);
+      const UncompletedTodos = todos.filter(
+        (todoItem) => !todoItem.isCompleted
+      );
+      setUncompletedTodos(UncompletedTodos);
+      console.log("======filteredTodos", filteredTodos);
+      console.log("======UncompletedTodos", UncompletedTodos);
+    }
+  }, [todos]);
 
-    setInputValue('');
+  const addTodo = async (sgSeq, gpSeq, todo, formattedDate) => {
+    try {
+      console.log("==addTodo=", gpSeq, todo);
+      const token = localStorage.getItem("accessToken");
+
+      if (!token) {
+        throw new Error("Access token is missing");
+      }
+
+      if (gpSeq == null) {
+        console.log("gpSeq null", sgSeq, todo);
+        // 플래너가 생성되지 않은 경우
+        const payload = {
+          sgSeq: sgSeq,
+          ...(todo ? { groupTodoCreateDTOList: [{ content: todo }] } : {}),
+        };
+
+        console.log("payloadpayload", payload);
+
+        const response = await axios.post(
+          `${process.env.REACT_APP_API_SERVER}/api/group-planner/save/${formattedDate}`,
+          payload,
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        alert("플래너 생성이 완료되었습니다.");
+      } else {
+        // 기존 플래너에 투두 추가
+        const response = await axios.post(
+          `${process.env.REACT_APP_API_SERVER}/api/group-todo/${gpSeq}`,
+          { content: todo },
+          {
+            headers: { Authorization: `Bearer ${token}` },
+          }
+        );
+        // 추가하면 바로 미완료 목록으로 추가되게끔 설정 (임시)
+        setUncompletedTodos([...uncompletedTodos, response.data]);
+      }
+
+      return response.data;
+    } catch (error) {
+      console.error("Failed to add todo:", error);
+      throw error;
+    }
+  };
+
+  const handleAddTodo = async () => {
+    if (inputValue.trim() === "") return;
+    try {
+      if (isEditing) {
+        const updatedTodos = todos.map((todo, index) =>
+          index === editIndex ? { ...todo, content: inputValue } : todo
+        );
+        setTodos(updatedTodos);
+        setIsEditing(false);
+        setEditIndex(null);
+      } else {
+        const addedTodo = await addTodo(
+          sgSeq,
+          gpSeq,
+          inputValue,
+          formattedDate
+        ); // gpSeq를 null로 설정
+        console.log("========addedTodo==========", addedTodo);
+        if (!addedTodo) {
+          setInputValue("");
+          return;
+        }
+        // 추가하면 바로 미완료 목록으로 추가되게끔 설정 (임시)
+        setUncompletedTodos([...uncompletedTodos, addedTodo]);
+      }
+      setInputValue("");
+    } catch (error) {
+      console.error("Failed to add/update todo:", error);
+    }
   };
 
   const handleKeyPress = (e) => {
-    if (e.key === 'Enter') {
+    if (e.key === "Enter") {
       handleAddTodo();
     }
   };
 
-  const handleCompleteTodo = (index) => {
-    const todo = todos[index];
-    setTodos(todos.filter((_, idx) => idx !== index));
-    setCompletedTodos([...completedTodos, todo]);
+  const handleCompleteTodo = async (ctodo) => {
+    await patchTodo(ctodo.gtSeq);
+    setCompletedTodos(
+      completedTodos.filter((todo) => todo.gtSeq !== ctodo.gtSeq)
+    );
+    setUncompletedTodos([...uncompletedTodos, ctodo]);
   };
 
-  const handleDeleteTodo = (index) => {
-    setTodos(todos.filter((_, idx) => idx !== index));
-  };
+  // const handleDeleteTodo = (index) => {
+  //   setTodos(todos.filter((_, idx) => idx !== index));
+  // };
 
-  const handleDeleteCompletedTodo = (index) => {
-    setCompletedTodos(completedTodos.filter((_, idx) => idx !== index));
+  const handleDeleteCompletedTodo = async (gtSeq) => {
+    await deleteTodo(gtSeq);
+    setCompletedTodos(completedTodos.filter((todo) => todo.gtSeq !== gtSeq));
+    setUncompletedTodos(
+      uncompletedTodos.filter((todo) => todo.gtSeq !== gtSeq)
+    );
   };
 
   return (
     <TodoListContainer
-      style={{ display: 'flex', justifyContent: 'center', gap: '5rem' }}
+      style={{ display: "flex", justifyContent: "center", gap: "5rem" }}
     >
       <div>
         <TodoInput
@@ -118,13 +206,13 @@ const GroupTodoList = ({ date }) => {
           onClick={handleAddTodo}
           $completed={isEditing ? true : undefined}
         >
-          {isEditing ? '수정' : '추가'}
+          {isEditing ? "수정" : "추가"}
         </TodoButton>
 
         <TodoList
-          todos={todos}
+          todos={uncompletedTodos}
           handleCompleteTodo={handleCompleteTodo}
-          handleDeleteTodo={handleDeleteTodo}
+          handleDeleteTodo={handleDeleteCompletedTodo}
         />
       </div>
       <CompletedTodoList
