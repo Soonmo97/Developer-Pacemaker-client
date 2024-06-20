@@ -247,12 +247,12 @@ const Header = () => {
   // const [jSeq, setJSeq] = useState();
   const [uSeq, setUSeq] = useState(null);
   const [isGroupMember, setIsGroupMember] = useState(false);
-  const [nickname, setNickname] = useState("");
+  const [nickname, setNickname] = useState('');
 
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const token = localStorage.getItem("accessToken");
+        const token = localStorage.getItem('accessToken');
         const response = await axios.get(
           `${process.env.REACT_APP_API_SERVER}/api/user`,
           {
@@ -271,7 +271,7 @@ const Header = () => {
     fetchUserProfile();
   }, []);
 
-  console.log("nickname :", nickname);
+  console.log('nickname :', nickname);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -413,10 +413,10 @@ const Header = () => {
           const response = await axios.get(
             `${process.env.REACT_APP_API_SERVER}/api/group-members/${sgSeq}`
           );
-          console.log("members", response.data);
+          console.log('members', response.data);
           setMembers(response.data);
         } catch (error) {
-          console.error("Failed to fetch members", error);
+          console.error('Failed to fetch members', error);
         }
       };
 
@@ -438,8 +438,8 @@ const Header = () => {
 
   const handleAccept = async (jSeq, uSeq) => {
     try {
-      const token = localStorage.getItem("accessToken");
-      console.log("dddd", jSeq);
+      const token = localStorage.getItem('accessToken');
+      console.log('dddd', jSeq);
       const response = await axios.post(
         `${process.env.REACT_APP_API_SERVER}/api/join/accept/${jSeq}`,
         {
@@ -452,11 +452,11 @@ const Header = () => {
           },
         }
       );
-      console.log("수락성공!", response.data);
-      alert("수락완료!");
+      console.log('수락성공!', response.data);
+      alert('수락완료!');
       window.location.reload();
     } catch (error) {
-      console.error("Failed to fetch members", error);
+      console.error('Failed to fetch members', error);
     }
   };
 
@@ -539,7 +539,7 @@ const Header = () => {
 
   const handleJoin = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem("accessToken");
+    const token = localStorage.getItem('accessToken');
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_SERVER}/api/join`,
@@ -554,11 +554,11 @@ const Header = () => {
         }
       );
       console.log(response.data);
-      console.log("신청완료!");
-      alert("신청완료");
+      console.log('신청완료!');
+      alert('신청완료');
     } catch (error) {
-      console.error("신청하기에 실패했습니다:", error);
-      alert("신청하기에 실패했습니다.");
+      console.error('신청하기에 실패했습니다:', error);
+      alert('신청하기에 실패했습니다.');
     }
   };
 
