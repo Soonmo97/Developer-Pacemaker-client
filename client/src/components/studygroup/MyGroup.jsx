@@ -16,10 +16,10 @@ const MakeButton = styled(Button)`
     margin-top: 1rem;
     border-radius: 15px;
 
-    /* @media (max-width: 480px) {
+    @media (max-width: 480px) {
       width: 45vw;
-      float: left;
-    } */
+      margin-left: auto;
+    }
   }
 `;
 
@@ -121,6 +121,12 @@ const NextArrow = (props) => {
 const SliderWrapper = styled(Slider)`
   .slick-track {
     margin-bottom: 2rem;
+  }
+`;
+
+const CarouselTitle = styled.h1`
+  @media (max-width: 480px) {
+    font-size: 1.2rem;
   }
 `;
 
@@ -232,7 +238,7 @@ const MyGroup = () => {
         </TitleContainer>
 
         <CarouselWrapper>
-          <h2>내가 그룹장인 그룹</h2>
+          <CarouselTitle>내가 그룹장인 그룹</CarouselTitle>
           <SliderWrapper {...settings}>
             {myStudyGroups.map((group) => (
               <SlideItem key={group.sgSeq}>
@@ -256,7 +262,7 @@ const MyGroup = () => {
       <br />
       <Container>
         <CarouselWrapper>
-          <h2>내가 그룹원인 그룹</h2>
+          <CarouselTitle>내가 그룹원인 그룹</CarouselTitle>
           <SliderWrapper {...settings}>
             {difference.map((group) => (
               <SlideItem key={group.sgSeq}>

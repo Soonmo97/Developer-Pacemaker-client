@@ -104,12 +104,25 @@ const WriteButton = styled(Button)`
   }
 `;
 
+const PaginationContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+`;
+
+const PaginationButton = styled(Button)`
+  && {
+    margin: 0 0.25rem;
+  }
+`;
+
 const Board = () => {
   const { rbSeq } = useParams();
   const [searchTerm, setSearchTerm] = useState("");
   const [boardData, setBoardData] = useState([]);
   const [filteredData, setFilteredData] = useState([]);
-  const [sgSeq, setSgSeq] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 10;
 
   useEffect(() => {
     const fetchData = async () => {
@@ -134,8 +147,6 @@ const Board = () => {
     fetchData();
   }, []);
 
-  console.log("boardData", boardData);
-
   const formatDate = (dateString) => {
     const dateTimeParts = dateString.split(".");
     const dateTime = dateTimeParts[0];
@@ -151,7 +162,15 @@ const Board = () => {
       item.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredData(filtered);
+    setCurrentPage(1); // Reset to the first page when the search term changes
   }, [searchTerm, boardData]);
+
+  const paginatedData = filteredData.slice(
+    (currentPage - 1) * itemsPerPage,
+    currentPage * itemsPerPage
+  );
+
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
 
   return (
     <>
@@ -180,7 +199,7 @@ const Board = () => {
             </tr>
           </thead>
           <tbody>
-            {filteredData.map((item) => (
+            {paginatedData.map((item) => (
               <tr key={item.rbSeq}>
                 <BoardTd>{item.rbSeq}</BoardTd>
                 <BoardTd>
@@ -194,6 +213,36 @@ const Board = () => {
             ))}
           </tbody>
         </BoardTable>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <PaginationContainer>
+            <PaginationButton
+              variant="outlined"
+              color="primary"
+              disabled={currentPage === 1}
+              onClick={() => setCurrentPage(currentPage - 1)}
+            >
+              이전
+            </PaginationButton>
+            {[...Array(totalPages)].map((_, index) => (
+              <PaginationButton
+                key={index}
+                variant="outlined"
+                color="primary"
+                onClick={() => setCurrentPage(index + 1)}
+              >
+                {index + 1}
+              </PaginationButton>
+            ))}
+            <PaginationButton
+              variant="outlined"
+              color="primary"
+              disabled={currentPage === totalPages}
+              onClick={() => setCurrentPage(currentPage + 1)}
+            >
+              다음
+            </PaginationButton>
+          </PaginationContainer>
+        </div>
         <Link to="/main/studygroupboard/write">
           <WriteButton variant="contained" color="primary">
             글쓰기
