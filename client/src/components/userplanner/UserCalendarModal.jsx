@@ -16,16 +16,30 @@ const ModalOverlay = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
+  padding: 5%;
 `;
 
 const ModalContent = styled.div`
   background-color: white;
   padding: 3rem;
   border-radius: 10px;
-  height: 50%;
-  width: 45%;
+  height: 80%;
+  width: 80%;
   display: flex;
   flex-direction: column;
+  overflow-y: auto;
+
+  @media (max-width: 768px) {
+    width: 90%;
+    padding: 2rem;
+    height: 70%;
+  }
+
+  @media (max-width: 480px) {
+    width: 95%;
+    padding: 1.5rem;
+    height: 60%;
+  }
 `;
 
 const ModalHeader = styled.div`
@@ -33,10 +47,19 @@ const ModalHeader = styled.div`
   justify-content: space-between;
   align-items: center;
   margin-bottom: 10px;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+  }
 `;
 
 const ModalTitle = styled.h2`
   margin: 0;
+
+  @media (max-width: 480px) {
+    margin-bottom: 10px;
+    font-size: 1.25rem;
+  }
 `;
 
 const CloseButton = styled.button`
@@ -44,21 +67,39 @@ const CloseButton = styled.button`
   border: none;
   font-size: 1.5rem;
   cursor: pointer;
+
+  @media (max-width: 480px) {
+    font-size: 1.25rem;
+  }
 `;
 
 const ModalBody = styled.div`
   display: flex;
   justify-content: space-between;
+  overflow-y: auto;
+  flex: 1;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+  }
 `;
 
 const TodoListSection = styled.div`
   flex: 1;
   padding: 10px;
+
+  @media (max-width: 480px) {
+    padding: 5px;
+  }
 `;
 
 const SectionTitle = styled.h3`
   margin: 0 0 10px 0;
   color: red;
+
+  @media (max-width: 480px) {
+    font-size: 1rem;
+  }
 `;
 
 const StudyDiarySection = styled.div`
@@ -66,6 +107,10 @@ const StudyDiarySection = styled.div`
   padding: 10px;
   display: flex;
   flex-direction: column;
+
+  @media (max-width: 480px) {
+    padding: 5px;
+  }
 `;
 
 const UserCalendarModal = ({
@@ -81,28 +126,6 @@ const UserCalendarModal = ({
   const [pSeq, setPSeq] = useState(response.pseq);
   const [newMemo, setNewMemo] = useState("");
   const [newTodo, setNewTodo] = useState("");
-
-  // useEffect(() => {
-  //   const getData = async () => {
-  //     const token = localStorage.getItem("accessToken");
-  //     try {
-  //       const response = await axios.get(
-  //         `${process.env.REACT_APP_API_SERVER}/api/planner?date=${formattedDate}`,
-  //         {
-  //           headers: {
-  //             Authorization: `Bearer ${token}`,
-  //           },
-  //         }
-  //       );
-
-  //       console.log("데이터를 성공적으로 받아왔습니다.", response.data);
-  //     } catch (error) {
-  //       console.error("데이터를 받아오는데 실패했습니다:", error);
-  //     }
-  //   };
-
-  //   getData();
-  // }, [selectedDate]);
 
   const handleTodosChange = (newTodos) => {
     setNewTodo(newTodos);
@@ -155,7 +178,7 @@ const UserCalendarModal = ({
             ></UserTodoList>
           </TodoListSection>
           <StudyDiarySection>
-            <SectionTitle style={{ color: "#1e90ff" }}>학습일지</SectionTitle>
+            <SectionTitle style={{ color: "#1e90ff" }}>메모</SectionTitle>
             <Memo
               selectedDate={selectedDate}
               memo={memo}

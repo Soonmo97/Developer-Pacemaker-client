@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
-import styled from 'styled-components';
-import Modal from 'react-modal';
-import { useParams } from 'react-router-dom';
-import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
+import Modal from "react-modal";
+import { useParams } from "react-router-dom";
+import axios from "axios";
 
 const InfoContainer = styled.div`
   padding: 1rem;
@@ -24,6 +24,11 @@ const HeaderContainer = styled.div`
   padding: 1rem;
   background-color: #f8f8f8;
   border-bottom: 1px solid #ddd;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    gap: 1rem;
+  }
 `;
 
 const Title = styled.h1`
@@ -33,6 +38,11 @@ const Title = styled.h1`
 const SetBtns = styled.div`
   display: flex;
   gap: 1rem;
+
+  @media (max-width: 480px) {
+    justify-content: flex-end;
+    margin-left: auto;
+  }
 `;
 
 const SettingsButton = styled.button`
@@ -52,9 +62,13 @@ const ManagementModal = styled(Modal)`
   padding: 1rem;
   background-color: white;
   border: 1px solid #ddd;
-  width: 40%;
-  height: 50%;
+  height: auto;
   margin: 5rem auto;
+  width: 40vw;
+
+  @media (max-width: 768px) {
+    width: 80%;
+  }
 `;
 
 const CloseButton = styled.button`
@@ -69,9 +83,14 @@ const CloseButton = styled.button`
 
 const Section = styled.div`
   display: flex;
-  justify-content: space-between;
-  width: 100%;
-  margin: 2.5rem 0;
+
+  flex-direction: row;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    margin-left: -2rem;
+    /* margin-left: -2rem; */
+  }
 `;
 
 const SectionHeader = styled.div`
@@ -83,12 +102,18 @@ const SectionHeader = styled.div`
 `;
 
 const List = styled.div`
-  width: 45%;
+  width: 18vw;
   border: 1px solid #ddd;
   padding: 1rem;
   max-height: 14rem;
   overflow-y: auto;
   overflow-x: hidden;
+  margin-bottom: 2rem;
+
+  @media (max-width: 768px) {
+    max-height: none;
+    width: 100%;
+  }
 `;
 
 const ListItem = styled.div`
@@ -238,8 +263,8 @@ const Header = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSetModalOpen, setIsSetModalOpen] = useState(false);
   const [studyGroups, setStudyGroups] = useState([]);
-  const [groupName, setGroupName] = useState('');
-  const [groupGoal, setGroupGoal] = useState('');
+  const [groupName, setGroupName] = useState("");
+  const [groupGoal, setGroupGoal] = useState("");
   const [whoAmI, setWhoAmI] = useState(false);
   const { sgSeq } = useParams();
   const [joinData, setJoinData] = useState([]);
@@ -247,12 +272,12 @@ const Header = () => {
   // const [jSeq, setJSeq] = useState();
   const [uSeq, setUSeq] = useState(null);
   const [isGroupMember, setIsGroupMember] = useState(false);
-  const [nickname, setNickname] = useState("");
+  const [nickname, setNickname] = useState('');
 
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const token = localStorage.getItem("accessToken");
+        const token = localStorage.getItem('accessToken');
         const response = await axios.get(
           `${process.env.REACT_APP_API_SERVER}/api/user`,
           {
@@ -263,6 +288,7 @@ const Header = () => {
         );
         console.log(response.data.nickname);
         setNickname(response.data.nickname);
+        setUSeq(response.data.uSeq);
       } catch (err) {
         console.error(err);
       }
@@ -271,7 +297,7 @@ const Header = () => {
     fetchUserProfile();
   }, []);
 
-  console.log("nickname :", nickname);
+  console.log('nickname :', nickname);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -280,7 +306,7 @@ const Header = () => {
           `${process.env.REACT_APP_API_SERVER}/api/study-group`
         );
 
-        console.log('>>:', response.data);
+        console.log(">>:", response.data);
         const filteredData = response.data.filter(
           (item) => item.sgSeq.toString() === sgSeq
         );
@@ -290,13 +316,13 @@ const Header = () => {
           setStudyGroups(null);
         }
       } catch (error) {
-        console.error('스터디 그룹 데이터를 불러오는데 실패했습니다:', error);
+        console.error("스터디 그룹 데이터를 불러오는데 실패했습니다:", error);
       }
     };
 
     const RecruitmentStatus = async () => {
       try {
-        const token = localStorage.getItem('accessToken');
+        const token = localStorage.getItem("accessToken");
         const response = await axios.get(
           `${process.env.REACT_APP_API_SERVER}/api/study-group/status/${sgSeq}`,
           {
@@ -305,9 +331,9 @@ const Header = () => {
             },
           }
         );
-        console.log('모집여부 데이터:', response.data);
+        console.log("모집여부 데이터:", response.data);
       } catch (error) {
-        console.error('모집 여부 데이터를 불러오는데 실패했습니다:', error);
+        console.error("모집 여부 데이터를 불러오는데 실패했습니다:", error);
       }
     };
 
@@ -317,7 +343,7 @@ const Header = () => {
 
   useEffect(() => {
     const checkUserMembership = async () => {
-      const token = localStorage.getItem('accessToken');
+      const token = localStorage.getItem("accessToken");
       try {
         const response = await axios.get(
           `${process.env.REACT_APP_API_SERVER}/api/study-group/check-uSeq-me/${sgSeq}`,
@@ -330,7 +356,7 @@ const Header = () => {
 
         setWhoAmI(response.data);
       } catch (error) {
-        console.error('그룹장 확인에 실패했습니다:', error);
+        console.error("그룹장 확인에 실패했습니다:", error);
         throw error;
       }
     };
@@ -339,7 +365,7 @@ const Header = () => {
 
   useEffect(() => {
     const joinData = async () => {
-      const token = localStorage.getItem('accessToken');
+      const token = localStorage.getItem("accessToken");
       try {
         const response = await axios.get(
           `${process.env.REACT_APP_API_SERVER}/api/join/${sgSeq}`,
@@ -352,7 +378,7 @@ const Header = () => {
 
         console.log(response.data);
       } catch (error) {
-        console.error('가입신청 데이터를 받아오지 못했습니다.:', error);
+        console.error("가입신청 데이터를 받아오지 못했습니다.:", error);
         throw error;
       }
     };
@@ -361,7 +387,7 @@ const Header = () => {
 
   useEffect(() => {
     const joinData = async () => {
-      const token = localStorage.getItem('accessToken');
+      const token = localStorage.getItem("accessToken");
       try {
         const response = await axios.get(
           `${process.env.REACT_APP_API_SERVER}/api/join/${sgSeq}`,
@@ -372,7 +398,7 @@ const Header = () => {
           }
         );
 
-        console.log('신청 데이터 :', response.data);
+        console.log("신청 데이터 :", response.data);
         setJoinData(response.data);
         // if (response.data) {
         //   const foundItem = response.data.find(
@@ -386,7 +412,7 @@ const Header = () => {
         //   console.log("jSeq:", jSeq);
         // }
       } catch (error) {
-        console.error('가입신청 데이터를 받아오지 못했습니다.:', error);
+        console.error("가입신청 데이터를 받아오지 못했습니다.:", error);
         throw error;
       }
     };
@@ -395,10 +421,10 @@ const Header = () => {
         const response = await axios.get(
           `${process.env.REACT_APP_API_SERVER}/api/group-members/${sgSeq}`
         );
-        console.log('members', response.data);
+        console.log("members", response.data);
         setMembers(response.data);
       } catch (error) {
-        console.error('Failed to fetch members', error);
+        console.error("Failed to fetch members", error);
       }
     };
 
@@ -413,10 +439,10 @@ const Header = () => {
           const response = await axios.get(
             `${process.env.REACT_APP_API_SERVER}/api/group-members/${sgSeq}`
           );
-          console.log("members", response.data);
+          console.log('members', response.data);
           setMembers(response.data);
         } catch (error) {
-          console.error("Failed to fetch members", error);
+          console.error('Failed to fetch members', error);
         }
       };
 
@@ -438,8 +464,8 @@ const Header = () => {
 
   const handleAccept = async (jSeq, uSeq) => {
     try {
-      const token = localStorage.getItem("accessToken");
-      console.log("dddd", jSeq);
+      const token = localStorage.getItem('accessToken');
+      console.log('dddd', jSeq);
       const response = await axios.post(
         `${process.env.REACT_APP_API_SERVER}/api/join/accept/${jSeq}`,
         {
@@ -452,11 +478,34 @@ const Header = () => {
           },
         }
       );
-      console.log("수락성공!", response.data);
-      alert("수락완료!");
+      console.log('수락성공!', response.data);
+      alert('수락완료!');
       window.location.reload();
     } catch (error) {
-      console.error("Failed to fetch members", error);
+      console.error('Failed to fetch members', error);
+    }
+  };
+
+  const handleAuthorize = async (newUSeq) => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      const response = await axios.patch(
+        `${process.env.REACT_APP_API_SERVER}/api/study-group/change-uSeq`,
+        {
+          sgSeq: sgSeq,
+          newUSeq: newUSeq,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(`그룹장 위임 성공! sgSeq: ${sgSeq}, newUSeq: ${newUSeq}`);
+      alert("그룹장이 위임되었습니다.");
+      window.location.reload();
+    } catch (error) {
+      console.error("그룹장 위임에 실패했습니다:", error);
     }
   };
 
@@ -472,7 +521,7 @@ const Header = () => {
     e.preventDefault();
 
     try {
-      const token = localStorage.getItem('accessToken');
+      const token = localStorage.getItem("accessToken");
 
       // 그룹 이름 중복 확인
       const checkResponse = await axios.get(
@@ -486,7 +535,7 @@ const Header = () => {
       );
 
       if (checkResponse.data) {
-        alert('이미 사용 중인 그룹 이름입니다. 다른 이름을 입력해주세요.');
+        alert("이미 사용 중인 그룹 이름입니다. 다른 이름을 입력해주세요.");
         return;
       }
 
@@ -504,19 +553,19 @@ const Header = () => {
         }
       );
 
-      alert('그룹 이름이 수정되었습니다.');
+      alert("그룹 이름이 수정되었습니다.");
       window.location.reload();
       // setGroupName(updateGroupName.data);
     } catch (error) {
-      console.error('그룹 이름 수정에 실패했습니다:', error);
-      alert('그룹 이름 수정에 실패했습니다.');
+      console.error("그룹 이름 수정에 실패했습니다:", error);
+      alert("그룹 이름 수정에 실패했습니다.");
     }
   };
 
   const handleGroupGoalUpdate = async (e) => {
     e.preventDefault();
 
-    const token = localStorage.getItem('accessToken');
+    const token = localStorage.getItem("accessToken");
     try {
       await axios.patch(
         `${process.env.REACT_APP_API_SERVER}/api/study-group/goal`,
@@ -530,16 +579,16 @@ const Header = () => {
           },
         }
       );
-      alert('그룹 목표가 수정되었습니다.');
+      alert("그룹 목표가 수정되었습니다.");
       window.location.reload();
     } catch (error) {
-      console.error('그룹 목표 수정에 실패했습니다:', error);
+      console.error("그룹 목표 수정에 실패했습니다:", error);
     }
   };
 
   const handleJoin = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem("accessToken");
+    const token = localStorage.getItem('accessToken');
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_SERVER}/api/join`,
@@ -554,11 +603,11 @@ const Header = () => {
         }
       );
       console.log(response.data);
-      console.log("신청완료!");
-      alert("신청완료");
+      console.log('신청완료!');
+      alert('신청완료');
     } catch (error) {
-      console.error("신청하기에 실패했습니다:", error);
-      alert("신청하기에 실패했습니다.");
+      console.error('신청하기에 실패했습니다:', error);
+      alert('신청하기에 실패했습니다.');
     }
   };
 
@@ -609,6 +658,19 @@ const Header = () => {
           </List>
           <List>
             <SectionHeader>그룹원 관리</SectionHeader>
+            {members
+              .filter((member) => member.useq !== uSeq)
+              .map((item, index) => (
+                <ListItem key={index}>
+                  <div>{item.nickname}</div>
+                  <div style={{ gap: "1rem" }}>
+                    <AuthorizeToBtn onClick={() => handleAuthorize(item.useq)}>
+                      위임
+                    </AuthorizeToBtn>
+                    <RemoveButton>강퇴</RemoveButton>
+                  </div>
+                </ListItem>
+              ))}
             {/* {members?.map((item, index) => (
               <ListItem key={index}>
                 <div>그룹원 닉네임</div>
@@ -619,27 +681,29 @@ const Header = () => {
               </ListItem>
             ))} */}
 
+
             <ListItem>
-              <div>그룹원 닉네임</div>
-              <div style={{ gap: '1rem' }}>
+              <div>닉네임</div>
+              <div style={{ gap: "1rem" }}>
                 <AuthorizeToBtn>위임</AuthorizeToBtn>
                 <RemoveButton>강퇴</RemoveButton>
               </div>
             </ListItem>
             <ListItem>
-              <div>그룹원 닉네임</div>
-              <div style={{ gap: '1rem' }}>
+              <div>닉네임</div>
+              <div style={{ gap: "1rem" }}>
                 <AuthorizeToBtn>위임</AuthorizeToBtn>
                 <RemoveButton>강퇴</RemoveButton>
               </div>
             </ListItem>
             <ListItem>
-              <div>그룹원 닉네임</div>
-              <div style={{ gap: '1rem' }}>
+              <div>닉네임</div>
+              <div style={{ gap: "1rem" }}>
                 <AuthorizeToBtn>위임</AuthorizeToBtn>
                 <RemoveButton>강퇴</RemoveButton>
               </div>
             </ListItem>
+
           </List>
         </Section>
       </ManagementModal>
