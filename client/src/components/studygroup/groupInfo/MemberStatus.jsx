@@ -158,7 +158,7 @@ const MemberStatus = () => {
             <DetailTitle>{selectedMember.nickname}</DetailTitle>
             <DetailModalContainer>
               <ThemeProvider theme={theme}>
-                <StudyGroupPlanner />
+                <StudyGroupPlanner member={selectedMember} sgSeq={sgSeq} />
               </ThemeProvider>
             </DetailModalContainer>
           </>

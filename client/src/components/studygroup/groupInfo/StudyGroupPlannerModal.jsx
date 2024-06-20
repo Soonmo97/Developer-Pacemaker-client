@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import GroupTodoList from "./groupTodolist/GroupTodoList";
 
@@ -57,7 +58,21 @@ const SectionTitle = styled.h3`
   color: red;
 `;
 
-const StudyGroupPlannerModal = ({ onClose, children }) => {
+const StudyGroupPlannerModal = ({
+  onClose,
+  children,
+  formattedDate,
+  response,
+  sgSeq,
+  gpSeq,
+}) => {
+  const [todos, setTodos] = useState(response);
+
+  useEffect(() => {
+    console.log("StudyGroupPlannerModalresponse::", response);
+    console.log("???/", gpSeq);
+  }, []);
+
   return (
     <ModalOverlay>
       <ModalContent>
@@ -73,7 +88,12 @@ const StudyGroupPlannerModal = ({ onClose, children }) => {
               >
                 TodoList
               </SectionTitle>
-              <GroupTodoList></GroupTodoList>
+              <GroupTodoList
+                response={todos}
+                formattedDate={formattedDate}
+                sgSeq={sgSeq}
+                gpSeq={gpSeq}
+              ></GroupTodoList>
             </TodoListSection>
           </ModalBody>
         </div>
