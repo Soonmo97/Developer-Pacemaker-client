@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from "react";
 
 import styled from "styled-components";
@@ -64,16 +63,20 @@ const SectionTitle = styled.h3`
   text-align: center;
 `;
 
-
 const StudyGroupPlannerModal = ({
   onClose,
   children,
   formattedDate,
   response,
   sgSeq,
-  gpSeq,
+  initialGpSeq,
 }) => {
   const [todos, setTodos] = useState(response);
+  const [gpSeq, setGpSeq] = useState(initialGpSeq);
+
+  const getGpSeq = async (gpSeq) => {
+    setGpSeq(gpSeq);
+  };
 
   useEffect(() => {
     console.log("StudyGroupPlannerModalresponse::", response);
@@ -87,11 +90,11 @@ const StudyGroupPlannerModal = ({
           <CloseButton onClick={onClose}>X</CloseButton>
         </ModalHeader>
 
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <ModalBody style={{ width: '100%' }}>
-            <TodoListSection style={{ border: '1px solid black' }}>
+        <div style={{ display: "flex", justifyContent: "center" }}>
+          <ModalBody style={{ width: "100%" }}>
+            <TodoListSection style={{ border: "1px solid black" }}>
               <SectionTitle
-                style={{ display: 'flex', justifyContent: 'center' }}
+                style={{ display: "flex", justifyContent: "center" }}
               >
                 TodoList
               </SectionTitle>
@@ -100,11 +103,11 @@ const StudyGroupPlannerModal = ({
                 formattedDate={formattedDate}
                 sgSeq={sgSeq}
                 gpSeq={gpSeq}
+                getGpSeq={getGpSeq}
               ></GroupTodoList>
             </TodoListSection>
           </ModalBody>
         </div>
-
       </ModalContent>
     </ModalOverlay>
   );

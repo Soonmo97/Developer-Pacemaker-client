@@ -309,7 +309,6 @@ const UserCalendar = ({ sgSeq, uSeq, member }) => {
                 date.getDate() === today.getDate()
               ) {
                 html.push(<StyledToday key={"today"}>오늘</StyledToday>);
-
               }
 
               return (
@@ -324,17 +323,13 @@ const UserCalendar = ({ sgSeq, uSeq, member }) => {
         </StyledCalendarWrapper>
       </CalendarBody>
       {modalOpen && (
-
-
         <StudyGroupPlannerModal
           onClose={handleModalClose}
           formattedDate={formattedDate}
           response={response}
           sgSeq={sgSeq}
-          gpSeq={gpSeq}
+          initialGpSeq={gpSeq}
         >
-
-
           <div>{moment(selectedDate).format("YYYY년 MM월 DD일")}</div>
         </StudyGroupPlannerModal>
       )}

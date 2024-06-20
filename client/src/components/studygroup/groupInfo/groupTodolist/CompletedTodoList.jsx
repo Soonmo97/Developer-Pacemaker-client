@@ -27,7 +27,11 @@ const TodoButton = styled.button`
   cursor: pointer;
 `;
 
-const CompletedTodoList = ({ completedTodos, handleDeleteCompletedTodo }) => (
+const CompletedTodoList = ({
+  completedTodos,
+  handleDeleteCompletedTodo,
+  handleCompleteTodo,
+}) => (
   <div>
     <div style={{ fontWeight: "bold", color: "#3700ff" }}>Completed</div>
     <TodoItemContainer>
@@ -36,6 +40,9 @@ const CompletedTodoList = ({ completedTodos, handleDeleteCompletedTodo }) => (
           <span>
             <li>{todo.content}</li>
           </span>
+          <TodoButton onClick={() => handleCompleteTodo(todo)} $completed>
+            미완료
+          </TodoButton>
           <TodoButton
             onClick={() => {
               handleDeleteCompletedTodo(todo.gtSeq);

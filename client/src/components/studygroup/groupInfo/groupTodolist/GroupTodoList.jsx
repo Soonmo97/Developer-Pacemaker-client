@@ -48,10 +48,12 @@ const patchTodo = async (gtSeq) => {
     const token = localStorage.getItem("accessToken");
     const response = await axios.patch(
       `${process.env.REACT_APP_API_SERVER}/api/group-todo/change/${gtSeq}`,
+      {},
       {
         headers: { Authorization: `Bearer ${token}` },
       }
     );
+    console.log("response.data;response.data;response.data;", response.data);
     return response.data;
   } catch (error) {
     console.error("Failed to patch todo:", error);
@@ -59,7 +61,7 @@ const patchTodo = async (gtSeq) => {
   }
 };
 
-const GroupTodoList = ({ response, formattedDate, sgSeq, gpSeq }) => {
+const GroupTodoList = ({ response, formattedDate, sgSeq, gpSeq, getGpSeq }) => {
   const [todos, setTodos] = useState(response);
   const [completedTodos, setCompletedTodos] = useState([]);
   const [uncompletedTodos, setUncompletedTodos] = useState([]);
@@ -106,13 +108,18 @@ const GroupTodoList = ({ response, formattedDate, sgSeq, gpSeq }) => {
         console.log("payloadpayload", payload);
 
         const response = await axios.post(
-          `${process.env.REACT_APP_API_SERVER}/api/group-planner/save/${formattedDate}`,
+          `${process.env.REACT_APP_API_SERVER}/api/group-planner/save?date=${formattedDate}`,
           payload,
           {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
+
         alert("플래너 생성이 완료되었습니다.");
+        // 추가하면 바로 미완료 목록으로 추가되게끔 설정 (임시)
+        setUncompletedTodos([...uncompletedTodos, response.data]);
+
+        getGpSeq(response.data.groupPlanner.gpSeq);
       } else {
         // 기존 플래너에 투두 추가
         const response = await axios.post(
@@ -171,11 +178,18 @@ const GroupTodoList = ({ response, formattedDate, sgSeq, gpSeq }) => {
   };
 
   const handleCompleteTodo = async (ctodo) => {
-    await patchTodo(ctodo.gtSeq);
-    setCompletedTodos(
-      completedTodos.filter((todo) => todo.gtSeq !== ctodo.gtSeq)
-    );
-    setUncompletedTodos([...uncompletedTodos, ctodo]);
+    const response = await patchTodo(ctodo.gtSeq);
+    if (response) {
+      setCompletedTodos([...completedTodos, ctodo]);
+      setUncompletedTodos((prevCompletedTodos) =>
+        uncompletedTodos.filter((t) => t.gtSeq !== ctodo.gtSeq)
+      );
+    } else {
+      setUncompletedTodos([...uncompletedTodos, ctodo]);
+      setCompletedTodos((prevCompletedTodos) =>
+        completedTodos.filter((t) => t.gtSeq !== ctodo.gtSeq)
+      );
+    }
   };
 
   // const handleDeleteTodo = (index) => {
@@ -218,6 +232,7 @@ const GroupTodoList = ({ response, formattedDate, sgSeq, gpSeq }) => {
       <CompletedTodoList
         completedTodos={completedTodos}
         handleDeleteCompletedTodo={handleDeleteCompletedTodo}
+        handleCompleteTodo={handleCompleteTodo}
       />
     </TodoListContainer>
   );
