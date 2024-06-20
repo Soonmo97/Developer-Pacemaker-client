@@ -3,7 +3,14 @@
   justify-content: space-between;
   padding: 1vh;
   background-color: #eef4d0;
-  /* width: 100%; */
+  width: 70%;
+  margin: auto; /* 중앙 정렬을 위해 추가 */
+}
+@media (max-width: 768px) {
+  .navbar {
+    width: 96%;
+    padding: 1vh;
+  }
 }
 
 .navbar-logo {
