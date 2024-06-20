@@ -263,6 +263,7 @@ const Header = () => {
         );
         console.log(response.data.nickname);
         setNickname(response.data.nickname);
+        setUSeq(response.data.uSeq);
       } catch (err) {
         console.error(err);
       }
@@ -460,6 +461,29 @@ const Header = () => {
     }
   };
 
+  const handleAuthorize = async (newUSeq) => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      const response = await axios.patch(
+        `${process.env.REACT_APP_API_SERVER}/api/study-group/change-uSeq`,
+        {
+          sgSeq: sgSeq,
+          newUSeq: newUSeq,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(`그룹장 위임 성공! sgSeq: ${sgSeq}, newUSeq: ${newUSeq}`);
+      alert("그룹장이 위임되었습니다.");
+      window.location.reload();
+    } catch (error) {
+      console.error("그룹장 위임에 실패했습니다:", error);
+    }
+  };
+
   const closeModal = () => setIsModalOpen(false);
 
   const openSetModal = () => setIsSetModalOpen(true);
@@ -609,6 +633,19 @@ const Header = () => {
           </List>
           <List>
             <SectionHeader>그룹원 관리</SectionHeader>
+            {members
+              .filter((member) => member.useq !== uSeq)
+              .map((item, index) => (
+                <ListItem key={index}>
+                  <div>{item.nickname}</div>
+                  <div style={{ gap: "1rem" }}>
+                    <AuthorizeToBtn onClick={() => handleAuthorize(item.useq)}>
+                      위임
+                    </AuthorizeToBtn>
+                    <RemoveButton>강퇴</RemoveButton>
+                  </div>
+                </ListItem>
+              ))}
             {/* {members?.map((item, index) => (
               <ListItem key={index}>
                 <div>그룹원 닉네임</div>
@@ -618,28 +655,6 @@ const Header = () => {
                 </div>
               </ListItem>
             ))} */}
-
-            <ListItem>
-              <div>그룹원 닉네임</div>
-              <div style={{ gap: "1rem" }}>
-                <AuthorizeToBtn>위임</AuthorizeToBtn>
-                <RemoveButton>강퇴</RemoveButton>
-              </div>
-            </ListItem>
-            <ListItem>
-              <div>그룹원 닉네임</div>
-              <div style={{ gap: "1rem" }}>
-                <AuthorizeToBtn>위임</AuthorizeToBtn>
-                <RemoveButton>강퇴</RemoveButton>
-              </div>
-            </ListItem>
-            <ListItem>
-              <div>그룹원 닉네임</div>
-              <div style={{ gap: "1rem" }}>
-                <AuthorizeToBtn>위임</AuthorizeToBtn>
-                <RemoveButton>강퇴</RemoveButton>
-              </div>
-            </ListItem>
           </List>
         </Section>
       </ManagementModal>
