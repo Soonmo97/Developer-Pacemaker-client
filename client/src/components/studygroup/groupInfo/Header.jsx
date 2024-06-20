@@ -529,22 +529,22 @@ const Header = () => {
     }
   };
 
-  const handleKick = async (uSeq) => {
+  const handleKick = async (kickUSeq) => {
     try {
       const token = localStorage.getItem('accessToken');
       const response = await axios.delete(
         `${process.env.REACT_APP_API_SERVER}/api/group-members/kick`,
         {
-          sgSeq: sgSeq,
-          uSeq: uSeq,
-        },
-        {
           headers: {
             Authorization: `Bearer ${token}`,
           },
+          data: {
+            sgSeq: sgSeq,
+            uSeq: kickUSeq,
+          },
         }
       );
-      console.log(`그룹원 강퇴 성공! sgSeq: ${sgSeq}, uSeq: ${uSeq}`);
+      console.log(`그룹원 강퇴 성공! sgSeq: ${sgSeq}, uSeq: ${kickUSeq}`);
       alert('그룹원이 강퇴되었습니다.');
       window.location.reload();
     } catch (error) {
@@ -675,7 +675,7 @@ const Header = () => {
       <ManagementModal
         isOpen={isModalOpen}
         onRequestClose={closeModal}
-        contentLabel="Management Modal"
+        contentLabel='Management Modal'
       >
         <CloseButton onClick={closeModal}>X</CloseButton>
         <h1>스터디그룹 관리</h1>
@@ -713,17 +713,23 @@ const Header = () => {
               .map((item, index) => (
                 <ListItem key={index}>
                   <div>{item.nickname}</div>
-                  <div style={{ gap: "1rem" }}>
+                  <div style={{ gap: '1rem' }}>
                     <AuthorizeToBtn
                       onClick={() => {
-                        if (window.confirm("정말 위임하시겠습니까?")) {
+                        if (window.confirm('정말 위임하시겠습니까?')) {
                           handleAuthorize(item.useq);
                         }
                       }}
                     >
                       위임
                     </AuthorizeToBtn>
-                    <RemoveButton onClick={() => handleKick(item.useq)}>
+                    <RemoveButton
+                      onClick={() => {
+                        if (window.confirm('정말 강퇴하시겠습니까?')) {
+                          handleKick(item.useq);
+                        }
+                      }}
+                    >
                       강퇴
                     </RemoveButton>
                   </div>
@@ -736,7 +742,7 @@ const Header = () => {
       <MemberDetailModal
         isOpen={isSetModalOpen}
         onRequestClose={closeSetModal}
-        contentLabel="Member Detail Modal"
+        contentLabel='Member Detail Modal'
       >
         <CloseSetButton onClick={closeSetModal}>X</CloseSetButton>
         <DetailTitle>내 정보</DetailTitle>
@@ -750,7 +756,7 @@ const Header = () => {
             가입일 : 2021-01-01
             <br />
             이메일 : sesac@trees.com
-            <DropButton type="submit">그룹 탈퇴</DropButton>
+            <DropButton type='submit'>그룹 탈퇴</DropButton>
           </DetailContainer>
           <div>
             <br />
@@ -760,11 +766,11 @@ const Header = () => {
                   <Label>그룹 이름</Label>
                   <br />
                   <Input
-                    type="text"
+                    type='text'
                     value={groupName}
                     onChange={handleGroupNameChange}
                   />
-                  <CheckButton type="submit" onClick={handleGroupNameUpdate}>
+                  <CheckButton type='submit' onClick={handleGroupNameUpdate}>
                     수정
                   </CheckButton>
                 </FormGroup>
@@ -775,11 +781,11 @@ const Header = () => {
                   <Label>팀 공동목표</Label>
                   <br />
                   <Input
-                    type="text"
+                    type='text'
                     value={groupGoal}
                     onChange={handleGroupGoalChange}
                   />
-                  <CheckButton type="submit" onClick={handleGroupGoalUpdate}>
+                  <CheckButton type='submit' onClick={handleGroupGoalUpdate}>
                     수정
                   </CheckButton>
                 </FormGroup>
