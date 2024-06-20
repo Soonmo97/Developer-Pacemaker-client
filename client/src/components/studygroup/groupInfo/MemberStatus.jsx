@@ -4,6 +4,7 @@ import Modal from "react-modal";
 import StudyGroupPlanner from "./StudyGroupPlanner";
 import axios from "axios";
 import { useParams } from "react-router-dom";
+import UserImg from "../../user/UserImg";
 
 const theme = {
   red_1: "#FF0000",
@@ -29,8 +30,14 @@ const MemberRow = styled.tr`
   height: 50px;
 `;
 
+const ProfileDiv = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
 const MemberCell = styled.td`
-  border: 1px solid #ddd;
+  /* border: 1px solid #ddd; */
   width: 20%;
   text-align: center;
 `;
@@ -115,10 +122,13 @@ const MemberStatus = () => {
         <MemberRow key={i}>
           {rowMembers.map((member) => (
             <MemberCell key={member.useq} onClick={() => openModal(member)}>
-              <ProfileImage>{member.img}</ProfileImage>
-              {member.nickname}
-              <br />
-              달성현황: {member.score}개
+              <ProfileDiv>
+                <UserImg userImg={member.img} />{" "}
+                {/* UserImg 컴포넌트를 사용하여 이미지를 표시합니다. */}
+                {member.nickname}
+                <br />
+                달성현황: {member.score}개
+              </ProfileDiv>
             </MemberCell>
           ))}
           {rowMembers.length < 5 &&
@@ -158,7 +168,7 @@ const MemberStatus = () => {
             <DetailTitle>{selectedMember.nickname}</DetailTitle>
             <DetailModalContainer>
               <ThemeProvider theme={theme}>
-                <StudyGroupPlanner member={selectedMember} sgSeq={sgSeq} />
+                <StudyGroupPlanner member={selectedMember} sgSeq={sgSeq} uSeq={selectedMember.useq}/>
               </ThemeProvider>
             </DetailModalContainer>
           </>

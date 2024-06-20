@@ -1,3 +1,4 @@
+
 import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import GroupTodoList from "./groupTodolist/GroupTodoList";
@@ -58,6 +59,7 @@ const SectionTitle = styled.h3`
   color: red;
 `;
 
+
 const StudyGroupPlannerModal = ({
   onClose,
   children,
@@ -72,7 +74,6 @@ const StudyGroupPlannerModal = ({
     console.log("StudyGroupPlannerModalresponse::", response);
     console.log("???/", gpSeq);
   }, []);
-
   return (
     <ModalOverlay>
       <ModalContent>
@@ -80,11 +81,11 @@ const StudyGroupPlannerModal = ({
           <ModalTitle>{children}</ModalTitle>
           <CloseButton onClick={onClose}>X</CloseButton>
         </ModalHeader>
-        <div style={{ display: "flex", justifyContent: "center" }}>
-          <ModalBody style={{ width: "100%" }}>
-            <TodoListSection style={{ border: "1px solid black" }}>
+        <div style={{ display: 'flex', justifyContent: 'center' }}>
+          <ModalBody style={{ width: '100%' }}>
+            <TodoListSection style={{ border: '1px solid black' }}>
               <SectionTitle
-                style={{ display: "flex", justifyContent: "center" }}
+                style={{ display: 'flex', justifyContent: 'center' }}
               >
                 TodoList
               </SectionTitle>

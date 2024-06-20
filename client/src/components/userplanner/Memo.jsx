@@ -8,6 +8,16 @@ const Wrapper = styled.div`
   flex-direction: column;
   align-items: center;
   background: white;
+  width: 100%;
+  padding: 10px;
+
+  @media (max-width: 768px) {
+    padding: 5px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 2px;
+  }
 `;
 
 const Note = styled.textarea`
@@ -39,12 +49,35 @@ const Note = styled.textarea`
   background-size: 1px 1px, 1px 1px, 1.5rem 1.5rem;
   background-position: 50px 0, 54px 0, 0 70px;
   background-repeat: repeat-y, repeat-y, repeat;
+
+  @media (max-width: 1024px) {
+    width: 20vw;
+    padding: 1rem 3rem;
+  }
+
+  @media (max-width: 768px) {
+    width: 30vw;
+    padding: 0.8rem 2rem;
+  }
+
+  @media (max-width: 480px) {
+    width: 75%;
+    height: 24vh;
+    padding: 0.1rem 0rem 0 4rem;
+    font-size: 1rem;
+  }
 `;
 
 const ButtonWrapper = styled.div`
   display: flex;
   justify-content: center;
   gap: 10px;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+    gap: 5px;
+    width: 100%;
+  }
 `;
 
 const Button = styled.button`
@@ -59,6 +92,16 @@ const Button = styled.button`
   &:hover {
     background-color: ${(props) =>
       props.className === "save" ? "#0080ff" : "#909090"};
+  }
+
+  @media (max-width: 768px) {
+    padding: 8px 16px;
+    font-size: 14px;
+  }
+
+  @media (max-width: 480px) {
+    padding: 6px 12px;
+    font-size: 12px;
   }
 `;
 

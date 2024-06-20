@@ -1,10 +1,11 @@
-import axios from "axios";
-import React, { useState } from "react";
-import moment from "moment";
-import styled from "styled-components";
-import Calendar from "react-calendar";
-import "react-calendar/dist/Calendar.css";
-import StudyGroupPlannerModal from "./StudyGroupPlannerModal";
+import React, { useEffect, useState } from 'react';
+import moment from 'moment';
+import styled from 'styled-components';
+import Calendar from 'react-calendar';
+import 'react-calendar/dist/Calendar.css';
+import StudyGroupPlannerModal from './StudyGroupPlannerModal';
+import axios from 'axios';
+
 
 const CalendarBody = styled.div`
   display: flex;
@@ -70,12 +71,12 @@ const StyledCalendarWrapper = styled.div`
   }
 
   /* 일요일에만 빨간 폰트 */
-  .react-calendar__month-view__weekdays__weekday--weekend abbr[title="일요일"] {
+  .react-calendar__month-view__weekdays__weekday--weekend abbr[title='일요일'] {
     color: ${(props) => props.theme.red_1};
   }
 
   /* 토요일에만 빨간 폰트 */
-  .react-calendar__month-view__weekdays__weekday--weekend abbr[title="토요일"] {
+  .react-calendar__month-view__weekdays__weekday--weekend abbr[title='토요일'] {
     color: ${(props) => props.theme.blue_1};
   }
 
@@ -127,6 +128,16 @@ const StyledCalendarWrapper = styled.div`
     background-color: ${(props) => props.theme.yellow_2};
     border-radius: 0.3rem;
   }
+
+  /* 초록색 배경색 추가 */
+  .react-calendar__tile--completed1 {
+    background-color: lightgreen;
+  }
+
+  /* 진한 초록색 배경색 추가 */
+  .react-calendar__tile--completed3 {
+    background-color: darkgreen;
+  }
 `;
 
 const StyledCalendarComponent = styled(Calendar)``;
@@ -158,7 +169,8 @@ const StyledToday = styled.div`
   transform: translateX(-50%);
 `;
 
-const UserCalendar = ({ member, sgSeq }) => {
+
+const UserCalendar = ({ sgSeq, uSeq, member}) => {
   const today = new Date();
   const [date, setDate] = useState(today);
   const [activeStartDate, setActiveStartDate] = useState(today);
@@ -198,6 +210,9 @@ const UserCalendar = ({ member, sgSeq }) => {
       console.error("Failed to fetch data:", error);
     }
 
+  const [grassData, setGrassData] = useState({});
+
+
     setSelectedDate(date);
     setModalOpen(true);
   };
@@ -216,6 +231,64 @@ const UserCalendar = ({ member, sgSeq }) => {
     setDate(today);
   };
 
+  const getCompletedCount = (date) => {
+    return grassData[date] || 0;
+  };
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const token = localStorage.getItem('accessToken');
+        const formattedDate = moment(activeStartDate).format('YYYY-MM');
+        const response = await axios.post(
+          `${process.env.REACT_APP_API_SERVER}/api/group-planner/grass`,
+          {
+            sgSeq: sgSeq,
+            uSeq: uSeq,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+            params: {
+              yearMonthStr: formattedDate,
+            },
+          }
+        );
+
+        console.log('=== grass ===', response.data);
+        setGrassData(response.data);
+      } catch (err) {
+        console.error('Error fetching data:', err);
+      }
+    };
+
+    fetchData();
+  }, [activeStartDate]);
+
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     try {
+  //       const response = await axios.post(
+  //         `${process.env.REACT_APP_API_SERVER}/api/group-planner/grass`,
+  //         { sgSeq: sgSeq, uSeq: uSeq },
+  //         { yearMonthStr: { date: date } }
+  //       );
+  //       console.log('>>:', response.data);
+  //       if (response.data.length > 0) {
+  //         setTodos();
+  //       } else {
+  //         setTodos(null); // 데이터가 없으면 null로 설정
+  //       }
+  //     } catch (error) {
+  //       console.error(
+  //         '스터디그룹 플래너 투두리스트 데이터를 불러오는데 실패했습니다:',
+  //         error
+  //       );
+  //     }
+  //   };
+  // }, []);
+
   return (
     <div>
       <CalendarBody>
@@ -224,9 +297,9 @@ const UserCalendar = ({ member, sgSeq }) => {
             onClickDay={handleDateClick}
             value={date}
             onChange={handleDateChange}
-            formatDay={(locale, date) => moment(date).format("D")}
-            formatYear={(locale, date) => moment(date).format("YYYY")}
-            formatMonthYear={(locale, date) => moment(date).format("YYYY. MM")}
+            formatDay={(locale, date) => moment(date).format('D')}
+            formatYear={(locale, date) => moment(date).format('YYYY')}
+            formatMonthYear={(locale, date) => moment(date).format('YYYY. MM')}
             calendarType="gregory"
             showNeighboringMonth={false}
             next2Label={null}
@@ -237,16 +310,32 @@ const UserCalendar = ({ member, sgSeq }) => {
               setActiveStartDate(activeStartDate)
             }
             tileContent={({ date, view }) => {
+              const formattedDate = moment(date).format('YYYY-MM-DD');
+              const completedCount = getCompletedCount(formattedDate);
+
+              let className = '';
+              if (view === 'month' && completedCount > 0) {
+                className =
+                  completedCount >= 3
+                    ? 'react-calendar__tile--completed3'
+                    : 'react-calendar__tile--completed1';
+              }
+
               let html = [];
               if (
-                view === "month" &&
+                view === 'month' &&
                 date.getMonth() === today.getMonth() &&
                 date.getDate() === today.getDate()
               ) {
-                html.push(<StyledToday key={"today"}>오늘</StyledToday>);
+                html.push(<StyledToday key={'today'}>오늘</StyledToday>);
               }
 
-              return <>{html}</>;
+              return (
+                <>
+                  <div className={`react-calendar__tile ${className}`}></div>
+                  {html}
+                </>
+              );
             }}
           />
           <StyledDate onClick={handleTodayClick}>오늘</StyledDate>

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import "../main/Carousel.css";
 import { Button } from "@mui/material";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
@@ -16,6 +15,28 @@ const MakeButton = styled(Button)`
     height: 4rem;
     margin-top: 1rem;
     border-radius: 15px;
+
+    /* @media (max-width: 480px) {
+      width: 45vw;
+      float: left;
+    } */
+  }
+`;
+
+const TitleContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+
+  @media (max-width: 480px) {
+    flex-direction: column;
+  }
+`;
+
+const Container = styled.div`
+  min-height: 64vh;
+
+  @media (max-width: 480px) {
+    min-height: 40vh;
   }
 `;
 
@@ -45,7 +66,7 @@ const SlideItem = styled.div`
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
-  height: 25vh;
+  height: 30vh;
 
   &:hover {
     transform: scale(1.05);
@@ -58,6 +79,7 @@ const SlideImage = styled.img`
   height: 15vh;
   object-fit: cover;
   border-radius: 10px 10px 0 0;
+  margin-bottom: 1rem;
 `;
 
 const SlideContent = styled.div`
@@ -196,8 +218,10 @@ const MyGroup = () => {
   return (
     <>
       <div className="carousel">
-        <div style={{ display: "flex", justifyContent: "space-between" }}>
-          <h1>내 스터디 그룹</h1>
+        <TitleContainer>
+          <div>
+            <h1>내 스터디 그룹</h1>
+          </div>
           <MakeButton
             variant="contained"
             color="primary"
@@ -205,7 +229,7 @@ const MyGroup = () => {
           >
             스터디 그룹 만들기
           </MakeButton>
-        </div>
+        </TitleContainer>
 
         <CarouselWrapper>
           <h2>내가 그룹장인 그룹</h2>
@@ -230,7 +254,7 @@ const MyGroup = () => {
         </CarouselWrapper>
       </div>
       <br />
-      <div className="carousel" style={{ minHeight: "64vh" }}>
+      <Container>
         <CarouselWrapper>
           <h2>내가 그룹원인 그룹</h2>
           <SliderWrapper {...settings}>
@@ -252,7 +276,7 @@ const MyGroup = () => {
             ))}
           </SliderWrapper>
         </CarouselWrapper>
-      </div>
+      </Container>
       <Modal
         isOpen={modalIsOpen}
         onRequestClose={() => setModalIsOpen(false)}

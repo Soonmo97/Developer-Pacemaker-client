@@ -3,24 +3,38 @@ import styled from "styled-components";
 
 const FooterWrapper = styled.div`
   box-sizing: border-box;
+
   /* position: fixed;
   bottom: 0;
   left: 0; */
-  width: 100%;
+  width: 70%;
+  margin: auto;
+
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 1rem 2rem;
-  background-color: #d7e8f8;
+  background-color: #b8d2b7;
   font-size: 1rem;
   color: #333;
   box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
+
+  @media (max-width: 768px) {
+    width: 100%;
+    padding: 1vh;
+  }
 `;
 
 const FooterContainer = styled.div`
   display: flex;
   justify-content: space-between;
   width: 80%;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+  }
 `;
 
 const LeftSection = styled.div`
@@ -45,7 +59,7 @@ const RightSection = styled.div`
 `;
 
 const Title = styled.h1`
-  color: #1e90ff;
+  color: #454839;
   margin: 0;
 
   @media (max-width: 768px) {
@@ -55,7 +69,7 @@ const Title = styled.h1`
 `;
 
 const Strong = styled.strong`
-  color: #1e90ff;
+  color: #454839;
 `;
 
 const CDiv = styled.div`
@@ -63,6 +77,7 @@ const CDiv = styled.div`
     display: none;
   }
 `;
+
 const Footer = () => {
   return (
     <FooterWrapper>

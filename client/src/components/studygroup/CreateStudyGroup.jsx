@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 
 const FormContainer = styled.div`
@@ -8,22 +8,50 @@ const FormContainer = styled.div`
   border-radius: 8px;
   width: 26rem;
   margin: auto;
+
+  @media (max-width: 768px) {
+    width: 90%;
+    padding: 1rem;
+  }
+
+  @media (max-width: 480px) {
+    width: 95%;
+    padding: 0.5rem;
+  }
 `;
 
 const FormTitle = styled.h2`
   margin-bottom: 3rem;
   text-align: center;
+
+  @media (max-width: 768px) {
+    margin-bottom: 2rem;
+  }
+
+  @media (max-width: 480px) {
+    margin-bottom: 1.5rem;
+  }
 `;
 
 const FormGroup = styled.div`
   display: flex;
   align-items: center;
   margin-bottom: 1rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    align-items: flex-start;
+  }
 `;
 
 const Label = styled.label`
   width: 100px;
   margin-right: 1rem;
+
+  @media (max-width: 768px) {
+    margin-right: 0;
+    margin-bottom: 0.5rem;
+  }
 `;
 
 const Input = styled.input`
@@ -31,6 +59,10 @@ const Input = styled.input`
   padding: 0.5rem;
   border: 1px solid #ccc;
   border-radius: 4px;
+
+  @media (max-width: 768px) {
+    width: 90%;
+  }
 `;
 
 const CheckButton = styled.button`
@@ -44,6 +76,12 @@ const CheckButton = styled.button`
 
   &:hover {
     background-color: #1695fc;
+  }
+
+  @media (max-width: 768px) {
+    margin-left: 0;
+    margin-top: 0.5rem;
+    width: 100%;
   }
 `;
 
@@ -59,6 +97,16 @@ const SubmitButton = styled.button`
 
   &:hover {
     background-color: #1695fc;
+  }
+
+  @media (max-width: 768px) {
+    padding: 0.5rem;
+  }
+
+  @media (max-width: 480px) {
+    padding: 0.5rem;
+    margin-top: -1rem;
+    margin-bottom: 2rem;
   }
 `;
 

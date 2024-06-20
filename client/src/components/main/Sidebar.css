@@ -1,9 +1,17 @@
 .sidebar {
-  background-color: #cfe7fa;
+  background-color: #b8d2b7;
   display: flex;
   justify-content: center;
-  width: 100%;
+  padding: 1vh;
+  width: 70%;
+  margin: auto; /* 중앙 정렬을 위해 추가 */
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1), 0 -2px 5px rgba(0, 0, 0, 0.1);
+}
+@media (max-width: 768px) {
+  .sidebar {
+    width: 100%;
+    padding: 1vh;
+  }
 }
 
 .sideBtn {

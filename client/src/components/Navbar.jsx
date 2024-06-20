@@ -10,6 +10,7 @@ import {
   FaSignOutAlt,
   FaBell,
   FaQuestion,
+  FaClipboardList,
 } from "react-icons/fa";
 
 const StyledButton = styled.button`
@@ -64,6 +65,8 @@ const Logo = styled.div`
   height: 3.5rem;
 `;
 
+const HeaderBar = styled.div``;
+
 const Navbar = () => {
   const [selectedItem, setSelectedItem] = useState(null);
 
@@ -85,7 +88,7 @@ const Navbar = () => {
   };
 
   return (
-    <>
+    <HeaderBar>
       <nav className="navbar">
         <Link to="/main">
           <div>
@@ -99,8 +102,9 @@ const Navbar = () => {
           <li onClick={() => navigate("/mypage")} style={{ cursor: "pointer" }}>
             <FaUser size={24} />
           </li>
-
-          <FaBell size={24} />
+          <li onClick={() => navigate("/myplan")} style={{ cursor: "pointer" }}>
+            <FaClipboardList size={24} />
+          </li>
           <li onClick={handleLogout} style={{ cursor: "pointer" }}>
             <FaSignOutAlt size={24} />
           </li>
@@ -145,7 +149,7 @@ const Navbar = () => {
                 <Strong
                   className={selectedItem === "myplanner" ? "selected" : ""}
                 >
-                  내 학습일지
+                  내 플래너
                 </Strong>
                 <Icon>📝</Icon>
               </StyledButton>
@@ -161,7 +165,7 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-    </>
+    </HeaderBar>
   );
 };
 
