@@ -17,6 +17,15 @@ const MainContainer = styled.div`
   align-items: center;
   margin-bottom: 1rem;
   min-height: 90vh;
+  padding: 0 1rem;
+
+  @media screen and (min-width: 768px) {
+    padding: 0 2rem;
+  }
+
+  @media screen and (min-width: 1024px) {
+    padding: 0 4rem;
+  }
 `;
 
 const WriteButton = styled(Button)`
@@ -27,7 +36,8 @@ const WriteButton = styled(Button)`
 `;
 
 const SelectBar = styled.select`
-  width: 15vw;
+  width: 100%;
+  max-width: 15rem;
   padding: 0.5rem;
   margin: 20px 0;
   border: 1px solid #e0e0e0;
@@ -100,7 +110,6 @@ const StudyPost = () => {
             setSgSeq(postData.studyGroup.sgSeq);
             setContent(postData.content);
             setTitle(postData.name);
-            console.log(postData);
           } else {
             setBoardData(null);
           }
@@ -189,7 +198,7 @@ const StudyPost = () => {
     <>
       <Navbar />
       <MainContainer>
-        <div>
+        <div style={{ width: "100%", maxWidth: "800px" }}>
           <h1>팀원 모집 게시판</h1>
           {!rbSeq ? (
             <SelectBar
@@ -228,9 +237,7 @@ const StudyPost = () => {
                 setOptions={{
                   width: "100%",
                   height: "400px",
-                  // charCounter: true,
                   placeholder: "내용을 입력하세요...",
-                  popupDisplay: "local",
                   buttonList: [
                     ["formatBlock", "fontSize"],
                     ["bold", "underline", "italic", "strike", "removeFormat"],
