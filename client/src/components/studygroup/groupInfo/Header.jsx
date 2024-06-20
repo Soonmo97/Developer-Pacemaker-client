@@ -158,9 +158,15 @@ const MemberDetailModal = styled(Modal)`
   padding: 1rem;
   background-color: white;
   border: 1px solid #ddd;
-  width: 45%;
-  height: 50%;
+  width: 90%;
+  max-width: 600px;
+  height: auto;
   margin: 5rem auto;
+
+  @media (min-width: 768px) {
+    width: 45%;
+    height: 50%;
+  }
 `;
 
 const CloseSetButton = styled.button`
@@ -179,23 +185,39 @@ const DetailTitle = styled.h1`
 `;
 
 const DetailContent = styled.div`
-  /* display: flex;
+  display: flex;
   align-items: center;
-  margin: 1rem 0; */
+  margin: 1rem 0;
+  flex-direction: column;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+  }
 `;
 
 const DetailContainer = styled.div`
-  /* margin-right: 5rem; */
+  margin-right: 5rem;
+  text-align: center;
+
+  @media (min-width: 768px) {
+    text-align: left;
+  }
 `;
 
 const DetailModalContainer = styled.div`
   display: flex;
-  margin-left: 5rem;
+  flex-direction: column;
+  align-items: center;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+    margin-left: 5rem;
+  }
 `;
 
 const ProfilePhoto = styled.div`
   width: 6rem;
-  height: 6em;
+  height: 6rem;
   border-radius: 50%;
   background-color: #ccc;
   margin-right: 1rem;
@@ -207,31 +229,51 @@ const ActionButton = styled.button`
   border: none;
   padding: 0.5rem 0.7rem;
   border-radius: 25px;
-  margin-left: 1rem;
-  /* margin-right: 2rem; */
+  margin-top: 1rem;
   cursor: pointer;
+
+  @media (min-width: 768px) {
+    margin-top: 0;
+    margin-left: 1rem;
+  }
 `;
 
 const FormGroup = styled.div`
-  /* display: flex;
+  display: flex;
   align-items: center;
-  margin-bottom: 1rem; */
+  margin-bottom: 1rem;
+  flex-direction: column;
+
+  @media (min-width: 768px) {
+    flex-direction: row;
+  }
 `;
 
 const Label = styled.label`
-  width: 5vw;
-  /* margin-right: 3rem; */
+  width: 100%;
+  margin-bottom: 0.5rem;
+
+  @media (min-width: 768px) {
+    width: 5vw;
+    margin-right: 3rem;
+    margin-bottom: 0;
+  }
 `;
 
 const Input = styled.input`
-  /* flex: 1; */
+  flex: 1;
   padding: 0.5rem;
   border: 1px solid #ccc;
   border-radius: 4px;
+  width: 100%;
+
+  @media (min-width: 768px) {
+    width: auto;
+  }
 `;
 
 const CheckButton = styled.button`
-  margin-left: 1rem;
+  margin-top: 1rem;
   padding: 0.5rem 1rem;
   border: none;
   border-radius: 4px;
@@ -242,10 +284,15 @@ const CheckButton = styled.button`
   &:hover {
     background-color: #1695fc;
   }
+
+  @media (min-width: 768px) {
+    margin-top: 0;
+    margin-left: 1rem;
+  }
 `;
 
 const DropButton = styled.button`
-  width: 50%;
+  width: 100%;
   padding: 0.75rem;
   border: none;
   border-radius: 4px;
@@ -256,6 +303,10 @@ const DropButton = styled.button`
 
   &:hover {
     background-color: #f92314;
+  }
+
+  @media (min-width: 768px) {
+    width: 50%;
   }
 `;
 
@@ -272,12 +323,13 @@ const Header = () => {
   // const [jSeq, setJSeq] = useState();
   const [uSeq, setUSeq] = useState(null);
   const [isGroupMember, setIsGroupMember] = useState(false);
-  const [nickname, setNickname] = useState('');
+  const [nickname, setNickname] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   useEffect(() => {
     const fetchUserProfile = async () => {
       try {
-        const token = localStorage.getItem('accessToken');
+        const token = localStorage.getItem("accessToken");
         const response = await axios.get(
           `${process.env.REACT_APP_API_SERVER}/api/user`,
           {
@@ -297,7 +349,7 @@ const Header = () => {
     fetchUserProfile();
   }, []);
 
-  console.log('nickname :', nickname);
+  console.log("nickname :", nickname);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -439,10 +491,10 @@ const Header = () => {
           const response = await axios.get(
             `${process.env.REACT_APP_API_SERVER}/api/group-members/${sgSeq}`
           );
-          console.log('members', response.data);
+          console.log("members", response.data);
           setMembers(response.data);
         } catch (error) {
-          console.error('Failed to fetch members', error);
+          console.error("Failed to fetch members", error);
         }
       };
 
@@ -464,8 +516,8 @@ const Header = () => {
 
   const handleAccept = async (jSeq, uSeq) => {
     try {
-      const token = localStorage.getItem('accessToken');
-      console.log('dddd', jSeq);
+      const token = localStorage.getItem("accessToken");
+      console.log("dddd", jSeq);
       const response = await axios.post(
         `${process.env.REACT_APP_API_SERVER}/api/join/accept/${jSeq}`,
         {
@@ -478,11 +530,11 @@ const Header = () => {
           },
         }
       );
-      console.log('수락성공!', response.data);
-      alert('수락완료!');
+      console.log("수락성공!", response.data);
+      alert("수락완료!");
       window.location.reload();
     } catch (error) {
-      console.error('Failed to fetch members', error);
+      console.error("Failed to fetch members", error);
     }
   };
 
@@ -588,7 +640,10 @@ const Header = () => {
 
   const handleJoin = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem('accessToken');
+    if (isSubmitting) return;
+
+    setIsSubmitting(true);
+    const token = localStorage.getItem("accessToken");
     try {
       const response = await axios.post(
         `${process.env.REACT_APP_API_SERVER}/api/join`,
@@ -603,11 +658,39 @@ const Header = () => {
         }
       );
       console.log(response.data);
-      console.log('신청완료!');
-      alert('신청완료');
+      console.log("신청완료!");
+      alert("신청완료!");
     } catch (error) {
-      console.error('신청하기에 실패했습니다:', error);
-      alert('신청하기에 실패했습니다.');
+      console.error("신청하기에 실패했습니다:", error);
+      alert("신청하기에 실패했습니다.");
+    }
+  };
+
+  const QuitGruop = async (e) => {
+    e.preventDefault();
+    if (whoAmI) {
+      alert("그룹장 위임을 먼저 해주세요!");
+      return;
+    }
+    const token = localStorage.getItem("accessToken");
+    try {
+      const response = await axios.delete(
+        `${process.env.REACT_APP_API_SERVER}/api/group-members`,
+        {
+          sgSeq: sgSeq,
+        },
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+      console.log(response.data);
+      console.log("탈퇴완료!");
+      alert("탈퇴완료");
+    } catch (error) {
+      console.error("탈퇴 실패했습니다:", error);
+      alert("탈퇴 실패했습니다.");
     }
   };
 
@@ -624,7 +707,9 @@ const Header = () => {
           ) : isGroupMember ? (
             <SettingsButton onClick={openSetModal}>설정</SettingsButton>
           ) : (
-            <SettingsButton onClick={handleJoin}>신청하기</SettingsButton>
+            <SettingsButton onClick={handleJoin} disabled={isSubmitting}>
+              {isSubmitting ? "신청완료" : "신청하기"}
+            </SettingsButton>
           )}
         </SetBtns>
       </HeaderContainer>
@@ -643,9 +728,9 @@ const Header = () => {
               joinData?.map((item, index) => (
                 <ListItem key={index}>
                   <div>
-                    <strong>{item.nickname}</strong>님
+                    <strong>{item.nickname}</strong>
                   </div>
-                  <div>스터디 그룹 신청합니다!</div>
+                  {/* <div>스터디 그룹 신청합니다!</div> */}
                   <InviteButton
                     onClick={() =>
                       handleAccept(item.joinRequest.jseq, item.joinRequest.useq)
@@ -671,39 +756,6 @@ const Header = () => {
                   </div>
                 </ListItem>
               ))}
-            {/* {members?.map((item, index) => (
-              <ListItem key={index}>
-                <div>그룹원 닉네임</div>
-                <div style={{ gap: "1rem" }}>
-                  <AuthorizeToBtn>위임</AuthorizeToBtn>
-                  <RemoveButton>강퇴</RemoveButton>
-                </div>
-              </ListItem>
-            ))} */}
-
-
-            <ListItem>
-              <div>닉네임</div>
-              <div style={{ gap: "1rem" }}>
-                <AuthorizeToBtn>위임</AuthorizeToBtn>
-                <RemoveButton>강퇴</RemoveButton>
-              </div>
-            </ListItem>
-            <ListItem>
-              <div>닉네임</div>
-              <div style={{ gap: "1rem" }}>
-                <AuthorizeToBtn>위임</AuthorizeToBtn>
-                <RemoveButton>강퇴</RemoveButton>
-              </div>
-            </ListItem>
-            <ListItem>
-              <div>닉네임</div>
-              <div style={{ gap: "1rem" }}>
-                <AuthorizeToBtn>위임</AuthorizeToBtn>
-                <RemoveButton>강퇴</RemoveButton>
-              </div>
-            </ListItem>
-
           </List>
         </Section>
       </ManagementModal>
@@ -725,7 +777,7 @@ const Header = () => {
             가입일 : 2021-01-01
             <br />
             이메일 : sesac@trees.com
-            <DropButton type="submit">그룹 탈퇴</DropButton>
+            <DropButton onClick={QuitGruop}>그룹 탈퇴</DropButton>
           </DetailContainer>
           <div>
             <br />

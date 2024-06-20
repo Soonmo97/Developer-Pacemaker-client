@@ -1,5 +1,5 @@
-import styled from 'styled-components';
-import GroupTodoList from './groupTodolist/GroupTodoList';
+import styled from "styled-components";
+import GroupTodoList from "./groupTodolist/GroupTodoList";
 
 const ModalOverlay = styled.div`
   position: fixed;
@@ -17,8 +17,11 @@ const ModalContent = styled.div`
   background-color: white;
   padding: 2rem;
   border-radius: 10px;
-  height: 50%;
-  width: 30%;
+  width: 80%;
+  max-width: 600px;
+  height: 80vh;
+  max-height: 90%;
+  overflow-y: auto;
   display: flex;
   flex-direction: column;
 `;
@@ -43,18 +46,19 @@ const CloseButton = styled.button`
 
 const ModalBody = styled.div`
   display: flex;
-  justify-content: space-between;
-  gap: 5rem;
+  flex-direction: column;
+  gap: 2rem;
 `;
 
 const TodoListSection = styled.div`
-  flex: 1;
   padding: 10px;
+  border: 1px solid black;
 `;
 
 const SectionTitle = styled.h3`
   margin: 0 0 10px 0;
   color: red;
+  text-align: center;
 `;
 
 const StudyGroupPlannerModal = ({ onClose, children, date }) => {
@@ -65,18 +69,12 @@ const StudyGroupPlannerModal = ({ onClose, children, date }) => {
           <ModalTitle>{children}</ModalTitle>
           <CloseButton onClick={onClose}>X</CloseButton>
         </ModalHeader>
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <ModalBody style={{ width: '100%' }}>
-            <TodoListSection style={{ border: '1px solid black' }}>
-              <SectionTitle
-                style={{ display: 'flex', justifyContent: 'center' }}
-              >
-                TodoList
-              </SectionTitle>
-              <GroupTodoList date={date}></GroupTodoList>
-            </TodoListSection>
-          </ModalBody>
-        </div>
+        <ModalBody>
+          <TodoListSection>
+            <SectionTitle>TodoList</SectionTitle>
+            <GroupTodoList date={date}></GroupTodoList>
+          </TodoListSection>
+        </ModalBody>
       </ModalContent>
     </ModalOverlay>
   );
