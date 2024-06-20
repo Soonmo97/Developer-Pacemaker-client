@@ -99,8 +99,9 @@ const Navbar = () => {
           <li onClick={() => navigate("/mypage")} style={{ cursor: "pointer" }}>
             <FaUser size={24} />
           </li>
-
-          <FaBell size={24} />
+          <li onClick={() => navigate("/myplan")} style={{ cursor: "pointer" }}>
+            <FaBell size={24} />
+          </li>
           <li onClick={handleLogout} style={{ cursor: "pointer" }}>
             <FaSignOutAlt size={24} />
           </li>
