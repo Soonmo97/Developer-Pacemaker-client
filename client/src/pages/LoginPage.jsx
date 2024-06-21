@@ -316,8 +316,8 @@ function LoginPage() {
   const [showPasswordModal, setShowPasswordModal] = useState(false);
   const [userEmail, setUserEmail] = useState("");
   const [formData, setFormData] = useState({
-    inputEmail: "",
-    inputPw: "",
+    inputEmail: "test@test.com",
+    inputPw: "1234",
   });
   const [showHelpModal, setShowHelpModal] = useState(false);
 
@@ -540,9 +540,6 @@ function LoginPage() {
             <KakaoButton type="button" onClick={handleKakaoLogin}>
               카카오로 로그인
             </KakaoButton>
-            <CheckButton type="button" onClick={openHelpModal}>
-              ?
-            </CheckButton>
           </ButtonContainer>
         </form>
         {showHelpModal && <HelpModal closeModal={closeHelpModal} />}

@@ -44,13 +44,13 @@ const Button = styled.button`
   margin-right: 3%;
   font-size: 1em;
   color: #fff;
-  background-color: #007bff;
+  background-color: #2b3115;
   border: none;
   border-radius: 5px;
   cursor: pointer;
 
   &:hover {
-    background-color: #0056b3;
+    background-color: #2b3115;
   }
 `;
 
