@@ -50,7 +50,7 @@ const UserUncompletedTodoList = ({
           </span>
           <TodoButton2
             onClick={() => {
-              handleCompleteTodo(todo.tseq);
+              handleCompleteTodo(todo);
             }}
           >
             완료

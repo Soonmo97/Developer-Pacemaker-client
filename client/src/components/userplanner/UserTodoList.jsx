@@ -178,11 +178,11 @@ const UserTodoList = ({ uSeq, pSeq, todo, onTodosChange }) => {
     }
   };
 
-  const handleCompleteTodo = async (tSeq) => {
+  const handleCompleteTodo = async (todo) => {
     try {
       const token = localStorage.getItem("accessToken");
       const response = await axios.patch(
-        `${process.env.REACT_APP_API_SERVER}/api/todo/change/${tSeq}`,
+        `${process.env.REACT_APP_API_SERVER}/api/todo/change/${todo.tseq}`,
         {},
         {
           headers: {
@@ -191,10 +191,13 @@ const UserTodoList = ({ uSeq, pSeq, todo, onTodosChange }) => {
         }
       );
       const updatedTodo = response.data;
-      setUncompletedTodos(
-        uncompletedTodos.filter((todo) => todo.tseq !== tSeq)
+      setCompletedTodos([...completedTodos, todo]);
+      setUncompletedTodos((prevCompletedTodos) =>
+        uncompletedTodos.filter((t) => t.tseq !== todo.tseq)
       );
-      setCompletedTodos([...completedTodos, updatedTodo]);
+      // setUncompletedTodos(
+      //   uncompletedTodos.filter((todo) => todo.tseq !== tSeq)
+      // );
     } catch (error) {
       console.error("Failed to complete todo:", error);
     }
