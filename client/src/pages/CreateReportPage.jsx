@@ -209,10 +209,12 @@ const CreateReportPage = () => {
   };
 
   const editReport = (report) => {
+    console.log("report ", report);
     setReportTitle(report.title);
     setReportContent(report.content);
     setTotalDuration(report.total_duration);
-    setEditSeq(report.rSeq);
+    console.log("report.rseq ", report.rSeq);
+    setEditSeq(report.rseq);
     setEditMode(true);
   };
 
@@ -239,12 +241,12 @@ const CreateReportPage = () => {
     );
   };
 
-  const deleteReport = async (rSeq) => {
+  const deleteReport = async (rseq) => {
     try {
       const token = localStorage.getItem("accessToken");
-      console.log(rSeq);
+      console.log("rseq ", rseq);
       const response = await axios.patch(
-        `${process.env.REACT_APP_API_SERVER}/api/report/delete/${rSeq}`,
+        `${process.env.REACT_APP_API_SERVER}/api/report/delete/${rseq}`,
         {}, // 빈 객체 전달 (PATCH 요청 시 본문이 필요하지 않음)
         {
           headers: {
@@ -295,7 +297,7 @@ const CreateReportPage = () => {
               <p>{report.content}</p>
               <p>작성 시간: {formatDateTime(report.registered)}</p>
               <EditButton onClick={() => editReport(report)}>수정</EditButton>
-              <DeleteButton onClick={() => deleteReport(report.rSeq)}>
+              <DeleteButton onClick={() => deleteReport(report.rseq)}>
                 삭제
               </DeleteButton>
             </ReportItem>
