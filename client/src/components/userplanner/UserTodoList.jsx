@@ -190,11 +190,14 @@ const UserTodoList = ({ uSeq, pSeq, todo, onTodosChange }) => {
           },
         }
       );
-      const updatedTodo = response.data;
+      const updatedTodo = uncompletedTodos.filter((todo) => todo.tseq === tSeq);
       setUncompletedTodos(
         uncompletedTodos.filter((todo) => todo.tseq !== tSeq)
       );
-      setCompletedTodos([...completedTodos, updatedTodo]);
+      console.log(">>", completedTodos);
+      console.log(">>>", updatedTodo);
+      setCompletedTodos([...completedTodos, ...updatedTodo]);
+      console.log("완료!");
     } catch (error) {
       console.error("Failed to complete todo:", error);
     }
