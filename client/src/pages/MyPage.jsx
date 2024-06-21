@@ -6,6 +6,7 @@ import Footer from "../components/Footer";
 import PasswordCheckModal from "../components/PasswordCheckModal";
 import ImageSelectModal from "../components/user/ImageSelectModal";
 import UserImg from "../components/user/UserImg";
+import { useNavigate } from "react-router-dom";
 
 const Container = styled.div`
   display: flex;
@@ -39,6 +40,40 @@ const NameDiv = styled.div`
   display: flex;
   align-items: center; /* 수직 정렬 */
   margin-bottom: 10px; /* 간격 조정 */
+`;
+
+const SuccessModal = styled.div`
+  position: absolute; /* 위치를 절대값으로 설정 */
+  top: 40%; /* 위에서 20% 지점에 위치하도록 설정 */
+  left: 50%;
+  transform: translate(-50%, -20%); /* 가운데 정렬을 위해 translate 사용 */
+  width: 60%;
+  max-width: 400px;
+  margin: 0 auto; /* 가운데 정렬을 위해 margin auto 추가 */
+  background-color: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5);
+  z-index: 1000;
+
+  @media (max-width: 768px) {
+    width: 90%; /* Adjusted width for smaller screens */
+    max-width: 300px; /* Adjusted max-width for smaller screens */
+  }
+
+  @media (min-width: 1024px) {
+    width: 50%; /* Adjusted width for larger screens */
+    max-width: 500px; /* Adjusted max-width for larger screens */
+  }
+`;
+
+const ModalHeader = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #ccc;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
 `;
 
 const FirstDiv = styled.div`
@@ -125,7 +160,27 @@ const ImageList = styled.div`
   grid-template-columns: repeat(2, 1fr);
   gap: 10px;
 `;
+const CheckButton = styled.button`
+  padding: 8px 10px;
+  margin-left: 5px;
+  cursor: pointer;
+  background-color: #2b3115;
+  color: white;
+  border: none;
+  border-radius: 4px;
 
+  @media (max-width: 768px) {
+    font-size: 0.6em; /* 768px 이하에서 작은 텍스트 크기로 설정 */
+    padding: 6px 8px; /* 작은 화면에서 버튼 패딩 조정 */
+  }
+`;
+const CloseButton = styled.button`
+  background: none;
+  border: none;
+  cursor: pointer;
+  font-size: 1.2em;
+  color: #666;
+`;
 const ImageItem = styled.div`
   cursor: pointer;
 `;
@@ -157,11 +212,19 @@ const Input = styled.input`
   border-radius: 5px;
 `;
 
+const SuccessMessageContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+`;
+
 const MyPage = () => {
   const [formData, setFormData] = useState({
     nickname: "",
     pw: "",
   });
+  const navigate = useNavigate();
+  const [showModal, setShowModal] = useState(false);
   const [user, setUser] = useState(null);
   const [error, setError] = useState(null);
   const [isEditing, setIsEditing] = useState(false);
@@ -250,8 +313,8 @@ const MyPage = () => {
         }
       );
       setUser(updatedProfile.data);
-
-      alert("변경성공");
+      setShowModal(true);
+      // alert("변경성공");
       setIsEditing(false);
       setPassword("");
     } catch (err) {
@@ -301,6 +364,11 @@ const MyPage = () => {
       console.error(err);
       alert("회원탈퇴에 실패했습니다.");
     }
+  };
+
+  const closeModalAndNavigate = () => {
+    setShowModal(false);
+    navigate("/mypage");
   };
 
   const handleOpenPasswordCheckModal = () => {
@@ -436,9 +504,9 @@ const MyPage = () => {
                 />
               </NameDiv>
               <ProfileDiv1>
-                <Button type="submit">Save Changes</Button>
+                <Button type="submit">저장하기</Button>
                 <Button type="button" onClick={() => setIsEditing(false)}>
-                  Cancel
+                  취소하기
                 </Button>
               </ProfileDiv1>
             </form>
@@ -470,6 +538,20 @@ const MyPage = () => {
             </div>
           )}
         </ProfileContainer>
+
+        {showModal && (
+          <SuccessModal>
+            <ModalHeader>
+              <p></p>
+              <CloseButton onClick={() => setShowModal(false)}>×</CloseButton>
+            </ModalHeader>
+            <SuccessMessageContainer>
+              <p>회원 정보 수정 완료!</p>
+              <CheckButton onClick={closeModalAndNavigate}>확인</CheckButton>
+            </SuccessMessageContainer>
+          </SuccessModal>
+        )}
+
         <PasswordCheckModal
           isOpen={isPasswordCheckModalOpen}
           onClose={handleClosePasswordCheckModal}
