@@ -104,7 +104,7 @@ const Span = styled.span`
 `;
 
 const Button = styled.button`
-  padding: 10px 20px;
+  padding: 10px 5px;
   margin-top: 20px;
   font-size: 1em;
   color: #fff;
