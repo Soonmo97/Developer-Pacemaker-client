@@ -31,8 +31,8 @@ const UserCompletedTodoList = ({ completedTodos, handleDeleteTodo }) => (
   <div>
     <h3>Completed</h3>
     <TodoItemContainer>
-      {completedTodos.map((todo) => (
-        <TodoItem key={todo.tseq}>
+      {completedTodos.map((todo, index) => (
+        <TodoItem key={index}>
           <span>
             <li>{todo.content}</li>
           </span>

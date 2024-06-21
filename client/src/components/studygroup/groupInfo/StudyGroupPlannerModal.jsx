@@ -1,6 +1,4 @@
-
 import React, { useEffect, useState } from "react";
-
 import styled from "styled-components";
 import GroupTodoList from "./groupTodolist/GroupTodoList";
 
@@ -27,6 +25,11 @@ const ModalContent = styled.div`
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+
+  @media (max-width: 768px) {
+    width: 90%;
+    padding: 1rem;
+  }
 `;
 
 const ModalHeader = styled.div`
@@ -43,8 +46,13 @@ const ModalTitle = styled.h2`
 const CloseButton = styled.button`
   background: none;
   border: none;
-  font-size: 1.5rem;
+  font-size: 1.2rem;
   cursor: pointer;
+  padding: 0.5rem;
+
+  @media (max-width: 768px) {
+    font-size: 1rem;
+  }
 `;
 
 const ModalBody = styled.div`
@@ -55,7 +63,6 @@ const ModalBody = styled.div`
 
 const TodoListSection = styled.div`
   padding: 10px;
-  border: 1px solid black;
 `;
 
 const SectionTitle = styled.h3`
@@ -64,21 +71,26 @@ const SectionTitle = styled.h3`
   text-align: center;
 `;
 
-
 const StudyGroupPlannerModal = ({
   onClose,
   children,
   formattedDate,
   response,
   sgSeq,
-  gpSeq,
+  initialGpSeq,
 }) => {
   const [todos, setTodos] = useState(response);
+  const [gpSeq, setGpSeq] = useState(initialGpSeq);
+
+  const getGpSeq = async (gpSeq) => {
+    setGpSeq(gpSeq);
+  };
 
   useEffect(() => {
     console.log("StudyGroupPlannerModalresponse::", response);
     console.log("???/", gpSeq);
   }, []);
+
   return (
     <ModalOverlay>
       <ModalContent>
@@ -87,24 +99,18 @@ const StudyGroupPlannerModal = ({
           <CloseButton onClick={onClose}>X</CloseButton>
         </ModalHeader>
 
-        <div style={{ display: 'flex', justifyContent: 'center' }}>
-          <ModalBody style={{ width: '100%' }}>
-            <TodoListSection style={{ border: '1px solid black' }}>
-              <SectionTitle
-                style={{ display: 'flex', justifyContent: 'center' }}
-              >
-                TodoList
-              </SectionTitle>
-              <GroupTodoList
-                response={todos}
-                formattedDate={formattedDate}
-                sgSeq={sgSeq}
-                gpSeq={gpSeq}
-              ></GroupTodoList>
-            </TodoListSection>
-          </ModalBody>
-        </div>
-
+        <ModalBody>
+          <TodoListSection>
+            {/* <SectionTitle>TodoList</SectionTitle> */}
+            <GroupTodoList
+              response={todos}
+              formattedDate={formattedDate}
+              sgSeq={sgSeq}
+              gpSeq={gpSeq}
+              getGpSeq={getGpSeq}
+            />
+          </TodoListSection>
+        </ModalBody>
       </ModalContent>
     </ModalOverlay>
   );

@@ -1,133 +1,265 @@
-// src/components/StudyPost.js
-import React from "react";
-import styled from "styled-components";
+// import React, { useState } from "react";
+// import styled from "styled-components";
 
-const AppContainer = styled.div`
-  font-family: Arial, sans-serif;
-  padding: 20px;
-  background-color: #f4f4f4;
-  min-height: 100vh;
-`;
+// const AppWrapper = styled.div`
+//   background-image: linear-gradient(
+//     102.7deg,
+//     rgba(253, 218, 255, 1) 8.2%,
+//     rgba(223, 173, 252, 1) 19.6%,
+//     rgba(173, 205, 252, 1) 36.8%,
+//     rgba(173, 252, 244, 1) 73.2%,
+//     rgba(202, 248, 208, 1) 90.9%
+//   );
+//   background-attachment: fixed;
+//   display: flex;
+//   flex-direction: column;
+//   background-repeat: no-repeat;
+//   background-size: cover;
+//   padding: 20px;
+//   height: 100vh;
+//   overflow: hidden;
+//   max-width: 400px;
+//   width: 100%;
+//   margin: auto;
+//   background-color: #fff;
+//   font-family: "DM Sans", sans-serif;
+//   border-radius: 16px;
+//   font-size: 15px;
+//   color: #455963;
+//   box-shadow: 0 20px 80px rgba(0, 0, 0, 0.3);
+// `;
 
-const PostContainer = styled.div`
-  border: 1px solid #e0e0e0;
-  border-radius: 10px;
-  padding: 20px;
-  background-color: #f9f9f9;
-  margin-bottom: 20px;
-`;
+// const TaskList = styled.div`
+//   max-height: 60vh;
+//   overflow: auto;
+// `;
 
-const Title = styled.h1`
-  font-size: 24px;
-  margin: 0;
-  display: flex;
-  align-items: center;
-`;
+// const TaskHeader = styled.div`
+//   padding: 20px 20px 6px 20px;
+// `;
 
-const Icon = styled.span`
-  font-size: 24px;
-  margin-right: 10px;
-`;
+// const TaskHeaderTitle = styled.h1`
+//   margin: 0;
+//   font-size: 20px;
+//   font-weight: 600;
+// `;
 
-const MetaData = styled.div`
-  color: #777;
-  font-size: 14px;
-  margin-top: 10px;
-`;
+// const TaskTools = styled.div`
+//   display: flex;
+//   justify-content: space-between;
+//   align-items: flex-start;
+//   flex-wrap: wrap;
+//   padding: 0 20px;
+// `;
 
-const Content = styled.div`
-  margin-top: 20px;
-`;
+// const TaskFilter = styled.button`
+//   border: 0;
+//   padding: 3px 8px;
+//   background: 0;
+//   font-size: 14px;
+//   line-height: 1;
+//   cursor: pointer;
+//   color: #8a9ca5;
+//   border-radius: 20px;
+//   &.is-active {
+//     background-color: #7996a5;
+//     color: #fff;
+//   }
+// `;
 
-const Section = styled.div`
-  margin-bottom: 20px;
-`;
+// const TaskCount = styled.div`
+//   color: #8a9ca5;
+//   font-size: 14px;
+// `;
 
-const SectionTitle = styled.h2`
-  font-size: 18px;
-  margin: 0 0 10px;
-`;
+// const TaskForm = styled.form`
+//   display: flex;
+//   margin-top: 10px;
+// `;
 
-const List = styled.ul`
-  padding-left: 20px;
-`;
+// const TaskInput = styled.input`
+//   flex: 1;
+//   font-size: 16px;
+//   padding: 10px 20px;
+//   border: 0;
+//   box-shadow: 0 -1px 0 #e2e4ea inset;
+//   color: #455963;
+//   &::placeholder {
+//     color: #a8b5bb;
+//   }
+//   &:focus {
+//     box-shadow: 0 -1px 0 #bdcdd6 inset;
+//   }
+// `;
 
-const ListItem = styled.li`
-  margin-bottom: 10px;
-`;
+// const TaskButton = styled.button`
+//   display: none;
+// `;
 
-const Highlight = styled.span`
-  font-weight: bold;
-  color: #007bff;
-`;
+// const TaskDelete = styled.button`
+//   border: 0;
+//   width: 18px;
+//   height: 18px;
+//   padding: 0;
+//   overflow: hidden;
+//   background-color: transparent;
+//   background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg fill='%23dc4771' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 174.239 174.239'%3e%3cpath d='M87.12 0C39.082 0 0 39.082 0 87.12s39.082 87.12 87.12 87.12 87.12-39.082 87.12-87.12S135.157 0 87.12 0zm0 159.305c-39.802 0-72.185-32.383-72.185-72.185S47.318 14.935 87.12 14.935s72.185 32.383 72.185 72.185-32.384 72.185-72.185 72.185z'/%3e%3cpath d='M120.83 53.414c-2.917-2.917-7.647-2.917-10.559 0L87.12 76.568 63.969 53.414c-2.917-2.917-7.642-2.917-10.559 0s-2.917 7.642 0 10.559l23.151 23.153-23.152 23.154a7.464 7.464 0 000 10.559 7.445 7.445 0 005.28 2.188 7.437 7.437 0 005.28-2.188L87.12 97.686l23.151 23.153a7.445 7.445 0 005.28 2.188 7.442 7.442 0 005.28-2.188 7.464 7.464 0 000-10.559L97.679 87.127l23.151-23.153a7.465 7.465 0 000-10.56z'/%3e%3c/svg%3e");
+//   background-repeat: no-repeat;
+//   background-size: cover;
+//   cursor: pointer;
+//   display: none;
+// `;
 
-const Link = styled.a`
-  color: #007bff;
-  text-decoration: none;
+// const TaskItem = styled.div`
+//   display: flex;
+//   flex-wrap: wrap;
+//   align-items: center;
+//   padding: 12px 20px;
+//   &:hover {
+//     background-color: #f6fbff;
+//   }
+//   &.is-completed {
+//     background-color: rgba(74, 206, 163, 0.1);
+//   }
+// `;
 
-  &:hover {
-    text-decoration: underline;
-  }
-`;
+// const TaskStatus = styled.input`
+//   appearance: none;
+//   width: 18px;
+//   height: 18px;
+//   cursor: pointer;
+//   border: 2px solid #bbbdc7;
+//   border-radius: 50%;
+//   background-color: #fff;
+//   margin-right: 10px;
+//   position: relative;
+//   &:checked {
+//     background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' width='405.272' height='405.272'%3e%3cpath d='M393.401 124.425L179.603 338.208c-15.832 15.835-41.514 15.835-57.361 0L11.878 227.836c-15.838-15.835-15.838-41.52 0-57.358 15.841-15.841 41.521-15.841 57.355-.006l81.698 81.699L336.037 67.064c15.841-15.841 41.523-15.829 57.358 0 15.835 15.838 15.835 41.514.006 57.361z' fill='%23fff'/%3e%3c/svg%3e");
+//     background-size: 10px;
+//     background-color: #4acea3;
+//     border-color: #38bb90;
+//     background-repeat: no-repeat;
+//     background-position: center;
+//   }
+// `;
 
-const TestPost = () => {
-  return (
-    <div style={{ display: "flex", justifyContent: "center" }}>
-      <PostContainer style={{ width: "40%" }}>
-        <Title>
-          <Icon>📅</Icon>
-          코딩테스트 스터디 모집합니다!
-        </Title>
-        <MetaData>김영현 · 작성일 24.06.18 21:01 · 조회수 17</MetaData>
-        <br />
-        <div style={{ borderBottom: "1px solid #ccc" }}></div>
-        <Content>
-          <Section>
-            <SectionTitle>[개발 스터디 모집]</SectionTitle>
-            <List>
-              <ListItem>
-                스터디 주제: 코딩테스트 문제 풀이 (언어는 python이 주이지만 다른
-                언어도 가능 합니다.)
-              </ListItem>
-              <ListItem>
-                스터디 목표: <Highlight>매주 정해진 문제 6-7문제를</Highlight>{" "}
-                각자 풀어오고 오프라인으로 만나 각자 풀이 발표 및 피드백
-              </ListItem>
-              <ListItem>
-                예상 스터디 일정(횟수):{" "}
-                <Highlight>격주 1회 오프라인, 1회 온라인</Highlight> (화요일
-                오후 7시 쯤 청량리역 청년오랑 스터디룸에서 하고 있는데 이 부분에
-                관해서는 다같이 얘기해보고 스케줄 및 장소 변동도 가능합니다!)
-              </ListItem>
-              <ListItem>
-                예상 커리큘럼: 프로그래머스 기업 기출 문제 Lv1, Lv2, Lv.3 문제
-                섞어서 풀고여기에 매주 알고리즘 하나 씩 선택해서 그 알고리즘에
-                해당하는 문제를 백준에서 선정하여 2문제씩 추가로 풀고 있습니다.
-              </ListItem>
-              <ListItem>예상 모집인원: 1 - 2 명</ListItem>
-              <ListItem>
-                스터디 소개와 개설 이유: 같이 스터디 하다보니 분개서 사정이 생겨
-                나가게 되어 현재 3명에서 스터디 진행중입니다. 4 - 5명에서
-                스터디를 진행하면 좋을 것 같아 추가로 모집하려 합니다! 자가주도
-                학습이 잘 되지 않는 분들... 스터디를 통해서 강제력으로라도
-                꾸준히 코테 문제 같이 풀어요 😌
-              </ListItem>
-              <ListItem>
-                꾸준히, 성실하게 스터디에 참여하실 수 있으신 분만
-                연락부탁드립니다!
-              </ListItem>
-              <ListItem>
-                스터디에 지원할 수 있는 방법:{" "}
-                <Link href="https://open.kakao.com/o/sycnl4xg" target="_blank">
-                  https://open.kakao.com/o/sycnl4xg
-                </Link>
-              </ListItem>
-            </List>
-          </Section>
-        </Content>
-      </PostContainer>
-    </div>
-  );
-};
+// const TaskName = styled.label`
+//   margin-right: auto;
+//   flex: 1;
+//   white-space: nowrap;
+//   overflow: hidden;
+//   text-overflow: ellipsis;
+//   &.is-completed {
+//     text-decoration: line-through wavy rgba(0, 0, 0, 0.3);
+//   }
+// `;
 
-export default TestPost;
+// const TaskEmpty = styled.div`
+//   height: 120px;
+//   display: flex;
+//   align-items: center;
+//   justify-content: center;
+//   background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg fill='%23f4f4f4' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 486.463 486.463'%3e%3cpath d='M243.225 333.382c-13.6 0-25 11.4-25 25s11.4 25 25 25c13.1 0 25-11.4 24.4-24.4.6-14.3-10.7-25.6-24.4-25.6z'/%3e%3cpath d='M474.625 421.982c15.7-27.1 15.8-59.4.2-86.4l-156.6-271.2c-15.5-27.3-43.5-43.5-74.9-43.5s-59.4 16.3-74.9 43.4l-156.8 271.3c-15.6 27-15.5 59.3.2 86.4 15.7 27.1 43.7 43.5 74.9 43.5H399c31.4 0 59.5-16.3 75.1-43.6zM243.225 426.782c-35.4 0-64.2-29.7-64.2-64.2 0-35.4 29.7-64.2 64.2-64.2 35.4 0 64.2 29.7 64.2 64.2s-28.8 64.2-64.2 64.2z'/%3e%3c/svg%3e");
+//   background-repeat: no-repeat;
+//   background-position: center;
+//   background-size: 80px;
+//   border-radius: 10px;
+//   color: #aab8c2;
+//   text-align: center;
+//   font-size: 16px;
+// `;
+
+// const TestPost = ({ title, data }) => {
+//   // data가 undefined일 경우 빈 배열로 초기화
+//   const [tasks, setTasks] = useState(data || []);
+
+//   const addTask = () => {
+//     const newTask = {
+//       id: tasks.length + 1,
+//       name: "새로운 작업",
+//       completed: false,
+//     };
+//     setTasks([...tasks, newTask]);
+//   };
+
+//   const deleteTask = (id) => {
+//     const updatedTasks = tasks.filter((task) => task.id !== id);
+//     setTasks(updatedTasks);
+//   };
+
+//   const toggleStatus = (id) => {
+//     const updatedTasks = tasks.map((task) =>
+//       task.id === id ? { ...task, completed: !task.completed } : task
+//     );
+//     setTasks(updatedTasks);
+//   };
+
+//   const filterTasks = (filterType) => {
+//     switch (filterType) {
+//       case "모든 작업":
+//         return tasks;
+//       case "진행 중":
+//         return tasks.filter((task) => !task.completed);
+//       case "완료된 작업":
+//         return tasks.filter((task) => task.completed);
+//       default:
+//         return tasks;
+//     }
+//   };
+
+//   return (
+//     <AppWrapper>
+//       <TaskHeader>
+//         <TaskHeaderTitle>{title}</TaskHeaderTitle>
+//         <TaskForm onSubmit={(e) => e.preventDefault()}>
+//           <TaskInput
+//             type="text"
+//             placeholder="새로운 작업 추가..."
+//             onChange={() => {}}
+//           />
+//           <TaskButton onClick={addTask}>작업 추가</TaskButton>
+//         </TaskForm>
+//       </TaskHeader>
+
+//       <TaskList>
+//         {tasks.length === 0 ? (
+//           <TaskEmpty>작업이 없습니다.</TaskEmpty>
+//         ) : (
+//           tasks.map((task) => (
+//             <TaskItem
+//               key={task.id}
+//               className={task.completed ? "is-completed" : ""}
+//             >
+//               <TaskStatus
+//                 type="checkbox"
+//                 checked={task.completed}
+//                 onChange={() => toggleStatus(task.id)}
+//               />
+//               <TaskName className={task.completed ? "is-completed" : ""}>
+//                 {task.name}
+//               </TaskName>
+//               <TaskDelete onClick={() => deleteTask(task.id)} />
+//             </TaskItem>
+//           ))
+//         )}
+//       </TaskList>
+
+//       <TaskTools>
+//         <TaskCount>{tasks.length}개의 작업</TaskCount>
+//         <div>
+//           {["모든 작업", "진행 중", "완료된 작업"].map((filter) => (
+//             <TaskFilter
+//               key={filter}
+//               className={filter === "모든 작업" ? "is-active" : ""}
+//               onClick={() => filterTasks(filter)}
+//             >
+//               {filter}
+//             </TaskFilter>
+//           ))}
+//         </div>
+//       </TaskTools>
+//     </AppWrapper>
+//   );
+// };
+
+// export default TestPost;
