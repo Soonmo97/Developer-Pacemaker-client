@@ -117,6 +117,20 @@ const Button = styled.button`
   &:hover {
     background-color: #2b3115;
   }
+
+  @media (max-width: 768px) {
+    padding: 8px 16px;
+    font-size: 0.9em;
+    margin-top: 15px;
+    margin-right: 1.5%;
+  }
+
+  @media (max-width: 480px) {
+    padding: 6px 12px;
+    font-size: 0.8em;
+    margin-top: 10px;
+    margin-right: 1%;
+  }
 `;
 
 const Buttondiv = styled.div`
