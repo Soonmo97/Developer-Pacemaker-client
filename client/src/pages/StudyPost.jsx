@@ -71,6 +71,7 @@ const StudyPost = () => {
     const fetchGroupList = async () => {
       try {
         const token = localStorage.getItem("accessToken");
+        console.log("aa");
         const response = await axios.get(
           `${process.env.REACT_APP_API_SERVER}/api/recruitmentBoard/myStudyGroups`,
           {
@@ -79,6 +80,7 @@ const StudyPost = () => {
             },
           }
         );
+        console.log("bb");
         setGroupList(response.data);
       } catch (error) {
         console.error("Failed to fetch group list:", error);

@@ -72,6 +72,8 @@ const DeleteBtn = styled(Button)`
     height: 2.5rem;
     border-radius: 15px;
     width: 5rem;
+    margin-top: 1rem;
+
     &:hover {
       background-color: #ff0202;
     }
