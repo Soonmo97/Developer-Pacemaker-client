@@ -5,28 +5,48 @@ import Footer from "../components/Footer";
 import Navbar from "../components/Navbar";
 
 const Container = styled.div`
-  max-width: 69%;
+  max-width: 68.5%;
   margin: 0 auto;
   padding: 20px;
   font-family: "Arial", sans-serif;
   background-color: #f4f4f9;
-  /* border-radius: 10px; */
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   display: flex;
   justify-content: space-between;
   min-height: 100vh;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    max-width: 90%;
+    padding: 10px;
+  }
 `;
 
 const FormContainer = styled.div`
-  width: 45%;
+  width: 50%;
+  margin-top: 5%;
+
+  max-height: 690px;
+  @media (max-width: 768px) {
+    width: 90%;
+  }
 `;
 
 const ListContainer = styled.div`
   width: 45%;
   background-color: #fff;
   padding: 20px;
+  margin-top: 5%;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  max-height: 650px;
+  overflow-y: auto;
+
+  @media (max-width: 768px) {
+    top: 5%;
+    width: 90%;
+    max-height: 500px;
+  }
 `;
 
 const Title = styled.h1`
@@ -68,8 +88,35 @@ const Button = styled.button`
   &:hover {
     background-color: #4cae4c;
   }
+
+  @media (max-width: 768px) {
+    width: 100%;
+    margin-bottom: 10px;
+  }
 `;
 
+const EditButton = styled(Button)`
+  background-color: #337ab7;
+
+  &:hover {
+    background-color: #286090;
+  }
+`;
+
+const DeleteButton = styled(Button)`
+  background-color: #d9534f;
+
+  &:hover {
+    background-color: #c9302c;
+  }
+`;
+const BackButton = styled(Button)`
+  background-color: #f0ad4e;
+
+  &:hover {
+    background-color: #ec971f;
+  }
+`;
 const ReportItem = styled.div`
   border-bottom: 1px solid #ccc;
   padding: 10px 0;
@@ -82,8 +129,11 @@ const ReportItem = styled.div`
 const CreateReportPage = () => {
   const [reportTitle, setReportTitle] = useState("");
   const [reportContent, setReportContent] = useState("");
+  const [reportRseq, setReportRseq] = useState("");
   const [totalDuration, setTotalDuration] = useState("");
   const [reports, setReports] = useState([]);
+  const [editMode, setEditMode] = useState(false);
+  const [editSeq, setEditSeq] = useState(null);
 
   const fetchReports = async () => {
     try {
@@ -97,9 +147,10 @@ const CreateReportPage = () => {
           },
         }
       );
+      console.log(response.data);
       setReports(response.data);
     } catch (error) {
-      console.error("보고서를 불러오는 데 실패했습니다.", error);
+      console.error("학습플랜을 불러오는 데 실패했습니다.", error);
     }
   };
 
@@ -110,28 +161,103 @@ const CreateReportPage = () => {
   const saveReport = async () => {
     try {
       const token = localStorage.getItem("accessToken");
+      // console.log(token);
+      if (editMode) {
+        // 수정 모드일 때
+        await axios.patch(
+          `${process.env.REACT_APP_API_SERVER}/api/report/${editSeq}`,
+          {
+            title: reportTitle,
+            content: reportContent,
+            total_duration: parseFloat(totalDuration),
+            r_seq: reportRseq,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        setEditMode(false);
+        setEditSeq(null);
+        alert("학습플랜이 성공적으로 수정되었습니다.");
+      } else {
+        // 생성 모드일 때
+        await axios.post(
+          `${process.env.REACT_APP_API_SERVER}/api/report`,
+          {
+            title: reportTitle,
+            content: reportContent,
+            total_duration: parseFloat(totalDuration),
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          }
+        );
+        alert("학습플랜이 성공적으로 저장되었습니다.");
+      }
 
-      console.log(totalDuration);
-      await axios.post(
-        `${process.env.REACT_APP_API_SERVER}/api/report`,
-        {
-          title: reportTitle,
-          content: reportContent,
-          total_duration: parseFloat(totalDuration), // totalDuration을 float 값으로 변환
-        },
+      setReportTitle("");
+      setReportContent("");
+      setTotalDuration("");
+      fetchReports(); // 목록 갱신
+    } catch (error) {
+      console.error("학습플랜을 저장하는 데 실패했습니다.", error);
+    }
+  };
+
+  const editReport = (report) => {
+    console.log("report ", report);
+    setReportTitle(report.title);
+    setReportContent(report.content);
+    setTotalDuration(report.total_duration);
+    console.log("report.rseq ", report.rSeq);
+    setEditSeq(report.rseq);
+    setEditMode(true);
+  };
+
+  const handleBack = () => {
+    setReportTitle("");
+    setReportContent("");
+    setTotalDuration("");
+    setEditMode(false);
+    setEditSeq(null);
+  };
+
+  const formatDateTime = (dateString) => {
+    const options = {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+      second: "2-digit",
+      hour12: false,
+    };
+    return new Intl.DateTimeFormat("ko-KR", options).format(
+      new Date(dateString)
+    );
+  };
+
+  const deleteReport = async (rseq) => {
+    try {
+      const token = localStorage.getItem("accessToken");
+      console.log("rseq ", rseq);
+      const response = await axios.patch(
+        `${process.env.REACT_APP_API_SERVER}/api/report/delete/${rseq}`,
+        {}, // 빈 객체 전달 (PATCH 요청 시 본문이 필요하지 않음)
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      setReportTitle("");
-      setReportContent("");
-      setTotalDuration("");
-      alert("보고서가 성공적으로 저장되었습니다.");
-      fetchReports(); // 목록 갱신
+      console.log("Report deleted successfully", response.data);
+      fetchReports(); // 삭제 후 목록 다시 불러오기
     } catch (error) {
-      console.error("보고서를 저장하는 데 실패했습니다.", error);
+      console.error("Failed to delete report", error);
     }
   };
 
@@ -153,23 +279,27 @@ const CreateReportPage = () => {
               value={reportContent}
               onChange={(e) => setReportContent(e.target.value)}
             />
-            <Input
-              type="number"
-              step="0.1"
-              placeholder="총 학습 시간을 입력하세요 (시간 단위)"
-              value={totalDuration}
-              onChange={(e) => setTotalDuration(e.target.value)}
-            />
-            <Button onClick={saveReport}>저장</Button>
+            {editMode ? (
+              <>
+                <Button onClick={saveReport}>수정</Button>
+                <BackButton onClick={handleBack}>뒤로가기</BackButton>
+              </>
+            ) : (
+              <Button onClick={saveReport}>저장</Button>
+            )}
           </Form>
         </FormContainer>
         <ListContainer>
-          <Title>보고서 목록</Title>
+          <Title>학습플랜 목록</Title>
           {reports.map((report) => (
             <ReportItem key={report.rSeq}>
               <h3>{report.title}</h3>
               <p>{report.content}</p>
-              <p>총 학습 시간: {report.total_duration}시간</p>
+              <p>작성 시간: {formatDateTime(report.registered)}</p>
+              <EditButton onClick={() => editReport(report)}>수정</EditButton>
+              <DeleteButton onClick={() => deleteReport(report.rseq)}>
+                삭제
+              </DeleteButton>
             </ReportItem>
           ))}
         </ListContainer>

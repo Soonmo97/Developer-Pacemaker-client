@@ -534,17 +534,36 @@ const TaskCheckbox = styled.input`
     box-shadow: 0 0 0 3px var(--checkbox-shadow);
   }
 
-  &:checked {
-    background-size: 10px;
-    border: 1px solid var(--checkbox-color);
-    background-color: black;
 
-    + span {
-      color: rgba(255, 255, 255, 0.5);
-      text-decoration: line-through rgba(236, 47, 47, 0.8);
-    }
+//   &:checked {
+//     background-size: 10px;
+//     border: 1px solid var(--checkbox-color);
+//     background-color: black;
+
+//     + span {
+//       color: rgba(255, 255, 255, 0.5);
+//       text-decoration: line-through rgba(236, 47, 47, 0.8);
+//     }
+
+const patchTodo = async (gtSeq) => {
+  try {
+    console.log("======gtSeq======", gtSeq);
+    const token = localStorage.getItem("accessToken");
+    const response = await axios.patch(
+      `${process.env.REACT_APP_API_SERVER}/api/group-todo/change/${gtSeq}`,
+      {},
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    console.log("response.data;response.data;response.data;", response.data);
+    return response.data;
+  } catch (error) {
+    console.error("Failed to patch todo:", error);
+    throw error;
   }
 `;
+
 
 const TaskName = styled.span`
   /* color: #fff; */
@@ -562,8 +581,12 @@ const DeleteButton = styled.span`
   cursor: pointer;
 `;
 
+
 const GroupTodoList = ({ response, formattedDate, sgSeq, gpSeq, getGpSeq }) => {
-  const [todos, setTodos] = useState([]);
+  const [todos, setTodos] = useState(response);
+  const [completedTodos, setCompletedTodos] = useState([]);
+  const [uncompletedTodos, setUncompletedTodos] = useState([]);
+
   const [inputValue, setInputValue] = useState("");
   const [isActive, setIsActive] = useState(false);
 
@@ -588,7 +611,10 @@ const GroupTodoList = ({ response, formattedDate, sgSeq, gpSeq, getGpSeq }) => {
           ...(todo ? { groupTodoCreateDTOList: [{ content: todo }] } : {}),
         };
 
-        response = await axios.post(
+
+        console.log("payloadpayload", payload);
+
+        const response = await axios.post(
           `${process.env.REACT_APP_API_SERVER}/api/group-planner/save?date=${formattedDate}`,
           payload,
           {
@@ -597,6 +623,10 @@ const GroupTodoList = ({ response, formattedDate, sgSeq, gpSeq, getGpSeq }) => {
         );
 
         alert("플래너 생성이 완료되었습니다.");
+        // 추가하면 바로 미완료 목록으로 추가되게끔 설정 (임시)
+        setUncompletedTodos([...uncompletedTodos, response.data]);
+
+        getGpSeq(response.data.groupPlanner.gpSeq);
       } else {
         response = await axios.post(
           `${process.env.REACT_APP_API_SERVER}/api/group-todo/${gpSeq}`,
@@ -642,16 +672,31 @@ const GroupTodoList = ({ response, formattedDate, sgSeq, gpSeq, getGpSeq }) => {
     }
   };
 
-  const handleCompleteTodo = async (todo) => {
-    const response = await patchTodo(todo.gtSeq);
+
+//   const handleCompleteTodo = async (todo) => {
+//     const response = await patchTodo(todo.gtSeq);
+//     if (response) {
+//       const updatedTodos = todos.map((t) =>
+//         t.gtSeq === todo.gtSeq ? { ...t, isCompleted: true } : t
+//       );
+//       setTodos(updatedTodos);
+//       console.log("할일완료!");
+//     } else {
+//       console.error("Failed to mark todo as complete:", todo);
+
+  const handleCompleteTodo = async (ctodo) => {
+    const response = await patchTodo(ctodo.gtSeq);
     if (response) {
-      const updatedTodos = todos.map((t) =>
-        t.gtSeq === todo.gtSeq ? { ...t, isCompleted: true } : t
+      setCompletedTodos([...completedTodos, ctodo]);
+      setUncompletedTodos((prevCompletedTodos) =>
+        uncompletedTodos.filter((t) => t.gtSeq !== ctodo.gtSeq)
       );
-      setTodos(updatedTodos);
-      console.log("할일완료!");
     } else {
-      console.error("Failed to mark todo as complete:", todo);
+      setUncompletedTodos([...uncompletedTodos, ctodo]);
+      setCompletedTodos((prevCompletedTodos) =>
+        completedTodos.filter((t) => t.gtSeq !== ctodo.gtSeq)
+      );
+
     }
   };
 
@@ -693,6 +738,7 @@ const GroupTodoList = ({ response, formattedDate, sgSeq, gpSeq, getGpSeq }) => {
           onClick={handleAddTodo}
           title="Add Task"
         />
+
       </AddTask>
       <TaskList>
         {todos.map((todo, index) => (
@@ -712,6 +758,7 @@ const GroupTodoList = ({ response, formattedDate, sgSeq, gpSeq, getGpSeq }) => {
         ))}
       </TaskList>
     </AppContainer>
+
   );
 };
 
