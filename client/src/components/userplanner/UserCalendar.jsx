@@ -24,7 +24,7 @@ const StyledCalendarWrapper = styled.div`
   position: relative;
   background-color: white;
   width: 35vw;
-  height: 40vh;
+  /* height: 40vh; */
   padding: 1rem;
   box-shadow: 4px 2px 10px 0px rgba(0, 0, 0, 0.13);
   border-radius: 0.5rem;
@@ -110,6 +110,10 @@ const StyledCalendarWrapper = styled.div`
   .react-calendar__tile {
     padding: 0.1rem 0rem 1rem;
     position: relative;
+
+    @media (max-width: 480px) {
+      padding: 0.1rem 0rem 0.5rem;
+    }
   }
 
   .react-calendar__year-view__months__month {

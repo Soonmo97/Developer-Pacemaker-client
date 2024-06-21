@@ -177,7 +177,7 @@ const StyledToday = styled.div`
   transform: translateX(-50%);
 `;
 
-const UserCalendar = ({ sgSeq, uSeq, member }) => {
+const StudyGroupPlanner = ({ sgSeq, uSeq, member }) => {
   const today = new Date();
   const [date, setDate] = useState(today);
   const [activeStartDate, setActiveStartDate] = useState(today);
@@ -206,6 +206,7 @@ const UserCalendar = ({ sgSeq, uSeq, member }) => {
       );
       console.log("그룹원 플래너 조회", sgSeq, member.useq);
       const data = response.data;
+      console.log("!!", data);
       const key = Object.keys(data)[0]; // 첫 번째 키를 추출
       const dataArray = Object.values(data).flat();
 
@@ -223,6 +224,7 @@ const UserCalendar = ({ sgSeq, uSeq, member }) => {
 
   const handleModalClose = () => {
     setModalOpen(false);
+    window.location.reload();
   };
 
   const handleDateChange = (newDate) => {
@@ -337,4 +339,4 @@ const UserCalendar = ({ sgSeq, uSeq, member }) => {
   );
 };
 
-export default UserCalendar;
+export default StudyGroupPlanner;

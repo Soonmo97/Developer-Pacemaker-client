@@ -1,6 +1,5 @@
-// UnCompletedTodoList.js
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 
 const TodoItemContainer = styled.div`
   overflow-y: auto;
@@ -17,7 +16,7 @@ const TodoItem = styled.div`
   border: 1px solid #ddd;
   border-radius: 5px;
 `;
-// #4caf50
+
 const TodoButton = styled.button`
   background-color: #f44336;
   color: white;
@@ -36,7 +35,11 @@ const TodoButton2 = styled.button`
   cursor: pointer;
 `;
 
-const UserUncompletedTodoList = ({ UncompletedTodos, handleDeleteTodo }) => (
+const UserUncompletedTodoList = ({
+  UncompletedTodos,
+  handleDeleteTodo,
+  handleCompleteTodo,
+}) => (
   <div>
     <h3>Uncompleted</h3>
     <TodoItemContainer>
@@ -45,7 +48,13 @@ const UserUncompletedTodoList = ({ UncompletedTodos, handleDeleteTodo }) => (
           <span>
             <li>{todo.content}</li>
           </span>
-          <TodoButton2>완료</TodoButton2>
+          <TodoButton2
+            onClick={() => {
+              handleCompleteTodo(todo.tseq);
+            }}
+          >
+            완료
+          </TodoButton2>
           <TodoButton
             onClick={() => {
               handleDeleteTodo(todo.tseq);

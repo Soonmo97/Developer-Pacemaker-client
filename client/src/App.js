@@ -13,7 +13,7 @@ import CreateStudyGroup from "./components/studygroup/CreateStudyGroup";
 import TestSlider from "./pages/TestSlider";
 import MyPage from "./pages/MyPage";
 import GptPage from "./pages/GptPage";
-import TestPost from "./test/TestPost";
+// import TestPost from "./test/TestPost";
 import StudyForm from "./test/StudyForm";
 import CreateReportPage from "./pages/CreateReportPage";
 
@@ -52,7 +52,7 @@ const App = () => {
 
         <Route path="/main/myplanner" element={<Myplanner />} />
         <Route path="/test" element={<TestSlider />} />
-        <Route path="/test1" element={<TestPost />} />
+        {/* <Route path="/test1" element={<TestPost />} /> */}
         <Route path="/test2" element={<StudyForm />} />
         <Route path="/myplan" element={<CreateReportPage />} />
       </Routes>

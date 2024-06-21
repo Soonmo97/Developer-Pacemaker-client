@@ -3,7 +3,9 @@ import styled from "styled-components";
 import Modal from "react-modal";
 import { useParams } from "react-router-dom";
 import axios from "axios";
+
 import UserImg from "../../user/UserImg";
+
 
 const InfoContainer = styled.div`
   padding: 1rem;
@@ -152,21 +154,30 @@ const AuthorizeToBtn = styled.button`
   cursor: pointer;
 `;
 
-const MemberDetailModal = styled(Modal)`
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 1rem;
-  background-color: white;
-  border: 1px solid #ddd;
-  width: 90%;
-  max-width: 600px;
-  height: auto;
-  margin: 5rem auto;
+const customStyles = {
+  content: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    padding: "1rem",
+    backgroundColor: "white",
+    border: "1px solid #ddd",
+    width: "90%",
+    maxWidth: "600px",
+    height: "auto",
+    margin: "5rem auto",
+    overflowY: "auto",
+    maxHeight: "50vh",
+  },
+};
 
-  @media (min-width: 768px) {
-    width: 45%;
-    height: 50%;
+const MemberDetailModal = styled(Modal)`
+  ${customStyles.content}
+
+  @media (max-width: 768px) {
+    width: 90%;
+    max-width: none;
+    height: auto;
   }
 `;
 
@@ -191,7 +202,7 @@ const DetailContent = styled.div`
   margin: 1rem 0;
   flex-direction: column;
 
-  @media (min-width: 768px) {
+  @media (max-width: 768px) {
     flex-direction: row;
   }
 `;
@@ -200,19 +211,20 @@ const DetailContainer = styled.div`
   margin-right: 5rem;
   text-align: center;
 
-  @media (min-width: 768px) {
+  @media (max-width: 768px) {
     text-align: left;
+    margin-right: 1rem;
   }
 `;
 
 const DetailModalContainer = styled.div`
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   align-items: center;
 
-  @media (min-width: 768px) {
-    flex-direction: row;
-    margin-left: 5rem;
+  @media (max-width: 768px) {
+    flex-direction: column;
+    margin-left: 0;
   }
 `;
 
@@ -233,7 +245,7 @@ const ActionButton = styled.button`
   margin-top: 1rem;
   cursor: pointer;
 
-  @media (min-width: 768px) {
+  @media (max-width: 768px) {
     margin-top: 0;
     margin-left: 1rem;
   }
@@ -245,8 +257,9 @@ const FormGroup = styled.div`
   margin-bottom: 1rem;
   flex-direction: column;
 
-  @media (min-width: 768px) {
-    flex-direction: row;
+  @media (max-width: 768px) {
+    flex-direction: column;
+    margin-left: 0;
   }
 `;
 
@@ -254,10 +267,10 @@ const Label = styled.label`
   width: 100%;
   margin-bottom: 0.5rem;
 
-  @media (min-width: 768px) {
-    width: 5vw;
-    margin-right: 3rem;
-    margin-bottom: 0;
+  @media (max-width: 768px) {
+    width: 100%;
+    margin-right: 0;
+    margin-bottom: 0.5rem;
   }
 `;
 
@@ -268,8 +281,9 @@ const Input = styled.input`
   border-radius: 4px;
   width: 100%;
 
-  @media (min-width: 768px) {
-    width: auto;
+  @media (max-width: 768px) {
+    width: 100%;
+    margin-top: 0.5rem;
   }
 `;
 
@@ -281,14 +295,15 @@ const CheckButton = styled.button`
   background-color: #64b5f6;
   color: white;
   cursor: pointer;
+  width: 100%;
 
   &:hover {
     background-color: #1695fc;
   }
 
-  @media (min-width: 768px) {
-    margin-top: 0;
-    margin-left: 1rem;
+  @media (max-width: 768px) {
+    margin-top: 0.5rem;
+    margin-left: 0;
   }
 `;
 
@@ -310,7 +325,6 @@ const DropButton = styled.button`
     width: 50%;
   }
 `;
-
 const Header = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isSetModalOpen, setIsSetModalOpen] = useState(false);
@@ -344,9 +358,9 @@ const Header = () => {
             },
           }
         );
-        console.log('response.data', response.data);
-        console.log('response.data.nickname', response.data.nickname);
-        console.log('response.data.useq', response.data.useq);
+        console.log("response.data", response.data);
+        console.log("response.data.nickname", response.data.nickname);
+        console.log("response.data.useq", response.data.useq);
         setNickname(response.data.nickname);
         setUSeq(response.data.useq);
         setUser(response.data);
@@ -357,7 +371,6 @@ const Header = () => {
 
     fetchUserProfile();
   }, []);
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -500,7 +513,7 @@ const Header = () => {
             `${process.env.REACT_APP_API_SERVER}/api/group-members/${sgSeq}`
           );
 
-          console.log('모달 오픈 안에서 members', response.data);
+          console.log("모달 오픈 안에서 members", response.data);
 
           setMembers(response.data);
         } catch (error) {
@@ -593,7 +606,7 @@ const Header = () => {
 
   const handleKick = async (kickUSeq) => {
     try {
-      const token = localStorage.getItem('accessToken');
+      const token = localStorage.getItem("accessToken");
       const response = await axios.delete(
         `${process.env.REACT_APP_API_SERVER}/api/group-members/kick`,
         {
@@ -606,11 +619,13 @@ const Header = () => {
           },
         }
       );
+
       console.log(`그룹원 강퇴 성공! sgSeq: ${sgSeq}, uSeq: ${kickUSeq}`);
       alert('그룹원이 강퇴되었습니다.');
+
       window.location.reload();
     } catch (error) {
-      console.error('그룹원 강퇴에 실패했습니다:', error);
+      console.error("그룹원 강퇴에 실패했습니다:", error);
     }
   };
 
@@ -856,10 +871,10 @@ const Header = () => {
           <div>
             <br />
             {whoAmI && (
-              <form>
+              <form style={{ overFlowY: "auto", maxHeight: "14rem" }}>
                 <FormGroup>
                   <Label>그룹 이름</Label>
-                  <br />
+
                   <Input
                     type='text'
                     value={groupName}
@@ -869,12 +884,10 @@ const Header = () => {
                     수정
                   </CheckButton>
                 </FormGroup>
-                <div>
-                  <br />
-                </div>
+
                 <FormGroup>
                   <Label>팀 공동목표</Label>
-                  <br />
+
                   <Input
                     type='text'
                     value={groupGoal}
