@@ -99,19 +99,18 @@ const StudyGroupPlannerModal = ({
           <CloseButton onClick={onClose}>X</CloseButton>
         </ModalHeader>
 
-
-//         <ModalBody>
-//           <TodoListSection>
-//             {/* <SectionTitle>TodoList</SectionTitle> */}
-//             <GroupTodoList
-//               response={todos}
-//               formattedDate={formattedDate}
-//               sgSeq={sgSeq}
-//               gpSeq={gpSeq}
-//               getGpSeq={getGpSeq}
-//             />
-//           </TodoListSection>
-//         </ModalBody>
+        {/* <ModalBody>
+          <TodoListSection>
+            <SectionTitle>TodoList</SectionTitle>
+            <GroupTodoList
+              response={todos}
+              formattedDate={formattedDate}
+              sgSeq={sgSeq}
+              gpSeq={gpSeq}
+              getGpSeq={getGpSeq}
+            />
+          </TodoListSection>
+        </ModalBody> */}
 
         <div style={{ display: "flex", justifyContent: "center" }}>
           <ModalBody style={{ width: "100%" }}>
@@ -131,7 +130,6 @@ const StudyGroupPlannerModal = ({
             </TodoListSection>
           </ModalBody>
         </div>
-
       </ModalContent>
     </ModalOverlay>
   );

@@ -10,11 +10,10 @@ import StudyGroupInfo from "./pages/StudyGroupInfo";
 import Myplanner from "./pages/Myplanner";
 import PostDetail from "./pages/PostDetail";
 import CreateStudyGroup from "./components/studygroup/CreateStudyGroup";
-import TestSlider from "./pages/TestSlider";
 import MyPage from "./pages/MyPage";
 import GptPage from "./pages/GptPage";
 // import TestPost from "./test/TestPost";
-import StudyForm from "./test/StudyForm";
+
 import CreateReportPage from "./pages/CreateReportPage";
 
 // import MainSet from "./pages/MainSet";
@@ -51,9 +50,6 @@ const App = () => {
         <Route path="/main/Ai" element={<GptPage />} />
 
         <Route path="/main/myplanner" element={<Myplanner />} />
-        <Route path="/test" element={<TestSlider />} />
-        {/* <Route path="/test1" element={<TestPost />} /> */}
-        <Route path="/test2" element={<StudyForm />} />
         <Route path="/myplan" element={<CreateReportPage />} />
       </Routes>
     </>
