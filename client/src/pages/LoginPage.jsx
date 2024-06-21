@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
-
 import styled, { css, keyframes } from "styled-components";
-
 import RegisterPage from "../components/user/RegisterPage";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
@@ -371,6 +369,18 @@ function LoginPage() {
         });
     }
   }, [navigate]);
+
+  useEffect(() => {
+    const handleKeyPress = (e) => {
+      if (e.key === "Enter" && showModal) {
+        closeModalAndNavigate();
+      }
+    };
+    document.addEventListener("keydown", handleKeyPress);
+    return () => {
+      document.removeEventListener("keydown", handleKeyPress);
+    };
+  }, [showModal]);
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
