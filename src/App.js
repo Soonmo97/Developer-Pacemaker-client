@@ -12,11 +12,7 @@ import PostDetail from "./pages/PostDetail";
 import CreateStudyGroup from "./components/studygroup/CreateStudyGroup";
 import MyPage from "./pages/MyPage";
 import GptPage from "./pages/GptPage";
-// import TestPost from "./test/TestPost";
-
 import CreateReportPage from "./pages/CreateReportPage";
-
-// import MainSet from "./pages/MainSet";
 
 const App = () => {
   return (

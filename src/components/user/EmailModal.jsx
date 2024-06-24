@@ -73,12 +73,11 @@ const PasswordResetModal = ({ email, closeModal, setIsRegistered }) => {
           pw: newPassword,
         }
       );
-      alert(response.data); // 비밀번호 재설정 성공 메시지 또는 처리
+      alert(response.data);
       closeModal();
       setIsRegistered(true);
       navigate("/");
     } catch (error) {
-      console.error("Error resetting password:", error);
       alert("비밀번호 재설정 중 오류가 발생했습니다. 다시 시도해 주세요.");
     }
   };
@@ -121,7 +120,7 @@ const EmailModal = ({ closeModal }) => {
         }
       );
       if (response.data) {
-        setShowPasswordModal(true); // 이메일이 존재하면 비밀번호 재설정 모달을 띄웁니다.
+        setShowPasswordModal(true);
       } else {
         alert("존재하지 않는 이메일입니다.");
       }
@@ -132,7 +131,7 @@ const EmailModal = ({ closeModal }) => {
 
   if (isRegistered) {
     closeModal();
-    return null; // 모달 닫기
+    return null;
   }
 
   return (

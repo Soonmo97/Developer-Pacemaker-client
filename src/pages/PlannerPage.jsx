@@ -17,9 +17,7 @@ const PlannerPage = () => {
     try {
       const response = await axios.get("/api/planner", { params: { date } });
       setTodos(response.data);
-    } catch (error) {
-      console.error("Failed to fetch planner data", error);
-    }
+    } catch (error) {}
   };
 
   const addTodo = async () => {
@@ -32,18 +30,14 @@ const PlannerPage = () => {
       setNewTodo("");
       setStudyHours(0);
       fetchPlanner();
-    } catch (error) {
-      console.error("Failed to add todo", error);
-    }
+    } catch (error) {}
   };
 
   const deleteTodo = async (id) => {
     try {
       await axios.delete(`/api/todo/${id}`);
       fetchPlanner();
-    } catch (error) {
-      console.error("Failed to delete todo", error);
-    }
+    } catch (error) {}
   };
 
   const savePersonalNote = async () => {
@@ -52,9 +46,7 @@ const PlannerPage = () => {
         content: personalNote,
       });
       setPersonalNote("");
-    } catch (error) {
-      console.error("Failed to save personal note", error);
-    }
+    } catch (error) {}
   };
 
   return (

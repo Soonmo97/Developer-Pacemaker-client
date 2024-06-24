@@ -1,4 +1,3 @@
-// src/App.js
 import React from "react";
 import styled from "styled-components";
 import StudyList from "../test/StudyList";

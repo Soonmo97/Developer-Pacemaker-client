@@ -1,23 +1,23 @@
-import React, { useState, useEffect } from 'react';
-import Slider from 'react-slick';
-import 'slick-carousel/slick/slick.css';
-import 'slick-carousel/slick/slick-theme.css';
-import UserCalendar from '../userplanner/UserCalendar';
-import { ThemeProvider } from 'styled-components';
-import { Link } from 'react-router-dom';
+import React, { useState, useEffect } from "react";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+import UserCalendar from "../userplanner/UserCalendar";
+import { ThemeProvider } from "styled-components";
+import { Link } from "react-router-dom";
 
-import { FcNext, FcPrevious } from 'react-icons/fc';
-import styled from 'styled-components';
-import axios from 'axios';
+import { FcNext, FcPrevious } from "react-icons/fc";
+import styled from "styled-components";
+import axios from "axios";
 
 const theme = {
-  blue_1: '#0260f8',
-  primary_2: '#fa9805',
-  primary_3: '#ffaa0c',
-  yellow_2: '#f9e8c3',
-  br_2: '#666666',
-  green: '#58b548',
-  deepGreen: '#338923',
+  blue_1: "#0260f8",
+  primary_2: "#fa9805",
+  primary_3: "#ffaa0c",
+  yellow_2: "#f9e8c3",
+  br_2: "#666666",
+  green: "#58b548",
+  deepGreen: "#338923",
 };
 
 const CardButton = styled.button`
@@ -68,17 +68,14 @@ const SlideTitle = styled.h3`
   margin: 1rem 0;
 `;
 
-const SlideDescription = styled.p`
-  /* font-size: 14px; */
-  /* color: #666; */
-`;
+const SlideDescription = styled.p``;
 
 const PrevArrow = (props) => {
   const { className, style, onClick } = props;
   return (
     <FcPrevious
       className={className}
-      style={{ ...style, display: 'block' }}
+      style={{ ...style, display: "block" }}
       onClick={onClick}
     />
   );
@@ -89,7 +86,7 @@ const NextArrow = (props) => {
   return (
     <FcNext
       className={className}
-      style={{ ...style, display: 'block' }}
+      style={{ ...style, display: "block" }}
       onClick={onClick}
     />
   );
@@ -106,7 +103,7 @@ const Carousel = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const token = localStorage.getItem('accessToken');
+      const token = localStorage.getItem("accessToken");
       try {
         const response = await axios.get(
           `${process.env.REACT_APP_API_SERVER}/api/study-group/openAll`,
@@ -116,10 +113,9 @@ const Carousel = () => {
             },
           }
         );
-        console.log('추천스터디 :', response.data);
         setStudyGroups(response.data);
       } catch (error) {
-        console.error('스터디 그룹 데이터를 불러오는데 실패했습니다:', error);
+        console.error("스터디 그룹 데이터를 불러오는데 실패했습니다:", error);
       }
     };
 
@@ -136,28 +132,28 @@ const Carousel = () => {
     prevArrow: <PrevArrow />,
     responsive: [
       {
-        breakpoint: 1200, // 1200px 이하
+        breakpoint: 1200,
         settings: {
           slidesToShow: 4,
           slidesToScroll: 2,
         },
       },
       {
-        breakpoint: 992, // 992px 이하
+        breakpoint: 992,
         settings: {
           slidesToShow: 3,
           slidesToScroll: 1,
         },
       },
       {
-        breakpoint: 768, // 768px 이하
+        breakpoint: 768,
         settings: {
           slidesToShow: 2,
           slidesToScroll: 1,
         },
       },
       {
-        breakpoint: 480, // 480px 이하
+        breakpoint: 480,
         settings: {
           slidesToShow: 1,
           slidesToScroll: 1,
@@ -169,7 +165,7 @@ const Carousel = () => {
   return (
     <>
       <div>
-        <div className="carousel" style={{ marginBottom: '5rem' }}>
+        <div className="carousel" style={{ marginBottom: "5rem" }}>
           <h1>추천 스터디</h1>
           <CarouselWrapper>
             <SliderWrapper {...settings}>

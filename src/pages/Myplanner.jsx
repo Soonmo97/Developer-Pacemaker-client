@@ -6,7 +6,6 @@ import UserCalendar from "../components/userplanner/UserCalendar";
 import { ThemeProvider } from "styled-components";
 
 const theme = {
-  // gray_1: "#0260f8",
   red_1: "#FF0000",
   blue_1: "#0260f8",
   primary_2: "#fa9805",

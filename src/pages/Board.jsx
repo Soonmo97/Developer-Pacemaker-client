@@ -48,7 +48,6 @@ const BoardTh = styled.th`
   @media (max-width: 768px) {
     padding: 0.25rem;
   }
-
 `;
 
 const BoardTd = styled.td`
@@ -139,9 +138,7 @@ const Board = () => {
 
         setBoardData(response.data);
         setFilteredData(response.data);
-      } catch (error) {
-        console.error("Failed to fetch board data:", error);
-      }
+      } catch (error) {}
     };
 
     fetchData();
@@ -162,7 +159,7 @@ const Board = () => {
       item.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
     setFilteredData(filtered);
-    setCurrentPage(1); // Reset to the first page when the search term changes
+    setCurrentPage(1);
   }, [searchTerm, boardData]);
 
   const paginatedData = filteredData.slice(

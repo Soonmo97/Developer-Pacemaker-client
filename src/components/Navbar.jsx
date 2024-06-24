@@ -4,14 +4,7 @@ import "./main/Sidebar.css";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import {
-  FaHome,
-  FaUser,
-  FaSignOutAlt,
-  FaBell,
-  FaQuestion,
-  FaClipboardList,
-} from "react-icons/fa";
+import { FaHome, FaUser, FaSignOutAlt, FaClipboardList } from "react-icons/fa";
 
 const StyledButton = styled.button`
   text-decoration: none;
@@ -21,7 +14,7 @@ const StyledButton = styled.button`
   font-weight: 800;
 
   @media (max-width: 600px) {
-    font-size: 2em; /* 이모티콘 크기를 키우기 위해 폰트 크기 조정 */
+    font-size: 2em;
   }
 `;
 
@@ -31,15 +24,15 @@ const StyledLink = styled(Link)`
   color: black;
 `;
 const Icon = styled.span`
-  display: none; /* 기본적으로 숨기기 */
+  display: none;
 
   @media (max-width: 650px) {
-    display: inline; /* 작은 화면에서 이모티콘 보이기 */
+    display: inline;
     font-size: 1.5em;
   }
 
   @media (max-width: 500px) {
-    display: inline; /* 작은 화면에서 이모티콘 보이기 */
+    display: inline;
     font-size: 1em;
   }
 `;
@@ -54,7 +47,7 @@ const Strong = styled.h3`
   }
 
   @media (max-width: 650px) {
-    display: none; /* 작은 화면에서 텍스트 숨기기 */
+    display: none;
   }
 `;
 const Logo = styled.div`
@@ -79,12 +72,10 @@ const Navbar = () => {
   const handleLogout = () => {
     const token = localStorage.getItem("accessToken");
     if (token) {
-      console.log("Deleting token:", token); // 삭제할 토큰 출력
-      localStorage.removeItem("accessToken"); // 토큰 삭제
+      localStorage.removeItem("accessToken");
     } else {
-      console.log("No token found"); // 토큰이 없을 때 메시지 출력
     }
-    navigate("/"); // 로그인 페이지로 리디렉션
+    navigate("/");
   };
 
   return (

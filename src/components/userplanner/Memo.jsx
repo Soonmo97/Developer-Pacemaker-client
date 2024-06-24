@@ -118,7 +118,6 @@ const Memo = ({ selectedDate, memo, pSeq, onMemoChange, onSubmit }) => {
 
   const updateData = async () => {
     if (pSeq === null) {
-      console.error("pSeq 값이 설정되지 않았습니다.");
       return;
     }
 
@@ -134,10 +133,8 @@ const Memo = ({ selectedDate, memo, pSeq, onMemoChange, onSubmit }) => {
         }
       );
 
-      console.log("데이터가 성공적으로 업데이트되었습니다.");
       alert("데이터가 성공적으로 업데이트되었습니다.");
     } catch (error) {
-      console.error("데이터를 업데이트하는 데 실패했습니다:", error);
       alert("데이터를 업데이트하는 데 실패했습니다.");
     }
   };
@@ -146,9 +143,8 @@ const Memo = ({ selectedDate, memo, pSeq, onMemoChange, onSubmit }) => {
     if (e && e.target) {
       const { value } = e.target;
       setNote(value);
-      onMemoChange(value); // 부모 컴포넌트의 상태도 업데이트
+      onMemoChange(value);
     } else {
-      console.error("Event or event target is undefined");
     }
   };
 

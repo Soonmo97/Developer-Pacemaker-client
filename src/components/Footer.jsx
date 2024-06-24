@@ -3,10 +3,6 @@ import styled from "styled-components";
 
 const FooterWrapper = styled.div`
   box-sizing: border-box;
-
-  /* position: fixed;
-  bottom: 0;
-  left: 0; */
   width: 70%;
   margin: auto;
 
@@ -17,7 +13,7 @@ const FooterWrapper = styled.div`
   background-color: #b8d2b7;
   font-size: 1rem;
   color: #333;
-  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1); /* 그림자 추가 */
+  box-shadow: 0 -2px 5px rgba(0, 0, 0, 0.1);
 
   @media (max-width: 768px) {
     width: 100%;
@@ -95,14 +91,6 @@ const Footer = () => {
               <Strong>조원:</Strong> 김화영 권오진 권태현 이형석
             </div>
           </div>
-          {/* <div>
-            <div style={{ display: "flex" }}>
-              <Strong>Front: </Strong> &nbsp; 권오진 권태현
-            </div>
-            <div>
-              <Strong>Back:</Strong> &nbsp; 김화영 권순모 이형석
-            </div>
-          </div> */}
         </RightSection>
       </FooterContainer>
     </FooterWrapper>
