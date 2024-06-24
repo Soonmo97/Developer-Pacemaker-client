@@ -71,7 +71,6 @@ const StudyPost = () => {
     const fetchGroupList = async () => {
       try {
         const token = localStorage.getItem("accessToken");
-        console.log("aa");
         const response = await axios.get(
           `${process.env.REACT_APP_API_SERVER}/api/recruitmentBoard/myStudyGroups`,
           {
@@ -80,11 +79,8 @@ const StudyPost = () => {
             },
           }
         );
-        console.log("bb");
         setGroupList(response.data);
-      } catch (error) {
-        console.error("Failed to fetch group list:", error);
-      }
+      } catch (error) {}
     };
 
     fetchGroupList();
@@ -115,9 +111,7 @@ const StudyPost = () => {
           } else {
             setBoardData(null);
           }
-        } catch (error) {
-          console.error("Failed to fetch post data:", error);
-        }
+        } catch (error) {}
       };
 
       fetchPostData();
@@ -156,7 +150,6 @@ const StudyPost = () => {
 
     try {
       if (rbSeq) {
-        // 수정 모드
         await axios.patch(
           `${process.env.REACT_APP_API_SERVER}/api/recruitmentBoard/${rbSeq}`,
           {
@@ -173,7 +166,6 @@ const StudyPost = () => {
         alert("수정이 완료되었습니다.");
         navigate("/main/studygroupboard");
       } else {
-        // 작성 모드
         await axios.post(
           `${process.env.REACT_APP_API_SERVER}/api/recruitmentBoard`,
           {
@@ -191,7 +183,6 @@ const StudyPost = () => {
       }
       navigate("/main/studygroupboard");
     } catch (error) {
-      console.error("글 작성/수정에 실패했습니다:", error);
       alert("글 작성/수정에 실패했습니다.");
     }
   };

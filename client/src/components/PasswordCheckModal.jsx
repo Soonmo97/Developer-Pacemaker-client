@@ -68,7 +68,7 @@ const PasswordCheckModal = ({ isOpen, onClose, onSuccess }) => {
       const token = localStorage.getItem("accessToken");
       const response = await axios.post(
         `${process.env.REACT_APP_API_SERVER}/api/user/comparePw`,
-        { pw: password }, // 요청 본문에 비밀번호를 담아 보냄
+        { pw: password },
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -78,12 +78,11 @@ const PasswordCheckModal = ({ isOpen, onClose, onSuccess }) => {
 
       if (response.data) {
         onSuccess();
-        setPassword(""); // Clear the input field
+        setPassword("");
       } else {
         setError("비밀번호가 일치하지 않습니다.");
       }
     } catch (err) {
-      console.error(err);
       if (err.response && err.response.status === 401) {
         setError("비밀번호가 일치하지 않습니다.");
       } else {
@@ -95,13 +94,13 @@ const PasswordCheckModal = ({ isOpen, onClose, onSuccess }) => {
   };
 
   const handleClose = () => {
-    setPassword(""); // Clear the input field
+    setPassword("");
     onClose();
   };
 
   useEffect(() => {
     if (!isOpen) {
-      setPassword(""); // Clear the input field when modal is closed
+      setPassword("");
     }
   }, [isOpen]);
 

@@ -147,11 +147,8 @@ const CreateReportPage = () => {
           },
         }
       );
-      console.log(response.data);
       setReports(response.data);
-    } catch (error) {
-      console.error("학습플랜을 불러오는 데 실패했습니다.", error);
-    }
+    } catch (error) {}
   };
 
   useEffect(() => {
@@ -161,9 +158,8 @@ const CreateReportPage = () => {
   const saveReport = async () => {
     try {
       const token = localStorage.getItem("accessToken");
-      // console.log(token);
+
       if (editMode) {
-        // 수정 모드일 때
         await axios.patch(
           `${process.env.REACT_APP_API_SERVER}/api/report/${editSeq}`,
           {
@@ -182,7 +178,6 @@ const CreateReportPage = () => {
         setEditSeq(null);
         alert("학습플랜이 성공적으로 수정되었습니다.");
       } else {
-        // 생성 모드일 때
         await axios.post(
           `${process.env.REACT_APP_API_SERVER}/api/report`,
           {
@@ -202,18 +197,15 @@ const CreateReportPage = () => {
       setReportTitle("");
       setReportContent("");
       setTotalDuration("");
-      fetchReports(); // 목록 갱신
-    } catch (error) {
-      console.error("학습플랜을 저장하는 데 실패했습니다.", error);
-    }
+      fetchReports();
+    } catch (error) {}
   };
 
   const editReport = (report) => {
-    console.log("report ", report);
     setReportTitle(report.title);
     setReportContent(report.content);
     setTotalDuration(report.total_duration);
-    console.log("report.rseq ", report.rSeq);
+
     setEditSeq(report.rseq);
     setEditMode(true);
   };
@@ -244,21 +236,18 @@ const CreateReportPage = () => {
   const deleteReport = async (rseq) => {
     try {
       const token = localStorage.getItem("accessToken");
-      console.log("rseq ", rseq);
+
       const response = await axios.patch(
         `${process.env.REACT_APP_API_SERVER}/api/report/delete/${rseq}`,
-        {}, // 빈 객체 전달 (PATCH 요청 시 본문이 필요하지 않음)
+        {},
         {
           headers: {
             Authorization: `Bearer ${token}`,
           },
         }
       );
-      console.log("Report deleted successfully", response.data);
-      fetchReports(); // 삭제 후 목록 다시 불러오기
-    } catch (error) {
-      console.error("Failed to delete report", error);
-    }
+      fetchReports();
+    } catch (error) {}
   };
 
   return (

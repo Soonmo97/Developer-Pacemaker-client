@@ -91,10 +91,7 @@ const SlideTitle = styled.h3`
   margin: -0.5rem 0;
 `;
 
-const SlideDescription = styled.p`
-  /* font-size: 14px; */
-  /* color: #666; */
-`;
+const SlideDescription = styled.p``;
 
 const PrevArrow = (props) => {
   const { className, style, onClick } = props;
@@ -147,11 +144,8 @@ const MyGroup = () => {
             },
           }
         );
-        console.log("내 스터디 그룹: ", response.data);
         setGroupList(response.data);
-      } catch (error) {
-        console.error("Failed to fetch group list:", error);
-      }
+      } catch (error) {}
     };
 
     const fetchData = async () => {
@@ -167,11 +161,8 @@ const MyGroup = () => {
         );
 
         fetchGroupList();
-        console.log("그룹장 ", response.data);
         setMyStudyGroups(response.data);
-      } catch (error) {
-        console.error("스터디 그룹 데이터를 불러오는데 실패했습니다:", error);
-      }
+      } catch (error) {}
     };
 
     fetchData();
@@ -191,28 +182,28 @@ const MyGroup = () => {
     prevArrow: <PrevArrow />,
     responsive: [
       {
-        breakpoint: 1200, // 1200px 이하
+        breakpoint: 1200,
         settings: {
           slidesToShow: 4,
           slidesToScroll: 2,
         },
       },
       {
-        breakpoint: 992, // 992px 이하
+        breakpoint: 992,
         settings: {
           slidesToShow: 3,
           slidesToScroll: 1,
         },
       },
       {
-        breakpoint: 768, // 768px 이하
+        breakpoint: 768,
         settings: {
           slidesToShow: 2,
           slidesToScroll: 1,
         },
       },
       {
-        breakpoint: 480, // 480px 이하
+        breakpoint: 480,
         settings: {
           slidesToShow: 1,
           slidesToScroll: 1,

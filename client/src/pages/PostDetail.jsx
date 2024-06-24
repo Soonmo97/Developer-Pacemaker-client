@@ -103,9 +103,7 @@ const PostDetail = () => {
         );
 
         setUseq(response.data.useq);
-      } catch (err) {
-        console.error(err);
-      }
+      } catch (err) {}
     };
 
     fetchUserProfile();
@@ -132,9 +130,7 @@ const PostDetail = () => {
         } else {
           setBoardData(null);
         }
-      } catch (error) {
-        console.error("Failed to fetch group list:", error);
-      }
+      } catch (error) {}
     };
 
     fetchGroupList();
@@ -154,9 +150,7 @@ const PostDetail = () => {
             }
           );
           setWriter(response.data);
-        } catch (error) {
-          console.error("Failed to fetch writer status:", error);
-        }
+        } catch (error) {}
       };
       checkWriter();
     }
@@ -176,9 +170,7 @@ const PostDetail = () => {
             }
           );
           setJoin(response.data);
-        } catch (error) {
-          console.error("Failed to fetch recruitment status:", error);
-        }
+        } catch (error) {}
       };
       checkRecruitmentStatus();
     }
@@ -206,11 +198,9 @@ const PostDetail = () => {
           },
         }
       );
-      console.log(response.data);
-      console.log("신청완료!");
+
       alert("신청완료");
     } catch (error) {
-      console.error("신청하기에 실패했습니다:", error);
       alert("신청하기에 실패했습니다.");
     }
   };
@@ -233,7 +223,6 @@ const PostDetail = () => {
       alert("삭제완료!");
       navigate("/main/studygroupboard");
     } catch (error) {
-      console.error("삭제에 실패했습니다:", error);
       alert("삭제에 실패했습니다.");
     }
   };
@@ -263,9 +252,6 @@ const PostDetail = () => {
           </Title>
           <MetaData>
             {boardData.nickname} · 작성일 {formatDate(boardData.registered)} ·{" "}
-            {/* <strong style={{ color: join ? "#007bff" : "#dc3545" }}>
-                {join ? "모집중" : "모집마감"}
-              </strong>{" "} */}
           </MetaData>
           <div style={{ display: "flex", justifyContent: "space-between" }}>
             {writer ? (

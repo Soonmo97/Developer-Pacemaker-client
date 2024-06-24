@@ -28,9 +28,7 @@ const TodoButton = styled.button`
 `;
 
 const TodoList = ({ todos, handleCompleteTodo, handleDeleteTodo }) => {
-  useEffect(() => {
-    console.log("========TodoList:: todos=========::", todos);
-  }, []);
+  useEffect(() => {}, []);
 
   return (
     <TodoItemContainer>

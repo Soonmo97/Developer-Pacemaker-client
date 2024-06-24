@@ -144,8 +144,6 @@ const CreateStudyGroup = ({ setModalIsOpen, modalIsOpen }) => {
             },
           }
         );
-        console.log(groupName);
-        console.log(response.data);
 
         if (response.data) {
           alert("중복된 그룹 이름입니다.");
@@ -154,7 +152,6 @@ const CreateStudyGroup = ({ setModalIsOpen, modalIsOpen }) => {
           setIsDuplicated(true);
         }
       } catch (error) {
-        console.error("중복 확인 요청 실패:", error);
         alert("중복 확인 요청에 실패했습니다.");
       }
     }
@@ -190,14 +187,12 @@ const CreateStudyGroup = ({ setModalIsOpen, modalIsOpen }) => {
           },
         }
       );
-      console.log("스터디 그룹 생성 성공:", response.data);
+
       alert("스터디 그룹이 생성되었습니다");
       setModalIsOpen(false);
       setMyStudyGroupId(response.data.sgSeq);
       window.location.href = `/main/mystudygroup/${response.data.sgSeq}`;
-    } catch (error) {
-      console.error("스터디 그룹 생성 실패:", error);
-    }
+    } catch (error) {}
   };
 
   return (

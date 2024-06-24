@@ -24,7 +24,6 @@ const ModalContent = styled.div`
   padding: 3rem;
   border-radius: 10px;
   height: 80%;
-  /* width: 80%; */
   display: flex;
   flex-direction: column;
   overflow-y: auto;
@@ -155,7 +154,6 @@ const UserCalendarModal = ({
       setPSeq(response.data.pseq);
       return response.data;
     } catch (error) {
-      console.error("Failed to add todo:", error);
       throw error;
     }
   };
