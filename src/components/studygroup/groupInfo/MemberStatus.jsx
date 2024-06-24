@@ -97,11 +97,8 @@ const MemberStatus = () => {
         const response = await axios.get(
           `${process.env.REACT_APP_API_SERVER}/api/group-members/${sgSeq}`
         );
-        console.log("members", response.data);
-        setMembers(response.data.slice(0, 15)); // 최대 15명으로 제한
-      } catch (error) {
-        console.error("Failed to fetch members", error);
-      }
+        setMembers(response.data.slice(0, 15));
+      } catch (error) {}
     };
 
     fetchMembers();
@@ -126,9 +123,7 @@ const MemberStatus = () => {
           {rowMembers.map((member) => (
             <MemberCell key={member.useq} onClick={() => openModal(member)}>
               <ProfileDiv>
-                <UserImg userImg={member.img} />{" "}
-                {/* UserImg 컴포넌트를 사용하여 이미지를 표시합니다. */}
-                {member.nickname}
+                <UserImg userImg={member.img} /> {member.nickname}
                 <br />
                 달성현황: {member.score}개
               </ProfileDiv>

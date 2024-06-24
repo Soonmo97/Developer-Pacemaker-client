@@ -43,13 +43,6 @@ const Container2 = styled.div`
   ${responsiveWidth}
 `;
 
-const SubTitle = styled.h2`
-  font-size: 1.5em;
-  color: #333;
-  text-align: center;
-  margin-top: 20px;
-  margin-bottom: 10px;
-`;
 const ModalContainer = styled.div`
   position: fixed;
   top: 50%;
@@ -64,29 +57,6 @@ const ModalContainer = styled.div`
 
 const ModalContent = styled.div`
   margin-top: 20px;
-`;
-const QuestionButton = styled.button`
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 1.2em;
-  color: #666;
-  margin-top: 10px;
-`;
-const Text = styled.div`
-  font-size: 1em;
-  color: #666;
-  line-height: 1.5;
-  text-align: justify;
-  margin: 0 20px;
-
-  @media (max-width: 768px) {
-    font-size: 0.8em;
-  }
-
-  @media (min-width: 1024px) {
-    font-size: 1.2em;
-  }
 `;
 
 const IdContainer = styled.div`
@@ -145,18 +115,18 @@ const CheckButton = styled.button`
   border-radius: 4px;
 
   @media (max-width: 768px) {
-    font-size: 0.6em; /* 768px 이하에서 작은 텍스트 크기로 설정 */
-    padding: 6px 8px; /* 작은 화면에서 버튼 패딩 조정 */
+    font-size: 0.6em;
+    padding: 6px 8px;
   }
 `;
 const SuccessModal = styled.div`
-  position: absolute; /* 위치를 절대값으로 설정 */
-  top: 40%; /* 위에서 20% 지점에 위치하도록 설정 */
+  position: absolute;
+  top: 40%;
   left: 50%;
-  transform: translate(-50%, -20%); /* 가운데 정렬을 위해 translate 사용 */
+  transform: translate(-50%, -20%);
   width: 60%;
   max-width: 400px;
-  margin: 0 auto; /* 가운데 정렬을 위해 margin auto 추가 */
+  margin: 0 auto;
   background-color: white;
   padding: 20px;
   border-radius: 10px;
@@ -164,24 +134,24 @@ const SuccessModal = styled.div`
   z-index: 1000;
 
   @media (max-width: 768px) {
-    width: 90%; /* Adjusted width for smaller screens */
-    max-width: 300px; /* Adjusted max-width for smaller screens */
+    width: 90%;
+    max-width: 300px;
   }
 
   @media (min-width: 1024px) {
-    width: 50%; /* Adjusted width for larger screens */
-    max-width: 500px; /* Adjusted max-width for larger screens */
+    width: 50%;
+    max-width: 500px;
   }
 `;
 
 const ErrorModal = styled.div`
-  position: absolute; /* 위치를 절대값으로 설정 */
-  top: 40%; /* 위에서 20% 지점에 위치하도록 설정 */
+  position: absolute;
+  top: 40%;
   left: 50%;
-  transform: translate(-50%, -20%); /* 가운데 정렬을 위해 translate 사용 */
+  transform: translate(-50%, -20%);
   width: 60%;
   max-width: 400px;
-  margin: 0 auto; /* 가운데 정렬을 위해 margin auto 추가 */
+  margin: 0 auto;
   background-color: white;
   padding: 20px;
   border-radius: 10px;
@@ -189,13 +159,13 @@ const ErrorModal = styled.div`
   z-index: 1000;
 
   @media (max-width: 768px) {
-    width: 90%; /* Adjusted width for smaller screens */
-    max-width: 300px; /* Adjusted max-width for smaller screens */
+    width: 90%;
+    max-width: 300px;
   }
 
   @media (min-width: 1024px) {
-    width: 50%; /* Adjusted width for larger screens */
-    max-width: 500px; /* Adjusted max-width for larger screens */
+    width: 50%;
+    max-width: 500px;
   }
 `;
 
@@ -246,8 +216,8 @@ const KakaoButton = styled.button`
   border-radius: 4px;
 
   @media (max-width: 768px) {
-    font-size: 0.6em; /* 768px 이하에서 작은 텍스트 크기로 설정 */
-    padding: 6px 8px; /* 작은 화면에서 버튼 패딩 조정 */
+    font-size: 0.6em;
+    padding: 6px 8px;
   }
 `;
 
@@ -262,20 +232,19 @@ const ButtonContainer = styled.div`
 const Image = styled.img`
   width: 50%;
   height: auto;
-  clip-path: ${({ clipPath }) =>
-    clipPath}; /* clip-path 값을 props로부터 받도록 설정 */
-  transition: clip-path 2s ease-out; /* 2초 동안 clip-path에 변화가 일어나도록 설정 */
+  clip-path: ${({ clipPath }) => clipPath};
+  transition: clip-path 2s ease-out;
 `;
 
 const bounce = keyframes`
   0% {
-    transform: translateY(0); // 초기 위치
+    transform: translateY(0); 
   }
   50% {
-    transform: translateY(-10px); // 위로 조금 이동
+    transform: translateY(-10px);
   }
   100% {
-    transform: translateY(0); // 초기 위치로 돌아옴
+    transform: translateY(0); 
   }
 `;
 
@@ -297,16 +266,16 @@ const TextButton = styled.button`
 const ImageContainer = styled.div`
   margin: 0 auto 20px;
   width: 100%;
-  max-width: 500px; // 이미지의 최대 너비 설정
-  position: relative; // 부모로부터 상대적 위치 설정
-  animation: ${bounce} 1s infinite alternate; // bounce 애니메이션 적용
-  display: flex; /* 내부 요소들을 가로로 배치합니다. */
-  justify-content: center; /* 내부 요소들을 수평으로 가운데 정렬합니다. */
-  align-items: center; /* 내부 요소들을 수직으로 가운데 정렬합니다. */
+  max-width: 500px;
+  position: relative;
+  animation: ${bounce} 1s infinite alternate;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `;
 
 function LoginPage() {
-  const [clipPath, setClipPath] = useState("inset(62% 0 0 0)"); // 초기 clip-path 설정
+  const [clipPath, setClipPath] = useState("inset(62% 0 0 0)");
   const navigate = useNavigate();
   const [showRegister, setShowRegister] = useState(false);
   const [showModal, setShowModal] = useState(false);
@@ -323,39 +292,33 @@ function LoginPage() {
 
   useEffect(() => {
     const interval = setInterval(() => {
-      // 1초마다 클립 경로 변경
       setClipPath((prevClipPath) => {
         switch (prevClipPath) {
-          case "inset(62% 0 0 0)": // 현재 62% 보여줄 때
-            return "inset(48% 0 0 0)"; // 1초 후에 82% 보이도록 변경
-          case "inset(48% 0 0 0)": // 현재 82% 보여줄 때
-            return "inset(0% 0 0 0)"; // 3초 후에 100% 보이도록 변경
+          case "inset(62% 0 0 0)":
+            return "inset(48% 0 0 0)";
+          case "inset(48% 0 0 0)":
+            return "inset(0% 0 0 0)";
           case "inset(0% 0 0 0)":
             return "inset(62% 0 0 0)";
           default:
-          // return "inset(62% 0 0 0)"; // 나머지 경우에는 다시 62%로 변경
         }
       });
-    }, 2000); // 1초 간격으로 클립 경로 변경
+    }, 2000);
 
-    // 컴포넌트 언마운트 시 인터벌 클리어
     return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
     const code = new URL(window.location.href).searchParams.get("code");
     if (code) {
-      console.log("Received code:", code); // 디버깅 메시지 추가
       axios
         .get(
           `${process.env.REACT_APP_API_SERVER}/api/kakao/kakaoLogin?code=${code}`
         )
         .then((response) => {
-          console.log("Server response:", response); // 디버깅 메시지 추가
           if (response.data.token) {
             localStorage.setItem("accessToken", response.data.token);
             setShowModal(true);
-            console.log(response.data);
             navigate("/");
           } else {
             alert("카카오 로그인 실패");
@@ -397,8 +360,7 @@ function LoginPage() {
         },
         { headers: { "Content-Type": "application/json" } }
       );
-      console.log(response.data.useq);
-      // console.log(response.data);
+
       if (response.data.token) {
         localStorage.setItem("accessToken", response.data.token);
         setShowModal(true);
@@ -411,34 +373,13 @@ function LoginPage() {
         setShowErrorModal(true);
       }
     } catch (error) {
-      console.error("Login error:", error);
       setErrorMessage("로그인 오류가 발생했습니다.");
       setShowErrorModal(true);
     }
   };
-  const openHelpModal = () => {
-    setShowHelpModal(true);
-  };
 
   const closeHelpModal = () => {
     setShowHelpModal(false);
-  };
-
-  const handlePasswordReset = async (newPassword) => {
-    try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_API_SERVER}/api/user/reset-password`,
-        {
-          email: userEmail,
-          pw: newPassword,
-        }
-      );
-      alert(response.data); // 비밀번호 재설정 성공 메시지 또는 처리
-      closeModal();
-    } catch (error) {
-      console.error("Error resetting password:", error);
-      alert("비밀번호 재설정 중 오류가 발생했습니다. 다시 시도해 주세요.");
-    }
   };
 
   const handleSignup = () => {
@@ -467,12 +408,12 @@ function LoginPage() {
   const closeModal = () => {
     setShowModal(false);
     setShowErrorModal(false);
-    setShowEmailModal(false); // 이메일 모달 닫기
-    setShowPasswordModal(false); // 비밀번호 모달 닫기
+    setShowEmailModal(false);
+    setShowPasswordModal(false);
     setFormData({
       inputEmail: "",
       inputPw: "",
-    }); // 입력 필드 초기화
+    });
   };
   const HelpModal = ({ closeModal }) => {
     return (
@@ -498,11 +439,7 @@ function LoginPage() {
     <MainContainer>
       <Container1>
         <ImageContainer>
-          <Image
-            src="/images/logo.png"
-            alt="Image"
-            clipPath={clipPath} // clip-path 속성에 현재 clipPath 상태 적용
-          />
+          <Image src="/images/logo.png" alt="Image" clipPath={clipPath} />
         </ImageContainer>
       </Container1>
       <Container2>

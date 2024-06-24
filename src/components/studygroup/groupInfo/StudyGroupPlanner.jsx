@@ -32,57 +32,47 @@ const StyledCalendarWrapper = styled.div`
     background-color: white;
   }
 
-  /* 전체 폰트 컬러 */
   .react-calendar__month-view {
     abbr {
       color: ${(props) => props.theme.gray_1};
     }
   }
 
-  /* 네비게이션 가운데 정렬 */
   .react-calendar__navigation {
     justify-content: center;
   }
 
-  /* 네비게이션 폰트 설정 */
   .react-calendar__navigation button {
     font-weight: 800;
     font-size: 1rem;
   }
 
-  /* 네비게이션 버튼 컬러 */
   .react-calendar__navigation button:focus {
     background-color: white;
   }
 
-  /* 네비게이션 비활성화 됐을때 스타일 */
   .react-calendar__navigation button:disabled {
     background-color: #eacea8;
     color: ${(props) => props.theme.darkBlack};
   }
 
-  /* 년/월 상단 네비게이션 칸 크기 줄이기 */
   .react-calendar__navigation__label {
     flex-grow: 0 !important;
   }
 
-  /* 요일 밑줄 제거 */
   .react-calendar__month-view__weekdays abbr {
     text-decoration: none;
     font-weight: 800;
   }
 
-  /* 일요일에만 빨간 폰트 */
   .react-calendar__month-view__weekdays__weekday--weekend abbr[title="일요일"] {
     color: ${(props) => props.theme.red_1};
   }
 
-  /* 토요일에만 빨간 폰트 */
   .react-calendar__month-view__weekdays__weekday--weekend abbr[title="토요일"] {
     color: ${(props) => props.theme.blue_1};
   }
 
-  /* 오늘 날짜 폰트 컬러 */
   .react-calendar__tile--now {
     background: none;
     abbr {
@@ -90,14 +80,12 @@ const StyledCalendarWrapper = styled.div`
     }
   }
 
-  /* 네비게이션 월 스타일 적용 */
   .react-calendar__year-view__months__month {
     border-radius: 0.8rem;
     background-color: ${(props) => props.theme.gray_5};
     padding: 0;
   }
 
-  /* 네비게이션 현재 월 스타일 적용 */
   .react-calendar__tile--hasActive {
     background-color: ${(props) => props.theme.primary_2};
     abbr {
@@ -105,7 +93,6 @@ const StyledCalendarWrapper = styled.div`
     }
   }
 
-  /* 일 날짜 간격 */
   .react-calendar__tile {
     padding: 0.1rem 0rem 1rem;
     position: relative;
@@ -115,7 +102,6 @@ const StyledCalendarWrapper = styled.div`
     }
   }
 
-  /* 네비게이션 월 스타일 적용 */
   .react-calendar__year-view__months__month {
     flex: 0 0 calc(33.3333% - 10px) !important;
     margin-inline-start: 5px !important;
@@ -127,7 +113,6 @@ const StyledCalendarWrapper = styled.div`
     color: ${(props) => props.theme.gray_1};
   }
 
-  /* 선택한 날짜 스타일 적용 */
   .react-calendar__tile:enabled:hover,
   .react-calendar__tile:enabled:focus,
   .react-calendar__tile--active {
@@ -135,12 +120,10 @@ const StyledCalendarWrapper = styled.div`
     border-radius: 0.3rem;
   }
 
-  /* 초록색 배경색 추가 */
   .react-calendar__tile--completed1 {
     background-color: lightgreen;
   }
 
-  /* 진한 초록색 배경색 추가 */
   .react-calendar__tile--completed3 {
     background-color: darkgreen;
   }
@@ -191,7 +174,6 @@ const StudyGroupPlanner = ({ sgSeq, uSeq, member }) => {
     setFormattedDate(formattedDate);
 
     try {
-      // 그룹원 플래너 조회
       const token = localStorage.getItem("accessToken");
       const response = await axios.post(
         `${process.env.REACT_APP_API_SERVER}/api/group-planner?date=${formattedDate}`,
@@ -202,20 +184,13 @@ const StudyGroupPlanner = ({ sgSeq, uSeq, member }) => {
           },
         }
       );
-      console.log("그룹원 플래너 조회", sgSeq, member.useq);
       const data = response.data;
-      console.log("!!", data);
-      const key = Object.keys(data)[0]; // 첫 번째 키를 추출
+      const key = Object.keys(data)[0];
       const dataArray = Object.values(data).flat();
 
-      console.log("그룹원 플래너 조회data==========", data);
-      console.log("그룹원 플래너 조회key==========", key);
-      console.log("그룹원 플래너 조회==========", dataArray);
       setGpSeq(key);
       setResponse(dataArray);
-    } catch (error) {
-      console.error("Failed to fetch data:", error);
-    }
+    } catch (error) {}
     setSelectedDate(date);
     setModalOpen(true);
   };
@@ -260,11 +235,8 @@ const StudyGroupPlanner = ({ sgSeq, uSeq, member }) => {
           }
         );
 
-        console.log("=== grass ===", response.data);
         setGrassData(response.data);
-      } catch (err) {
-        console.error("Error fetching data:", err);
-      }
+      } catch (err) {}
     };
 
     fetchData();

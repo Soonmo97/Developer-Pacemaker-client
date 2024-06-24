@@ -38,18 +38,18 @@ const TitleDiv = styled.div`
 
 const NameDiv = styled.div`
   display: flex;
-  align-items: center; /* 수직 정렬 */
-  margin-bottom: 10px; /* 간격 조정 */
+  align-items: center;
+  margin-bottom: 10px;
 `;
 
 const SuccessModal = styled.div`
-  position: absolute; /* 위치를 절대값으로 설정 */
-  top: 40%; /* 위에서 20% 지점에 위치하도록 설정 */
+  position: absolute;
+  top: 40%;
   left: 50%;
-  transform: translate(-50%, -20%); /* 가운데 정렬을 위해 translate 사용 */
+  transform: translate(-50%, -20%);
   width: 60%;
   max-width: 400px;
-  margin: 0 auto; /* 가운데 정렬을 위해 margin auto 추가 */
+  margin: 0 auto;
   background-color: white;
   padding: 20px;
   border-radius: 10px;
@@ -57,13 +57,13 @@ const SuccessModal = styled.div`
   z-index: 1000;
 
   @media (max-width: 768px) {
-    width: 90%; /* Adjusted width for smaller screens */
-    max-width: 300px; /* Adjusted max-width for smaller screens */
+    width: 90%;
+    max-width: 300px;
   }
 
   @media (min-width: 1024px) {
-    width: 50%; /* Adjusted width for larger screens */
-    max-width: 500px; /* Adjusted max-width for larger screens */
+    width: 50%;
+    max-width: 500px;
   }
 `;
 
@@ -82,8 +82,6 @@ const FirstDiv = styled.div`
 const Infodiv = styled.div`
   display: flex;
   flex-direction: column;
-  /* justify-content: center;
-  align-items: center; */
 `;
 
 const ProfileItem = styled.div`
@@ -148,32 +146,6 @@ const Label = styled.label`
   }
 `;
 
-const ModalContainer = styled.div`
-  display: ${({ isOpen }) => (isOpen ? "block" : "none")};
-  position: fixed;
-  z-index: 1000;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  background-color: rgba(0, 0, 0, 0.5);
-`;
-
-const ModalContent = styled.div`
-  background-color: white;
-  margin: 15% auto;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 80%;
-  max-width: 400px;
-  border-radius: 5px;
-`;
-
-const ImageList = styled.div`
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 10px;
-`;
 const CheckButton = styled.button`
   padding: 8px 10px;
   margin-left: 5px;
@@ -184,8 +156,8 @@ const CheckButton = styled.button`
   border-radius: 4px;
 
   @media (max-width: 768px) {
-    font-size: 0.6em; /* 768px 이하에서 작은 텍스트 크기로 설정 */
-    padding: 6px 8px; /* 작은 화면에서 버튼 패딩 조정 */
+    font-size: 0.6em;
+    padding: 6px 8px;
   }
 `;
 const CloseButton = styled.button`
@@ -267,13 +239,11 @@ const MyPage = () => {
             },
           }
         );
-        console.log(response.data);
         setUser(response.data);
         setNickname(response.data.nickname);
         setOriginalNickname(response.data.nickname);
       } catch (err) {
         setError("Failed to fetch user profile");
-        console.error(err);
       }
     };
 
@@ -328,11 +298,10 @@ const MyPage = () => {
       );
       setUser(updatedProfile.data);
       setShowModal(true);
-      // alert("변경성공");
+
       setIsEditing(false);
       setPassword("");
     } catch (err) {
-      console.error(err);
       alert("변경실패");
     }
   };
@@ -343,10 +312,8 @@ const MyPage = () => {
     }
 
     try {
-      console.log("aa");
       const token = localStorage.getItem("accessToken");
-      console.log("bb");
-      // 그룹장인지 확인하는 API 호출
+
       const response = await axios.get(
         `${process.env.REACT_APP_API_SERVER}/api/study-group/check-uSeq`,
         {
@@ -355,8 +322,7 @@ const MyPage = () => {
           },
         }
       );
-      console.log("cc");
-      // response.data가 true이면 그룹장이므로 탈퇴 불가
+
       if (response.data === true) {
         alert(
           "회원탈퇴를 할 수 없습니다. 그룹장을 다른 사람에게 위임해주세요."
@@ -364,7 +330,6 @@ const MyPage = () => {
         return;
       }
 
-      // 그룹장이 아니면 탈퇴 진행9
       await axios.delete(`${process.env.REACT_APP_API_SERVER}/api/user`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -373,9 +338,8 @@ const MyPage = () => {
 
       localStorage.removeItem("accessToken");
       alert("회원탈퇴가 성공적으로 처리되었습니다.");
-      window.location.href = "/"; // 탈퇴 후 로그인 페이지로 이동
+      window.location.href = "/";
     } catch (err) {
-      console.error(err);
       alert("회원탈퇴에 실패했습니다.");
     }
   };
@@ -415,7 +379,7 @@ const MyPage = () => {
         const response = await axios.get(
           `${process.env.REACT_APP_API_SERVER}/api/user/check-${name}?${name}=${value}`
         );
-        const isDuplicate = response.data; // 서버에서 반환한 중복 여부 값 사용
+        const isDuplicate = response.data;
 
         if (isDuplicate) {
           setAvailabilityMessages({
@@ -428,17 +392,13 @@ const MyPage = () => {
             [name]: `사용 가능한 닉네임 입니다.`,
           });
         }
-      } catch (error) {
-        console.error(`Error checking ${name} availability:`, error);
-      }
+      } catch (error) {}
     }
   };
 
   const handleImageChangeClick = () => setIsImageSelectModalOpen(true);
 
   const handleImageSelect = async (imageNumber) => {
-    console.log(`선택된 이미지 번호: ${imageNumber}`);
-
     try {
       const token = localStorage.getItem("accessToken");
       await axios.patch(
@@ -451,11 +411,9 @@ const MyPage = () => {
         }
       );
       setUserImg(imageNumber);
-      // 이미지 변경 성공 시 사용자 상태 업데이트 등 추가 작업 가능
+
       setIsImageSelectModalOpen(false);
-      // alert("프로필 이미지가 성공적으로 변경되었습니다.");
     } catch (error) {
-      console.error("프로필 이미지 변경 실패:", error);
       alert("프로필 이미지 변경에 실패했습니다.");
     }
   };

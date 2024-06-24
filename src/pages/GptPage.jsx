@@ -170,7 +170,7 @@ const GptPage = () => {
   const [clickedButtons, setClickedButtons] = useState([]);
 
   useEffect(() => {
-    fetchSavedAnswers(); // 추가: 저장된 답변 불러오기
+    fetchSavedAnswers();
   }, []);
 
   const fetchSavedAnswers = async () => {
@@ -185,12 +185,10 @@ const GptPage = () => {
         }
       );
 
-      console.log(response.data); //get 요청하는 부분에서 g_seq 보내줘야함(화영님)
       setSavedAnswers(response.data);
-      setSavedError(null); // 성공적으로 데이터를 받았을 때 오류 상태 초기화
+      setSavedError(null);
     } catch (error) {
-      console.error("저장된 답변을 불러오는 중 오류 발생:", error);
-      setSavedAnswers([]); // 오류 발생 시 빈 배열로 초기화
+      setSavedAnswers([]);
       setSavedError("저장된 답변을 불러오는 중 오류가 발생했습니다1.");
     }
   };
@@ -212,13 +210,10 @@ const GptPage = () => {
         }
       );
 
-      // Update the clickedButtons state to include the index of the clicked button
       setClickedButtons((prevClicked) => [...prevClicked, index]);
 
-      // Fetch saved answers again to update the list
       fetchSavedAnswers();
     } catch (error) {
-      console.error("답변 저장 중 오류 발생:", error);
       setSavedError("답변 저장 중 오류가 발생했습니다.");
     }
   };
@@ -236,25 +231,12 @@ const GptPage = () => {
       );
       const answerData = response.data;
 
-      // Save both question and answer to backend
-      // await axios.post(
-      //   `${process.env.REACT_APP_API_SERVER}/api/gpt`,
-      //   { question: prompt, answer: answerData },
-      //   {
-      //     headers: {
-      //       Authorization: `Bearer ${localStorage.getItem("accessToken")}`,
-      //     },
-      //   }
-      // );
-
-      // Update frontend list
       setGptList((prevList) => [
         ...prevList,
         { question: prompt, answer: answerData },
       ]);
       setPrompt("");
     } catch (error) {
-      console.error("GPT에 질문하는 중 오류 발생:", error);
       setError("GPT에 질문하는 중 오류가 발생했습니다.");
     }
   };
@@ -263,7 +245,6 @@ const GptPage = () => {
     try {
       const token = localStorage.getItem("accessToken");
 
-      console.log(token, gseq);
       await axios.patch(
         `${process.env.REACT_APP_API_SERVER}/api/gpt/${gseq}`,
         {},
@@ -273,14 +254,12 @@ const GptPage = () => {
           },
         }
       );
-      // 삭제 후에는 업데이트된 저장된 답변 목록을 다시 불러옵니다.
+
       fetchSavedAnswers();
     } catch (error) {
-      console.error("답변 삭제 중 오류 발생:", error);
-      // 삭제 실패 시 오류 처리
       setSavedError("답변 삭제 중 오류가 발생했습니다.");
     }
-  }; //delete mapping으로 변경해라
+  };
 
   return (
     <>
@@ -314,16 +293,7 @@ const GptPage = () => {
                 </React.Fragment>
               ))}
 
-              {answer && prompt === "" && (
-                <React.Fragment>
-                  {/* <ChatMessage isUser={true}>
-                  <MessageBubble isUser={true}>{prompt}</MessageBubble>
-                </ChatMessage> */}
-                  {/* <ChatMessage isUser={false}>
-                  <MessageBubble isUser={false}>{answer}</MessageBubble>
-                </ChatMessage> */}
-                </React.Fragment>
-              )}
+              {answer && prompt === "" && <React.Fragment></React.Fragment>}
             </ChatBox>
             <ChatInput>
               <ChatInputField

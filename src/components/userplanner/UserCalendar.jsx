@@ -24,7 +24,7 @@ const StyledCalendarWrapper = styled.div`
   position: relative;
   background-color: white;
   width: 35vw;
-  /* height: 40vh; */
+
   padding: 1rem;
   box-shadow: 4px 2px 10px 0px rgba(0, 0, 0, 0.13);
   border-radius: 0.5rem;
@@ -134,12 +134,10 @@ const StyledCalendarWrapper = styled.div`
     border-radius: 0.3rem;
   }
 
-  /* 초록색 배경색 추가 */
   .react-calendar__tile--completed1 {
     background-color: lightgreen;
   }
 
-  /* 진한 초록색 배경색 추가 */
   .react-calendar__tile--completed3 {
     background-color: darkgreen;
   }
@@ -206,11 +204,8 @@ const UserCalendar = () => {
           }
         );
 
-        console.log("=== grass ===", response.data);
         setGrassData(response.data);
-      } catch (err) {
-        console.error("Error fetching data:", err);
-      }
+      } catch (err) {}
     };
 
     fetchData();
@@ -218,7 +213,6 @@ const UserCalendar = () => {
 
   const handleDateClick = async (date) => {
     const formattedDate = moment(date).format("YYYY-MM-DD");
-    console.log("============date", formattedDate);
 
     try {
       const token = localStorage.getItem("accessToken");
@@ -230,11 +224,9 @@ const UserCalendar = () => {
           },
         }
       );
-      console.log("======response========", response.data);
+
       setResponse(response.data);
-    } catch (error) {
-      console.error("Failed to fetch data:", error);
-    }
+    } catch (error) {}
     setSelectedDate(date);
     setModalOpen(true);
   };

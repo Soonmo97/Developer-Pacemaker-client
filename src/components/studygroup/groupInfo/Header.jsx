@@ -6,7 +6,6 @@ import axios from "axios";
 
 import UserImg from "../../user/UserImg";
 
-
 const InfoContainer = styled.div`
   padding: 1rem;
   background-color: #f0f0f0;
@@ -92,7 +91,6 @@ const Section = styled.div`
   @media (max-width: 768px) {
     flex-direction: column;
     margin-left: -2rem;
-    /* margin-left: -2rem; */
   }
 `;
 
@@ -228,29 +226,6 @@ const DetailModalContainer = styled.div`
   }
 `;
 
-const ProfilePhoto = styled.div`
-  width: 6rem;
-  height: 6rem;
-  border-radius: 50%;
-  background-color: #ccc;
-  margin-right: 1rem;
-`;
-
-const ActionButton = styled.button`
-  background-color: #2196f3;
-  color: white;
-  border: none;
-  padding: 0.5rem 0.7rem;
-  border-radius: 25px;
-  margin-top: 1rem;
-  cursor: pointer;
-
-  @media (max-width: 768px) {
-    margin-top: 0;
-    margin-left: 1rem;
-  }
-`;
-
 const FormGroup = styled.div`
   display: flex;
   align-items: center;
@@ -335,7 +310,6 @@ const Header = () => {
   const { sgSeq } = useParams();
   const [joinData, setJoinData] = useState([]);
   const [members, setMembers] = useState([]);
-  // const [jSeq, setJSeq] = useState();
   const [uSeq, setUSeq] = useState(null);
   const [isGroupMember, setIsGroupMember] = useState(false);
   const [nickname, setNickname] = useState("");
@@ -344,7 +318,6 @@ const Header = () => {
   const [user, setUser] = useState(null);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -358,15 +331,10 @@ const Header = () => {
             },
           }
         );
-        console.log("response.data", response.data);
-        console.log("response.data.nickname", response.data.nickname);
-        console.log("response.data.useq", response.data.useq);
         setNickname(response.data.nickname);
         setUSeq(response.data.useq);
         setUser(response.data);
-      } catch (err) {
-        console.error(err);
-      }
+      } catch (err) {}
     };
 
     fetchUserProfile();
@@ -379,7 +347,6 @@ const Header = () => {
           `${process.env.REACT_APP_API_SERVER}/api/study-group`
         );
 
-        console.log(">>:", response.data);
         const filteredData = response.data.filter(
           (item) => item.sgSeq.toString() === sgSeq
         );
@@ -388,9 +355,7 @@ const Header = () => {
         } else {
           setStudyGroups(null);
         }
-      } catch (error) {
-        console.error("스터디 그룹 데이터를 불러오는데 실패했습니다:", error);
-      }
+      } catch (error) {}
     };
 
     const RecruitmentStatus = async () => {
@@ -404,10 +369,7 @@ const Header = () => {
             },
           }
         );
-        console.log("모집여부 데이터:", response.data);
-      } catch (error) {
-        console.error("모집 여부 데이터를 불러오는데 실패했습니다:", error);
-      }
+      } catch (error) {}
     };
 
     fetchData();
@@ -429,7 +391,6 @@ const Header = () => {
 
         setWhoAmI(response.data);
       } catch (error) {
-        console.error("그룹장 확인에 실패했습니다:", error);
         throw error;
       }
     };
@@ -448,10 +409,7 @@ const Header = () => {
             },
           }
         );
-
-        console.log(response.data);
       } catch (error) {
-        console.error("가입신청 데이터를 받아오지 못했습니다.:", error);
         throw error;
       }
     };
@@ -470,22 +428,8 @@ const Header = () => {
             },
           }
         );
-
-        console.log("신청 데이터 :", response.data);
         setJoinData(response.data);
-        // if (response.data) {
-        //   const foundItem = response.data.find(
-        //     (item) => item.nickname ===
-        //   );
-        //   const jseqValue = foundItem?.joinRequest.jseq;
-        //   const uSeqValue = foundItem?.joinRequest.useq;
-        //   console.log("abcd ", foundItem);
-        //   setJSeq(jseqValue);
-        //   setUSeq(uSeqValue);
-        //   console.log("jSeq:", jSeq);
-        // }
       } catch (error) {
-        console.error("가입신청 데이터를 받아오지 못했습니다.:", error);
         throw error;
       }
     };
@@ -494,11 +438,8 @@ const Header = () => {
         const response = await axios.get(
           `${process.env.REACT_APP_API_SERVER}/api/group-members/${sgSeq}`
         );
-        console.log("members", response.data);
         setMembers(response.data);
-      } catch (error) {
-        console.error("Failed to fetch members", error);
-      }
+      } catch (error) {}
     };
 
     fetchMembers();
@@ -513,12 +454,8 @@ const Header = () => {
             `${process.env.REACT_APP_API_SERVER}/api/group-members/${sgSeq}`
           );
 
-          console.log("모달 오픈 안에서 members", response.data);
-
           setMembers(response.data);
-        } catch (error) {
-          console.error("Failed to fetch members", error);
-        }
+        } catch (error) {}
       };
 
       fetchMembers();
@@ -531,8 +468,6 @@ const Header = () => {
     }
   }, [members, nickname]);
 
-  // console.log(`post 데이터: seSeq는 ${sgSeq}, useq는 ${uSeq}`);
-
   const openModal = () => {
     setIsModalOpen(true);
   };
@@ -540,7 +475,6 @@ const Header = () => {
   const handleAccept = async (jSeq, uSeq) => {
     try {
       const token = localStorage.getItem("accessToken");
-      console.log("dddd", jSeq);
       const response = await axios.post(
         `${process.env.REACT_APP_API_SERVER}/api/join/accept/${jSeq}`,
         {
@@ -553,18 +487,15 @@ const Header = () => {
           },
         }
       );
-      console.log("수락성공!", response.data);
       alert("수락완료!");
       window.location.reload();
-    } catch (error) {
-      console.error("Failed to fetch members", error);
-    }
+    } catch (error) {}
   };
 
   const handleReject = async (jSeq, uSeq) => {
     try {
       const token = localStorage.getItem("accessToken");
-      console.log("dddd", jSeq);
+
       const response = await axios.delete(
         `${process.env.REACT_APP_API_SERVER}/api/join/reject/${jSeq}`,
         {
@@ -573,12 +504,9 @@ const Header = () => {
           },
         }
       );
-      console.log("거절성공!", response.data);
       alert("거절완료!");
       window.location.reload();
-    } catch (error) {
-      console.error("Failed to fetch members", error);
-    }
+    } catch (error) {}
   };
 
   const handleAuthorize = async (newUSeq) => {
@@ -596,12 +524,9 @@ const Header = () => {
           },
         }
       );
-      console.log(`그룹장 위임 성공! sgSeq: ${sgSeq}, newUSeq: ${newUSeq}`);
       alert("그룹장이 위임되었습니다.");
       window.location.reload();
-    } catch (error) {
-      console.error("그룹장 위임에 실패했습니다:", error);
-    }
+    } catch (error) {}
   };
 
   const handleKick = async (kickUSeq) => {
@@ -619,14 +544,10 @@ const Header = () => {
           },
         }
       );
-
-      console.log(`그룹원 강퇴 성공! sgSeq: ${sgSeq}, uSeq: ${kickUSeq}`);
-      alert('그룹원이 강퇴되었습니다.');
+      alert("그룹원이 강퇴되었습니다.");
 
       window.location.reload();
-    } catch (error) {
-      console.error("그룹원 강퇴에 실패했습니다:", error);
-    }
+    } catch (error) {}
   };
 
   const closeModal = () => setIsModalOpen(false);
@@ -642,8 +563,6 @@ const Header = () => {
 
     try {
       const token = localStorage.getItem("accessToken");
-
-      // 그룹 이름 중복 확인
       const checkResponse = await axios.get(
         `${process.env.REACT_APP_API_SERVER}/api/study-group/check-name`,
         {
@@ -658,8 +577,6 @@ const Header = () => {
         alert("이미 사용 중인 그룹 이름입니다. 다른 이름을 입력해주세요.");
         return;
       }
-
-      // 그룹 이름 수정
       await axios.patch(
         `${process.env.REACT_APP_API_SERVER}/api/study-group/name`,
         {
@@ -675,9 +592,7 @@ const Header = () => {
 
       alert("그룹 이름이 수정되었습니다.");
       window.location.reload();
-      // setGroupName(updateGroupName.data);
     } catch (error) {
-      console.error("그룹 이름 수정에 실패했습니다:", error);
       alert("그룹 이름 수정에 실패했습니다.");
     }
   };
@@ -701,9 +616,7 @@ const Header = () => {
       );
       alert("그룹 목표가 수정되었습니다.");
       window.location.reload();
-    } catch (error) {
-      console.error("그룹 목표 수정에 실패했습니다:", error);
-    }
+    } catch (error) {}
   };
 
   const handleJoin = async (e) => {
@@ -725,11 +638,8 @@ const Header = () => {
           },
         }
       );
-      console.log(response.data);
-      console.log("신청완료!");
       alert("신청완료!");
     } catch (error) {
-      console.error("신청하기에 실패했습니다:", error);
       alert("신청하기에 실패했습니다.");
     }
   };
@@ -753,11 +663,8 @@ const Header = () => {
           },
         }
       );
-      console.log(response.data);
-      console.log("탈퇴완료!");
       alert("탈퇴완료");
     } catch (error) {
-      console.error("탈퇴 실패했습니다:", error);
       alert("탈퇴 실패했습니다.");
     }
   };
@@ -785,7 +692,7 @@ const Header = () => {
       <ManagementModal
         isOpen={isModalOpen}
         onRequestClose={closeModal}
-        contentLabel='Management Modal'
+        contentLabel="Management Modal"
       >
         <CloseButton onClick={closeModal}>X</CloseButton>
         <h1>스터디그룹 관리</h1>
@@ -798,7 +705,6 @@ const Header = () => {
                   <div>
                     <strong>{item.nickname}</strong>
                   </div>
-                  {/* <div>스터디 그룹 신청합니다!</div> */}
                   <InviteButton
                     onClick={() =>
                       handleAccept(item.joinRequest.jseq, item.joinRequest.useq)
@@ -824,20 +730,19 @@ const Header = () => {
                 <ListItem key={index}>
                   <div>{item.nickname}</div>
 
-                  <div style={{ gap: '1rem' }}>
+                  <div style={{ gap: "1rem" }}>
                     <AuthorizeToBtn
                       onClick={() => {
-                        if (window.confirm('정말 위임하시겠습니까?')) {
+                        if (window.confirm("정말 위임하시겠습니까?")) {
                           handleAuthorize(item.useq);
                         }
                       }}
                     >
-
                       위임
                     </AuthorizeToBtn>
                     <RemoveButton
                       onClick={() => {
-                        if (window.confirm('정말 강퇴하시겠습니까?')) {
+                        if (window.confirm("정말 강퇴하시겠습니까?")) {
                           handleKick(item.useq);
                         }
                       }}
@@ -854,7 +759,7 @@ const Header = () => {
       <MemberDetailModal
         isOpen={isSetModalOpen}
         onRequestClose={closeSetModal}
-        contentLabel='Member Detail Modal'
+        contentLabel="Member Detail Modal"
       >
         <CloseSetButton onClick={closeSetModal}>X</CloseSetButton>
         <DetailTitle>내 정보</DetailTitle>
@@ -876,11 +781,11 @@ const Header = () => {
                   <Label>그룹 이름</Label>
 
                   <Input
-                    type='text'
+                    type="text"
                     value={groupName}
                     onChange={handleGroupNameChange}
                   />
-                  <CheckButton type='submit' onClick={handleGroupNameUpdate}>
+                  <CheckButton type="submit" onClick={handleGroupNameUpdate}>
                     수정
                   </CheckButton>
                 </FormGroup>
@@ -889,11 +794,11 @@ const Header = () => {
                   <Label>팀 공동목표</Label>
 
                   <Input
-                    type='text'
+                    type="text"
                     value={groupGoal}
                     onChange={handleGroupGoalChange}
                   />
-                  <CheckButton type='submit' onClick={handleGroupGoalUpdate}>
+                  <CheckButton type="submit" onClick={handleGroupGoalUpdate}>
                     수정
                   </CheckButton>
                 </FormGroup>

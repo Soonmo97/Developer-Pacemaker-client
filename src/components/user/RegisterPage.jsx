@@ -15,20 +15,11 @@ const responsiveWidth = css`
 const Container1 = styled.div`
   margin: 0 auto 20px;
   padding: 20px;
-  align-items: center; /* 가운데 정렬 추가 */
+  align-items: center;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   ${responsiveWidth}
-`;
-const responsiveContainer = css`
-  width: 100%;
-  @media (max-width: 768px) {
-    width: 80%;
-  }
-  @media (min-width: 1024px) {
-    width: 1000px;
-  }
 `;
 
 const Label = styled.label`
@@ -99,24 +90,6 @@ const Text1 = styled.div`
   @media (min-width: 1024px) {
     font-size: 1em;
   }
-`;
-const IdContainer = styled.div`
-  display: flex;
-  align-items: center;
-  margin-bottom: 10px;
-`;
-
-const DivId = styled.div`
-  width: 10%;
-  padding: 8px;
-  display: flex;
-  justify-content: flex-end;
-`;
-
-const Inputid = styled.input`
-  width: 50%;
-  padding: 8px;
-  margin-left: 10px;
 `;
 
 const CheckButton = styled.button`
@@ -223,18 +196,6 @@ const ButtonContainer = styled.div`
   margin-top: 20px;
 `;
 
-const ErrorSpan = styled.span`
-  color: red;
-  margin: 5px;
-  @media (max-width: 768px) {
-    font-size: 0.4em;
-  }
-
-  @media (min-width: 1024px) {
-    font-size: 1em;
-  }
-`;
-
 const Span = styled.span`
   margin: 5px;
   @media (max-width: 768px) {
@@ -250,7 +211,6 @@ function RegisterPage() {
     nickname: "",
     email: "",
     pw: "",
-    // img: "",
   });
   const [serverError, setServerError] = useState("");
   const [errors, setErrors] = useState({});
@@ -270,9 +230,7 @@ function RegisterPage() {
         const response = await axios.get(
           `${process.env.REACT_APP_API_SERVER}/api/user/check-${name}?${name}=${value}`
         );
-        const isDuplicate = response.data; // 서버에서 반환한 중복 여부 값 사용
-
-        console.log("aaaaa", isDuplicate);
+        const isDuplicate = response.data;
 
         if (isDuplicate) {
           if (name === "nickname") {
@@ -299,9 +257,7 @@ function RegisterPage() {
             });
           }
         }
-      } catch (error) {
-        console.error(`Error checking ${name} availability:`, error);
-      }
+      } catch (error) {}
     }
   };
 
@@ -324,9 +280,7 @@ function RegisterPage() {
         `${process.env.REACT_APP_API_SERVER}/api/user`,
         formData
       );
-      console.log(response);
-      console.log("------");
-      console.log(response.data);
+
       if (response.data.email) {
         alert("회원가입이 성공적으로 완료 되었습니다.");
         setIsRegistered(true);
@@ -334,9 +288,7 @@ function RegisterPage() {
       } else {
         setServerError("오류가 발생했습니다. 다시 실행해주세요.");
       }
-    } catch (error) {
-      console.error("Registration error:", error);
-    }
+    } catch (error) {}
   };
 
   return (
@@ -363,9 +315,7 @@ function RegisterPage() {
         </Text1>
       </Container1>
       <Container>
-        {/* 양식 내용 */}
         <form onSubmit={handleSubmit}>
-          {/* 입력 필드 */}
           <EmContainer>
             <DivEm>
               <Label htmlFor="email">Email:</Label>
@@ -392,7 +342,7 @@ function RegisterPage() {
               onChange={handleChange}
               required
             />
-            {/* 유효성 검사 오류 메시지 */}
+
             <Span>{availabilityMessages.nickname}</Span>
           </NmContainer>
           <PwContainer>

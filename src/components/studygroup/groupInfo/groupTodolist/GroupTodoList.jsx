@@ -23,7 +23,6 @@ const TodoButton = styled.button`
 `;
 const deleteTodo = async (gtSeq) => {
   try {
-    console.log("======gtSeq======", gtSeq);
     const token = localStorage.getItem("accessToken");
     const response = await axios.delete(
       `${process.env.REACT_APP_API_SERVER}/api/group-todo/${gtSeq}`,
@@ -39,7 +38,6 @@ const deleteTodo = async (gtSeq) => {
 };
 const patchTodo = async (gtSeq) => {
   try {
-    console.log("======gtSeq======", gtSeq);
     const token = localStorage.getItem("accessToken");
     const response = await axios.patch(
       `${process.env.REACT_APP_API_SERVER}/api/group-todo/change/${gtSeq}`,
@@ -48,7 +46,6 @@ const patchTodo = async (gtSeq) => {
         headers: { Authorization: `Bearer ${token}` },
       }
     );
-    console.log("response.data;response.data;response.data;", response.data);
     return response.data;
   } catch (error) {
     console.error("Failed to patch todo:", error);
@@ -63,12 +60,8 @@ const GroupTodoList = ({ response, formattedDate, sgSeq, gpSeq, getGpSeq }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [editIndex, setEditIndex] = useState(null);
   useEffect(() => {
-    console.log("========gpSeq===gpSeq", gpSeq);
     if (response) {
-      console.log("===========response", response);
-      // setGpSeq(response[0].gpSeq);
     }
-    console.log("****** ***gpSeq, sgSeq*******", gpSeq, sgSeq);
     if (todos) {
       const filteredTodos = todos.filter((todoItem) => todoItem.isCompleted);
       setCompletedTodos(filteredTodos);
@@ -76,25 +69,19 @@ const GroupTodoList = ({ response, formattedDate, sgSeq, gpSeq, getGpSeq }) => {
         (todoItem) => !todoItem.isCompleted
       );
       setUncompletedTodos(UncompletedTodos);
-      console.log("======filteredTodos", filteredTodos);
-      console.log("======UncompletedTodos", UncompletedTodos);
     }
   }, [todos]);
   const addTodo = async (sgSeq, gpSeq, todo, formattedDate) => {
     try {
-      console.log("==addTodo=", gpSeq, todo);
       const token = localStorage.getItem("accessToken");
       if (!token) {
         throw new Error("Access token is missing");
       }
       if (gpSeq == null) {
-        console.log("gpSeq null", sgSeq, todo);
-        // 플래너가 생성되지 않은 경우
         const payload = {
           sgSeq: sgSeq,
           ...(todo ? { groupTodoCreateDTOList: [{ content: todo }] } : {}),
         };
-        console.log("payloadpayload", payload);
         const response = await axios.post(
           `${process.env.REACT_APP_API_SERVER}/api/group-planner/save?date=${formattedDate}`,
           payload,
@@ -103,11 +90,9 @@ const GroupTodoList = ({ response, formattedDate, sgSeq, gpSeq, getGpSeq }) => {
           }
         );
         alert("플래너 생성이 완료되었습니다.");
-        // 추가하면 바로 미완료 목록으로 추가되게끔 설정 (임시)
         setUncompletedTodos([...uncompletedTodos, response.data]);
         getGpSeq(response.data.groupPlanner.gpSeq);
       } else {
-        // 기존 플래너에 투두 추가
         const response = await axios.post(
           `${process.env.REACT_APP_API_SERVER}/api/group-todo/${gpSeq}`,
           { content: todo },
@@ -115,12 +100,10 @@ const GroupTodoList = ({ response, formattedDate, sgSeq, gpSeq, getGpSeq }) => {
             headers: { Authorization: `Bearer ${token}` },
           }
         );
-        // 추가하면 바로 미완료 목록으로 추가되게끔 설정 (임시)
         setUncompletedTodos([...uncompletedTodos, response.data]);
       }
       return response.data;
     } catch (error) {
-      console.error("Failed to add todo:", error);
       throw error;
     }
   };
@@ -140,19 +123,15 @@ const GroupTodoList = ({ response, formattedDate, sgSeq, gpSeq, getGpSeq }) => {
           gpSeq,
           inputValue,
           formattedDate
-        ); // gpSeq를 null로 설정
-        console.log("========addedTodo==========", addedTodo);
+        );
         if (!addedTodo) {
           setInputValue("");
           return;
         }
-        // 추가하면 바로 미완료 목록으로 추가되게끔 설정 (임시)
         setUncompletedTodos([...uncompletedTodos, addedTodo]);
       }
       setInputValue("");
-    } catch (error) {
-      console.error("Failed to add/update todo:", error);
-    }
+    } catch (error) {}
   };
   const handleKeyPress = (e) => {
     if (e.key === "Enter") {
@@ -173,9 +152,6 @@ const GroupTodoList = ({ response, formattedDate, sgSeq, gpSeq, getGpSeq }) => {
       );
     }
   };
-  // const handleDeleteTodo = (index) => {
-  //   setTodos(todos.filter((_, idx) => idx !== index));
-  // };
   const handleDeleteCompletedTodo = async (gtSeq) => {
     await deleteTodo(gtSeq);
     setCompletedTodos(completedTodos.filter((todo) => todo.gtSeq !== gtSeq));

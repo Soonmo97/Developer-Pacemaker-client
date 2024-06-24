@@ -4,7 +4,7 @@
   justify-content: center;
   padding: 1vh;
   width: 70%;
-  margin: auto; /* 중앙 정렬을 위해 추가 */
+  margin: auto;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1), 0 -2px 5px rgba(0, 0, 0, 0.1);
 }
 @media (max-width: 768px) {
@@ -19,12 +19,3 @@
   display: flex;
   justify-content: space-between;
 }
-
-/* .sidebar button {
-  font-weight: 800;
-  display: flex;
-  padding: 1vh 10vh;
-  background-color: transparent;
-  border: none;
-  cursor: pointer;
-} */
