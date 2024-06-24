@@ -1,70 +1,100 @@
-# Getting Started with Create React App
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# 👨‍💻 Developer Pacemaker 👩‍💻 
+## 개발자를 위한 학습 도우미(플래너) → http://00.000.000.000
+### 🏆 SeSAC(청년취업사관학교) 풀스택 웹개발 부트캠프 3차 팀프로젝트 우수상 수상작
 
-## Available Scripts
 
-In the project directory, you can run:
+![image](https://github.com/Soonmo97/Developer-Pacemaker-server/assets/154948606/7a320fc3-94e7-405e-91e3-f3f7031cfc72)
 
-### `npm start`
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+### 작업 기간: 2024.05.31. ~ 2024.06.21.
+### 인원: 5명(프론트엔드 2명, 백엔드 3명)
+### 로그인:
+- ID: `test@test.com`
+- PW: `1234`
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+## 📖 Description
 
-### `npm test`
+혼자 외롭게 공부하는 개발자를 위해 "페이스 메이커"를 만들어주기 위한 공간 제공합니다.
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+다른 사람들과 공통 목표를 설정할 수 있는 스터디그룹을 형성해서 시너지 효과를 기대합니다.
 
-### `npm run build`
+비슷한 학습 목표를 가진 사람들과 함께 공부하고 싶은 개발자 지망생을 위한 서비스입니다.
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+학습 플래너를 활용해서 체계적으로 기록하며 공부하고 싶은 사람들을 위한 서비스입니다.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+## :baby_chick: Demo
 
-### `npm run eject`
+시연영상
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+## ⭐ Main Feature
+### 스터디그룹 관리
+- 스터디그룹 CRUD(그룹장 권한)
+- 그룹장 권한 확인을 위해 요청에 담긴 시퀀스와 로그인(토큰) 시퀀스 비교
+- 스터디그룹에 그룹장 시퀀스로 그룹장 관리
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+### 
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+### 회원가입 및 로그인 
+- jwt토큰 및 bcrypt 사용
+- 이메일 및 닉네임 중복체크
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
 
-## Learn More
+### 소셜 로그인 구현(카카오)
+- 카카오 OAuth2.0 토큰 발급 및 사용자 정보 요청
+- 사용자 인증 후 jwt토큰 발급으로 로그인 처리
+- 
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+### Chat-GPT API 연결
+-
+-
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+### 학습 플래너 관리
+-
+-
+-
 
-### Code Splitting
+## 🔧 Stack(Library&Framwork etc)
+- **Front-end**: React
+- **back-end** : Java, Spring boot
+- **Database** : AWS RDS (Mysql)
+- **ORM** : JPA
+- **Deploy**: AWS EC2
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+## :open_file_folder: Project Structure
 
-### Analyzing the Bundle Size
+```markdown
+frontend
+├── public
+│   ├── images
+├── src
+    ├── components
+    └── pages
+    └── store
+    └── utils
+├── App.tsx
+|__ index.tsx
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
+backend
+├── config
+├── controller
+├── dto
+├── entity
+├── repository
+├── security
+|__ service
 
-### Making a Progressive Web App
+```
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
+## 👨‍💻 Role & Contribution
 
-### Advanced Configuration
+![image](https://github.com/Soonmo97/Developer-Pacemaker-server/assets/154948606/820b7cb1-30c4-446b-8dbf-f9f9171b1f1a)
+![image](https://github.com/Soonmo97/Developer-Pacemaker-server/assets/154948606/99e56f74-f39d-4902-afc2-026b923db2fc)
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+## 👨‍👩‍👧‍👦 Developer
+*  **권오진** (깃허브 주소)
+*  **권태현** (깃허브 주소)
+*  **권순모** (https://github.com/Soonmo97)
+*  **김화영** (깃허브 주소)
+*  **이형석** (깃허브 주소)
