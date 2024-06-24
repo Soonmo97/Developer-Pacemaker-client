@@ -6,7 +6,7 @@
 
 ![image](https://github.com/Soonmo97/Developer-Pacemaker-server/assets/154948606/7a320fc3-94e7-405e-91e3-f3f7031cfc72)
 
-![image](https://github.com/Soonmo97/Developer-Pacemaker-client/public/images/calendar.png)
+![image](public/images/calendar.png)
 
 ### 작업 기간: 2024.05.31. ~ 2024.06.21.
 
