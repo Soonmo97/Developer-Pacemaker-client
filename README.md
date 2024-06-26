@@ -29,7 +29,7 @@
 
 ## :baby_chick: Demo
 
-시연영상
+https://github.com/Soonmo97/Developer-Pacemaker-client/assets/154948606/aa32044b-2e9a-48a4-873d-74f27e4591e0
 
 ## ⭐ Main Feature
 
